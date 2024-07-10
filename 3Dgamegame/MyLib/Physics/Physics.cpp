@@ -3,6 +3,7 @@
 #include "Collidable.h"
 #include "ColliderSphere.h"
 #include "../DebugDraw.h"
+#include"../../Planet.h"
 
 using namespace MyEngine;
 
@@ -26,9 +27,13 @@ void Physics::Entry(const std::shared_ptr<Collidable>& collidable)
 {
     bool isFound = std::find(m_collidables.begin(), m_collidables.end(), collidable) != m_collidables.end();
     // ñ¢ìoò^Ç»ÇÁí«â¡
-    if (!isFound)
+    if (!isFound&&collidable->GetTag()!=ObjectTag::Stage)
     {
         m_collidables.emplace_back(collidable);
+    }
+    else if (!isFound)
+    {
+        m_stageCollidables.emplace_back(collidable);
     }
     // ìoò^çœÇ›Ç»ÇÁñ≥éã
     else
@@ -80,7 +85,19 @@ void Physics::Update()
 /// </summary>
 void MyEngine::Physics::MoveNextPos() const
 {
-    
+    for (const auto& item : m_stageCollidables)
+    {
+        if (item->GetTag() == ObjectTag::Stage)
+        {
+            for (const auto& obj : m_collidables)
+            {
+                auto planet = dynamic_cast<Planet*>(item.get());
+                obj->m_rigid.SetVelocity(planet->GravityEffect(obj));
+            }
+
+        }
+    }
+
     for (const auto& item : m_collidables)
     {
         auto& rigid = item->m_rigid;
@@ -132,7 +149,6 @@ void MyEngine::Physics::CheckCollide()
                 if (objA == objB) continue;
                 // Ç«ÇøÇÁÇ©ÇÃÉXÉãÅ[ëŒè€Ç∆ÇµÇƒÉ^ÉOÇ™ì¸Ç¡ÇƒÇ¢ÇΩÇÁñ≥éã
                 if (objA->IsThroughTarget(objB) || objB->IsThroughTarget(objA))continue;
-
                 for (const auto& colA : objA->m_colliders)
                 {
                     for (const auto& colB : objB->m_colliders)

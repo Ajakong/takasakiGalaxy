@@ -70,7 +70,7 @@ bool Application::Init()
     SetUseBackCulling(true);
 
 
-    SetWindowText("3DDemo");
+    SetWindowText("Astro Seeker");
     if (DxLib_Init() == -1)
     {
         return false;

@@ -57,6 +57,8 @@ namespace MyEngine
 
 	private:
 		std::list<std::shared_ptr<Collidable>> m_collidables;
+		std::list<std::shared_ptr<Collidable>> m_stageCollidables;
+
 		std::list<OnCollideInfoData> m_onCollideInfo;
 		SendCollideInfo m_newCollideInfo;
 		SendCollideInfo m_preCollideInfo;

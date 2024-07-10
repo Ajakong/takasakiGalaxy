@@ -3,7 +3,7 @@
 #include"Camera.h"
 #include"MyLib/Physics/Physics.h"
 #include"Player.h"
-#include"Planet.h"
+#include"SpherePlanet.h"
 #include<cassert>
 
 GameManager::GameManager() :
@@ -45,7 +45,7 @@ GameManager::GameManager() :
 
 	
 	player = std::make_shared<Player>(MV1LoadModel("Player/knight.mv1"));
-	planet = std::make_shared<Planet>();
+	planet = std::make_shared<SpherePlanet>();
 }
 
 GameManager::~GameManager()
@@ -54,10 +54,6 @@ GameManager::~GameManager()
 
 void GameManager::Init()
 {
-
-	userData->dissolveY = 0.0f;
-
-
 	// メッシュの数を取ってくる
 	auto meshNum = MV1GetMeshNum(modelH);
 
@@ -146,6 +142,7 @@ void GameManager::Update()
 
 	MyEngine::Physics::GetInstance().Update();
 
+	player->SetMatrix();
 	//// カリング方向の反転
 	//for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
 	//{

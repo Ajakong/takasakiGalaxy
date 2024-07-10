@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ColliderHelper.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
     <ClCompile Include="MyLib\Physics\Collidable.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderBase.cpp" />
@@ -165,10 +166,12 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SpherePlanet.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="WorldTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColliderHelper.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
     <ClInclude Include="MyLib\ObjectTag.h" />
     <ClInclude Include="MyLib\Physics\Collidable.h" />
@@ -192,6 +195,7 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SpherePlanet.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="WorldTimer.h" />
   </ItemGroup>

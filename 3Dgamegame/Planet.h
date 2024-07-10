@@ -11,6 +11,8 @@ public:
 	virtual void Init();
 	virtual void Update();
 	virtual void Draw();
+
+	virtual Vec3 GravityEffect(std::shared_ptr<Collidable> obj)=0;//Physicsに呼び出される,返り値で補正後のベクトルを返す
 protected:
 	int modelH;
 };

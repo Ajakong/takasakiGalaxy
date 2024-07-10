@@ -4,7 +4,7 @@
 
 namespace
 {
-	constexpr int kNetralRadius = 30;//通常時の当たり半径
+	constexpr int kNetralRadius = 100;//通常時の当たり半径
 
 	//アニメーション番号
 	constexpr int kIdleAnimIndex = 1;
@@ -37,7 +37,10 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Character
 	m_playerUpdate(&Player::StartUpdate),
 	m_regeneRange(0)
 {
-	
+	m_rigid.SetPos(Vec3(0, 0, 0));
+	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	item->radius = m_radius;
 }
 
 Player::~Player()
@@ -47,15 +50,13 @@ Player::~Player()
 
 void Player::Init()
 {
-	m_rigid.SetPos(Vec3(0, 0, 0));
-	m_colliders.push_back(AddCollider(MyEngine::ColliderBase::Kind::Sphere));
-	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
-	item->radius = m_radius;
+	
 
 }
 
 void Player::Update()
 {
+	m_rigid.SetVelocity(Vec3(0, 0, 0));
 	(this->*m_playerUpdate)();
 
 	Pad::Update();
@@ -83,7 +84,7 @@ void Player::SetMatrix()
 	//カメラのいる角度から
 	//コントローラーによる移動方向を決定する
 	MATRIX mtx;
-	MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
+	MATRIX scale = MGetScale(VGet(0.1f, 0.1f, 0.1f));
 	
 
 	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F / 2);
@@ -98,7 +99,7 @@ void Player::SetMatrix()
 
 void Player::Draw()
 {
-	if (m_visibleCount % 10 == 0)
+	if (m_visibleCount % 5 == 0)
 	{
 		MV1DrawModel(m_modelHandle);
 	}
@@ -119,7 +120,7 @@ void Player::SetCameraToPlayer(Vec3 cameraToPlayer)
 
 void Player::OnCollideEnter(const Collidable& colider)
 {
-	
+	printf("aaaaPlayerHit");
 }
 
 void Player::SetCameraAngle(float cameraAngle)
