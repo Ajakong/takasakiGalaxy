@@ -2,7 +2,7 @@
 #include <cassert>
 #include "Collidable.h"
 #include "ColliderSphere.h"
-#include "MyEngine/DebugDraw.h"
+#include "../DebugDraw.h"
 
 using namespace MyEngine;
 
@@ -80,6 +80,7 @@ void Physics::Update()
 /// </summary>
 void MyEngine::Physics::MoveNextPos() const
 {
+    
     for (const auto& item : m_collidables)
     {
         auto& rigid = item->m_rigid;
@@ -129,11 +130,15 @@ void MyEngine::Physics::CheckCollide()
             for (const auto& objB : m_collidables)
             {
                 if (objA == objB) continue;
+                // どちらかのスルー対象としてタグが入っていたら無視
+                if (objA->IsThroughTarget(objB) || objB->IsThroughTarget(objA))continue;
 
                 for (const auto& colA : objA->m_colliders)
                 {
                     for (const auto& colB : objB->m_colliders)
                     {
+                        
+
                         if (!IsCollide(objA->m_rigid, objB->m_rigid, colA, colB)) continue;
 
                         bool isTrigger = colA->isTrigger || colB->isTrigger;
@@ -148,7 +153,7 @@ void MyEngine::Physics::CheckCollide()
                         }
 
                         // Triggerの場合は位置補正はしない
-                        if (isTrigger) continue;
+                        if (isTrigger)isCheck = false; continue;
 
                         auto primary = objA;
                         auto secondary = objB;
@@ -179,13 +184,14 @@ void MyEngine::Physics::CheckCollide()
 
         if (isCheck && checkCount > CHECK_COUNT_MAX)
         {
-            printfDx(L"規定数(%d)を超えました", CHECK_COUNT_MAX);
+            printfDx("規定数(%d)を超えました", CHECK_COUNT_MAX);
         }
     }
 }
 
 bool Physics::IsCollide(const Rigidbody& rigidA, const Rigidbody& rigidB, const std::shared_ptr<ColliderBase>& colliderA, const std::shared_ptr<ColliderBase>& colliderB)
 {
+   
     bool isCollide = false;
 
     auto kindA = colliderA->GetKind();

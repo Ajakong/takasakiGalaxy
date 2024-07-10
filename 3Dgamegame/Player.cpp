@@ -1,11 +1,10 @@
 #include "Player.h"
 #include"Pad.h"
-#include"Vec2.h"
 #include"MyLib/Physics/ColliderSphere.h"
 
 namespace
 {
-	constexpr int kNetralRadius = 0;//通常時の当たり半径
+	constexpr int kNetralRadius = 30;//通常時の当たり半径
 
 	//アニメーション番号
 	constexpr int kIdleAnimIndex = 1;
@@ -30,12 +29,13 @@ namespace
 }
 
 
-Player::Player(int modelhandle) :
+Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Character),
 	m_modelHandle(MV1DuplicateModel(modelhandle)),
 	m_anim_move(),
-	m_radius(30),
+	m_radius(kNetralRadius),
 	m_Hp(50),
-	m_playerUpdate(&Player::NeutralUpdate)
+	m_playerUpdate(&Player::StartUpdate),
+	m_regeneRange(0)
 {
 	
 }
@@ -51,6 +51,7 @@ void Player::Init()
 	m_colliders.push_back(AddCollider(MyEngine::ColliderBase::Kind::Sphere));
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = m_radius;
+
 }
 
 void Player::Update()
@@ -76,6 +77,25 @@ void Player::Update()
 	}
 }
 
+void Player::SetMatrix()
+{
+	
+	//カメラのいる角度から
+	//コントローラーによる移動方向を決定する
+	MATRIX mtx;
+	MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
+	
+
+	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F / 2);
+	mtx = MMult(scale, moveDir);
+
+	MATRIX moving = MGetTranslate(m_rigid.GetPos().VGet());
+
+	mtx = MMult(mtx, moving);
+
+	MV1SetMatrix(m_modelHandle, mtx);
+}
+
 void Player::Draw()
 {
 	if (m_visibleCount % 10 == 0)
@@ -97,17 +117,9 @@ void Player::SetCameraToPlayer(Vec3 cameraToPlayer)
 	m_cameraToPlayer = cameraToPlayer;
 }
 
-void Player::Hit()
+void Player::OnCollideEnter(const Collidable& colider)
 {
-	HitCount++;
-
-	/*printfDx("PlayerIsHit");*/
-	m_Hp -= 5;
-	m_isVisibleFlag = true;
-	m_isHitFlag = false;
-
-	ChangeAnim(m_attach_hit);
-	m_playerUpdate = &Player::HitUpdate;
+	
 }
 
 void Player::SetCameraAngle(float cameraAngle)
@@ -169,6 +181,11 @@ void Player::ChangeAnim(int animIndex)
 
 void Player::StartUpdate()
 {
+	m_regeneRange += 0.01f;
+	if (m_regeneRange > 2)
+	{
+		m_playerUpdate = &Player::NeutralUpdate;
+	}
 }
 
 void Player::NeutralUpdate()
@@ -181,11 +198,8 @@ void Player::NeutralUpdate()
 
 	//アナログスティックの入力10%~80%を使用する
 	//ベクトルの長さが最大1000になる
-
-	//プレイヤーの最大移動速度は0.01f/frame
-
 	//ベクトルの長さを取得
-	Vec3 move=Vec3(static_cast<float>(analogX), 0.0f, static_cast<float>(-analogY));
+	Vec3 move = Vec3(static_cast<float>(analogX), 0.0f, static_cast<float>(-analogY));
 
 	float len = move.Length();
 	//ベクトルの長さを0.0~1.0の割合に変換する
@@ -193,35 +207,23 @@ void Player::NeutralUpdate()
 
 	//アナログスティック無効な範囲を除外する
 	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
-	rate = min(rate, 1.0f);
-	rate = max(rate, 0.0f);
-
-	//カメラのいる角度から
-	//コントローラーによる移動方向を決定する
-	MATRIX mtx;
-	MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
-	float angle = fmodf(m_cameraAngle, 360);
-	MATRIX rotate = MGetRotY((angle)-DX_PI_F / 2);//本来はカメラを行列で制御し、その行列でY軸回転
+	rate = std::min(rate, 1.0f);
+	rate = std::max(rate, 0.0f);
 
 	//速度が決定できるので移動ベクトルに反映
 	move = move.GetNormalized();
 	float speed = kMaxSpeed * rate;
 
-	move = move*speed;
+	m_angle = fmodf(m_cameraAngle, 360);//mod:余り　
+	MATRIX rotate = MGetRotY((m_angle)-DX_PI_F / 2);//本来はカメラを行列で制御し、その行列でY軸回転
+
+	move = move * speed;
 	auto v = VTransform(VGet(move.x, 0, move.z), rotate);
-	move=Vec3(v);
-	m_velocity = move;
+	move = Vec3(v);
+	m_rigid.SetVelocity(move);
+	//プレイヤーの最大移動速度は0.01f/frame
 
-	m_pos = m_pos+m_velocity;
-
-	MATRIX moveDir = MGetRotY((angle)+DX_PI_F / 2);
-	mtx = MMult(scale, moveDir);
-
-	MATRIX moving = MGetTranslate(m_pos);
-
-	mtx = MMult(mtx, moving);
-
-	MV1SetMatrix(m_modelHandle, mtx);
+	
 
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
@@ -229,9 +231,7 @@ void Player::NeutralUpdate()
 		m_playerUpdate = &Player::AvoidUpdate;
 	}
 
-	m_velocity.x = 0;
-	m_velocity.y = 0;
-
+	
 }
 
 void Player::WalkingUpdate()

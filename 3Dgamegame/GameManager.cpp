@@ -1,15 +1,51 @@
+#include"DxLib.h"
 #include "GameManager.h"
 #include"Camera.h"
 #include"MyLib/Physics/Physics.h"
 #include"Player.h"
+#include"Planet.h"
+#include<cassert>
 
-GameManager::GameManager()
+GameManager::GameManager() :
+	modelH(MV1LoadModel("Model/Sphere/sphere.mv1")),
+	sphMapH(LoadGraph("Model/room.jpg")),
+	roughH(LoadGraph("Model/Sphere/roughness.png")),
+	metalH(LoadGraph("Model/Sphere/metalness.png")),
+	toonH(LoadGraph("Image/toon01.bmp")),
+	psH(LoadPixelShader("PixelShader.pso")),
+	vsH(LoadVertexShader("VertexShader.vso")),
+	outlinePsH(LoadPixelShader("OutlinePS.pso")),
+	outlineVsH(LoadVertexShader("OutlineVS.vso")),
+	dissolveH(LoadGraph("Image/dissolve.png")),
+	postEffectH(LoadPixelShader("PostEffect.pso")),
+	// 通常のRT
+	RT(MakeScreen(640, 480, true)),
+	RT2(MakeScreen(640, 480, true)),
+	// アウトラインのRT
+	outlineRT(MakeScreen(640, 480, true)),
+	// 法線情報のRT
+	normRT(MakeScreen(640, 480)),
+	// ぼかし用RT
+	blurRT(MakeScreen(640, 480, true)),
+	shrinkRT(MakeScreen(320, 240, true)),
+	depthRT(MakeScreen(640, 480))
 {
+	assert(modelH != -1);
+	assert(sphMapH != -1);
+	assert(roughH != -1);
+	assert(metalH != -1);
+	assert(toonH != -1);
+	assert(psH != -1);
+	assert(vsH != -1);
+	assert(outlinePsH != -1);
+	assert(outlineVsH != -1);
+	assert(dissolveH != -1);
+	assert(postEffectH != -1);
 	camera = std::make_shared<Camera>();
-	
-	player = std::make_shared<Player>();
 
-	physics = std::make_shared<MyEngine::Physics>();
+	
+	player = std::make_shared<Player>(MV1LoadModel("Player/knight.mv1"));
+	planet = std::make_shared<Planet>();
 }
 
 GameManager::~GameManager()
@@ -18,13 +54,57 @@ GameManager::~GameManager()
 
 void GameManager::Init()
 {
-	
+
+	userData->dissolveY = 0.0f;
+
+
+	// メッシュの数を取ってくる
+	auto meshNum = MV1GetMeshNum(modelH);
+
+	VECTOR maxPos = { 0, 0, 0 };
+	VECTOR minPos = { 1000, 1000, 1000 };
+	bool hasNormalMap = false;
+	for (int i = 0; i < meshNum; ++i)
+	{
+		// 輪切りの時は裏側も描画しないと変になる
+		MV1SetMeshBackCulling(modelH, i, DX_CULLING_NONE);
+
+		// モデルの大きさを取得
+		auto modelMaxPos = MV1GetMeshMaxPosition(modelH, i);
+		maxPos.x = std::max(maxPos.x, modelMaxPos.x);
+		maxPos.y = std::max(maxPos.y, modelMaxPos.y);
+		maxPos.z = std::max(maxPos.z, modelMaxPos.z);
+
+		auto modelMinPos = MV1GetMeshMinPosition(modelH, i);
+		minPos.x = std::min(minPos.x, modelMinPos.x);
+		minPos.y = std::min(minPos.y, modelMinPos.y);
+		minPos.z = std::min(minPos.z, modelMinPos.z);
+
+		auto vtype = MV1GetTriangleListVertexType(modelH, i);
+		if (vtype == DX_MV1_VERTEX_TYPE_NMAP_1FRAME)
+		{
+			hasNormalMap = true;
+		}
+	}
+	userData->minY = minPos.y;
+	userData->maxY = maxPos.y;
+	userData->clickedU = 0.0f;
+	userData->clickedV = 0.0f;
+
+	// 深度値記録バッファ用RT
+	SetCreateGraphChannelBitDepth(32);
+	SetCreateDrawValidGraphChannelNum(1);
+
+	MyEngine::Physics::GetInstance().Entry(player);
+	MyEngine::Physics::GetInstance().Entry(planet);
+
 }
 
 void GameManager::Update()
 {
-	camera->Update();
-	
+	FillGraph(depthRT, 0, 0, 0, 0);
+	FillGraph(shrinkRT, 0, 0, 0, 0);
+	FillGraph(normRT, 0, 0, 0, 0);
 
 	for (int x = -50; x <= 50; x += 10)
 	{
@@ -34,14 +114,103 @@ void GameManager::Update()
 	{
 		DrawLine3D(VGet(-50, 0, static_cast<float>(z)), VGet(50, 0, static_cast<float>(z)), 0xff0000);
 	}
+	// 使用するシェーダをセットしておく
+	SetUseVertexShader(vsH);
+	SetUsePixelShader(psH);
 
-	physics->Update();
+	UpdateShaderConstantBuffer(cbuffH);
+	SetShaderConstantBuffer(cbuffH, DX_SHADERTYPE_PIXEL, 4);
+
+	// シェーダーやってる部分
+	SetUseTextureToShader(3, dissolveH);
+	SetUseTextureToShader(4, sphMapH);
+	SetUseTextureToShader(5, roughH);
+	SetUseTextureToShader(6, metalH);
+	SetUseTextureToShader(7, toonH);
+	//		SetRenderTargetToShader(0, RT);	// 0番にRTを設定
+	SetRenderTargetToShader(1, depthRT);
+	SetRenderTargetToShader(2, normRT);
+
+	MV1SetUseOrigShader(true);
+
+	// カメラの設定
+	// RTを設定するとカメラの初期化が入ってるかもなので、RTの設定後にカメラの設定を行う
+	
+	camera->Update();
+	planet->Update();
+	player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
+
+	player->SetCameraAngle(camera->GetCameraAngle());
+	player->Update();
+	userData->dissolveY = player->GetRegenerationRange();
+
+	MyEngine::Physics::GetInstance().Update();
+
+	//// カリング方向の反転
+	//for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
+	//{
+	//	MV1SetMeshBackCulling(modelH, i, DX_CULLING_RIGHT);
+	//}
+	//SetUseVertexShader(outlineVsH);
+	//SetUsePixelShader(outlinePsH);
+	//MV1DrawModel(modelH);
+	//// カリング方向を元に戻す
+	//for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
+	//{
+	//	MV1SetMeshBackCulling(modelH, i, DX_CULLING_LEFT);
+	//}
+
+#if false
+		//MV1SetRotationXYZ(modelH, VGet(0, angle, 0));
+		//MV1SetPosition(modelH, VGet(100.0f, 50.0f, 300.0f));
+		//MV1DrawModel(modelH);
+	SetDrawScreen(RT2);
+	ClearDrawScreen();
+	GraphFilterBlt(RT, blurRT, DX_GRAPH_FILTER_GAUSS, 8, 1400);
+	GraphFilterBlt(blurRT, shrinkRT, DX_GRAPH_FILTER_DOWN_SCALE, 2);
+	GraphFilter(shrinkRT, DX_GRAPH_FILTER_GAUSS, 8, 1400);
+	//// 通常描画
+	//DrawGraph(0, 0, RT, true);
+	//// ぼかし描画
+	//DrawGraph(0, 0, blurRT, true);
+	//// 深度を描画
+	//DrawExtendGraph(0, 0, 160, 120, depthRT, false);
+	SetRenderTargetToShader(1, outlineRT);
+	MyEngine::DrawGraph(0, 0, RT, postEffectH, blurRT, depthRT, normRT, true);
+
+	SetRenderTargetToShader(1, -1);
+
+	SetUseTextureToShader(0, -1);		// テクスチャの解除
+	SetUseTextureToShader(1, -1);		// テクスチャの解除
+	SetUseTextureToShader(2, -1);		// テクスチャの解除
+	SetUseTextureToShader(3, -1);		// テクスチャの解除
+
+	SetDrawScreen(DX_SCREEN_BACK);
+	ClearDrawScreen();
+	GraphFilterBlt(outlineRT, blurRT, DX_GRAPH_FILTER_GAUSS, 8, 1400);
+	GraphFilterBlt(blurRT, shrinkRT, DX_GRAPH_FILTER_DOWN_SCALE, 2);
+	GraphFilter(shrinkRT, DX_GRAPH_FILTER_GAUSS, 8, 1400);
+
+	DrawGraph(0, 0, RT2, true);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	DrawGraph(0, 0, outlineRT, true);
+	DrawGraph(0, 0, blurRT, true);
+	DrawGraph(0, 0, blurRT, true);
+	DrawExtendGraph(0, 0, 640, 480, shrinkRT, true);
+	DrawExtendGraph(0, 0, 640, 480, shrinkRT, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+#endif
+
+
 
 
 }
 
 void GameManager::Draw()
 {
+	planet->Draw();
+	player->Draw();
+	SetRenderTargetToShader(1, -1);		// RTの解除
+	SetRenderTargetToShader(2, -1);		// RTの解除
 
-	
 }

@@ -5,6 +5,7 @@ class Planet : public MyEngine::Collidable
 {
 public:
 	Planet();
+	Planet(int modelHandle);
 	virtual ~Planet();
 
 	virtual void Init();

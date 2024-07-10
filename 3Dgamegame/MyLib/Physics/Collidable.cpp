@@ -1,5 +1,6 @@
 #include "Collidable.h"
 #include "ColliderSphere.h"
+#include<cassert>
 
 using namespace MyEngine;
 
@@ -7,6 +8,8 @@ Collidable::Collidable(Priority priority, ObjectTag tag) :
 	m_priority(priority),
 	m_tag(tag)
 {
+	m_rigid.SetGravity(0);
+	
 }
 
 Collidable::~Collidable()
@@ -32,4 +35,42 @@ std::shared_ptr<ColliderBase> MyEngine::Collidable::AddCollider(const ColliderBa
 	}
 
 	return collider;
+}
+/// <summary>
+/// 当たり判定を無視（スルー）するタグの追加
+/// </summary>
+void Collidable::AddThroughTag(ObjectTag tag)
+{
+	bool found = (std::find(throughTags.begin(), throughTags.end(), tag) != throughTags.end());
+	if (found)
+	{
+		assert(0 && "指定タグは既に追加されています");
+	}
+	else
+	{
+		throughTags.emplace_back(tag);
+	}
+}
+
+/// <summary>
+/// 当たり判定を無視（スルー）するタグの削除
+/// </summary>
+void Collidable::RemoveThroughTag(ObjectTag tag)
+{
+	bool found = (std::find(throughTags.begin(), throughTags.end(), tag) != throughTags.end());
+	if (!found)
+	{
+		assert(0 && "指定タグは存在しません");
+	}
+	else
+	{
+		throughTags.remove(tag);
+	}
+}
+
+// 当たり判定を無視（スルー）する対象かどうか
+bool Collidable::IsThroughTarget(const std::shared_ptr<Collidable> target) const
+{
+	bool found = (std::find(throughTags.begin(), throughTags.end(), target->GetTag()) != throughTags.end());
+	return found;
 }

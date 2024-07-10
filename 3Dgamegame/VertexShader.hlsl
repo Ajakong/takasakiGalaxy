@@ -8,6 +8,10 @@ struct VS_INPUT
     float4 Specular : COLOR1; // スペキュラカラー
     float4 TexCoords0 : TEXCOORD0; // テクスチャ座標
     float4 TexCoords1 : TEXCOORD1; // サブテクスチャ座標
+    
+    //法線あり
+    float3 Tangent : TANGENT; //接線ベクトル
+    float3 Binormal : BINORMAL; //従法線ベクトル
 };
 
 // 頂点シェーダーの出力
@@ -15,7 +19,9 @@ struct VS_OUTPUT
 {
     float4 Diffuse : COLOR0; // ディフューズカラー
     float4 Specular : COLOR1; // スペキュラカラー
-    float3 Normal : NORMAL;//法線
+    float3 Normal : NORMAL;
+    float3 Tangent : TANGENT; //接線ベクトル
+    float3 Binormal : BINORMAL; //従法線ベクトル
     float2 TexCoords0 : TEXCOORD0; // テクスチャ座標
     float4 svPosition : SV_POSITION; // 座標( プロジェクション空間 )    // Pと同様
     float4 Position : POSITION0; // 座標( ワールド空間 )                // 
@@ -105,6 +111,8 @@ VS_OUTPUT main(VS_INPUT VSInput)
     lLocalNormal.w = 0.0f;
     VSOutput.Normal = mul(lLocalNormal, g_Base.LocalWorldMatrix);
     VSOutput.Normal = normalize(VSOutput.Normal);
+    VSOutput.Tangent = normalize(mul(float4(VSInput.Tangent, 0.0f), g_Base.LocalWorldMatrix));
+    VSOutput.Binormal = normalize(mul(float4(VSInput.Binormal, 0.0f), g_Base.LocalWorldMatrix));
 	// 出力パラメータを返す
     return VSOutput;
 }
