@@ -92,7 +92,7 @@ void MyEngine::Physics::MoveNextPos() const
             for (const auto& obj : m_collidables)
             {
                 auto planet = dynamic_cast<Planet*>(item.get());
-                obj->m_rigid.SetVelocity(planet->GravityEffect(obj));
+                obj->m_rigid.AddVelocity(planet->GravityEffect(obj));
             }
 
         }

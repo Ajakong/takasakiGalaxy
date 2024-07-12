@@ -8,7 +8,6 @@ Collidable::Collidable(Priority priority, ObjectTag tag) :
 	m_priority(priority),
 	m_tag(tag)
 {
-	m_rigid.SetGravity(0);
 	
 }
 
