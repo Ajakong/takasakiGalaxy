@@ -3,8 +3,8 @@
 
 namespace
 {
-	constexpr float kGroundRadius = 100;
-	constexpr float  kGravityRange = 150;
+	constexpr float kGroundRadius = 500;
+	constexpr float  kGravityRange = 1500;
 
 }
 
@@ -19,6 +19,7 @@ SpherePlanet::SpherePlanet():Planet()
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//ƒ}ƒbƒv‚Ì“–‚½‚è”»’è
 	auto item2 = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item2->radius = kGroundRadius;
+	m_rigid.SetPos(Vec3(0, -500, 0));
 }
 
 SpherePlanet::~SpherePlanet()
