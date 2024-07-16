@@ -52,16 +52,18 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒv
 	Vec3 toObj= m_rigid.GetPos()-objPos;
 	toObj=toObj.GetNormalized();
 
-	//float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
-	//float angleZ= DX_PI_F / 2 + atan2(toObj.y, toObj.z);
-	//ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };
-	//ansVelocity += toObj*objVelocity.y;//ƒvƒŒƒCƒ„[‚ÌƒWƒƒƒ“ƒv•ª‚ÌƒxƒNƒgƒ‹‚Ì‰ÁZ
+	float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
+	float angleZ= DX_PI_F / 2 + atan2(toObj.y, toObj.z);
+	ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };
+	ansVelocity += toObj*objVelocity.y;//ƒvƒŒƒCƒ„[‚ÌƒWƒƒƒ“ƒv•ª‚ÌƒxƒNƒgƒ‹‚Ì‰ÁZ
 
-	///*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
-	//ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
-	//ansVelocity = ANSVECTOR;*/
-	////ansVelocity -= toObj;
-	//return ansVelocity;
+	ansVelocity += toObj * kGravityPower;
+	DrawFormatString(0, 0, 0xffffff, "%f,%f,%f", ansVelocity.x, ansVelocity.y, ansVelocity.z);
+	/*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
+	ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
+	ansVelocity = ANSVECTOR;*/
+	//ansVelocity -= toObj;
+	return ansVelocity;
 	
 	//d—Í‚Ì‚İ
 	toObj = toObj * gravityPower;
