@@ -72,7 +72,6 @@ void Player::Update()
 	}
 	else
 	{
-		m_colliders.push_back(AddCollider(MyEngine::ColliderBase::Kind::Sphere));
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.front());
 		item->radius = m_radius;
 	}
@@ -222,17 +221,13 @@ void Player::NeutralUpdate()
 	auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);
 	m_rigid.SetVelocity(move);
+
 	//プレイヤーの最大移動速度は0.01f/frame
-
-	
-
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
 		m_radius = 0;
 		m_playerUpdate = &Player::AvoidUpdate;
 	}
-
-	
 }
 
 void Player::WalkingUpdate()

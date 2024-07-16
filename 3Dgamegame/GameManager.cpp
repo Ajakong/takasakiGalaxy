@@ -7,8 +7,7 @@
 #include<cassert>
 
 GameManager::GameManager() :
-	modelH(MV1LoadModel("Model/Sphere/sphere.mv1")),
-	sphMapH(LoadGraph("Model/room.jpg")),
+	modelH(MV1LoadModel("Player/knight.mv1")),
 	roughH(LoadGraph("Model/Sphere/roughness.png")),
 	metalH(LoadGraph("Model/Sphere/metalness.png")),
 	toonH(LoadGraph("Image/toon01.bmp")),
@@ -31,7 +30,6 @@ GameManager::GameManager() :
 	depthRT(MakeScreen(640, 480))
 {
 	assert(modelH != -1);
-	assert(sphMapH != -1);
 	assert(roughH != -1);
 	assert(metalH != -1);
 	assert(toonH != -1);
@@ -44,7 +42,7 @@ GameManager::GameManager() :
 	camera = std::make_shared<Camera>();
 
 	
-	player = std::make_shared<Player>(MV1LoadModel("Player/knight.mv1"));
+	player = std::make_shared<Player>(modelH);
 	planet = std::make_shared<SpherePlanet>();
 }
 
@@ -54,6 +52,9 @@ GameManager::~GameManager()
 
 void GameManager::Init()
 {
+	player->SetMatrix();
+
+
 	// ƒƒbƒVƒ…‚Ì”‚ğæ‚Á‚Ä‚­‚é
 	auto meshNum = MV1GetMeshNum(modelH);
 
