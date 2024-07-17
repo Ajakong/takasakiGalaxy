@@ -11,5 +11,6 @@ public:
 	virtual void Draw();
 
 	virtual Vec3 GravityEffect(std::shared_ptr<Collidable> obj);
+	virtual Vec3 GetNormVec(Vec3 pos);
 };
 

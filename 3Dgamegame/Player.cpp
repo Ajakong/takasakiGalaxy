@@ -79,7 +79,6 @@ void Player::Update()
 
 void Player::SetMatrix()
 {
-	
 	//カメラのいる角度から
 	//コントローラーによる移動方向を決定する
 	MATRIX mtx;

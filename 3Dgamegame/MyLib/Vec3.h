@@ -15,6 +15,7 @@ public:
 	Vec3(float inX, float inY, float inZ);
 	Vec3(DxLib::VECTOR vec);
 	static Vec3 Up();
+	static Vec3 Zero();
 
 	/* ‰‰ŽZ */
 	Vec3 operator+(const Vec3& val) const;
@@ -27,7 +28,6 @@ public:
 	void operator/=(float scale);
 	bool operator==(const Vec3& val) const;
 	bool operator!=(const Vec3& val) const;
-
 
 
 	// ’·‚³Žæ“¾

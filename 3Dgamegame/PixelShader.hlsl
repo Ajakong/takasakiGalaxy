@@ -69,7 +69,9 @@ float RandomFromUV(float2 uv)
 
 PS_OUTPUT main(PS_INPUT input) : SV_TARGET
 {
-    
+    PS_OUTPUT demoout;
+    demoout.color = tex.Sample(smp, input.TexCoords0);
+    return demoout;
     float3 nmap = normal.Sample(smp, input.TexCoords0);
     nmap = (nmap * 2.0 - 1.0);
     

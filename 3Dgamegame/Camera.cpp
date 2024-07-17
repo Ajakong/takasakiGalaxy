@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include"Pad.h"
 #include <math.h>
-#include"MyLib/Vec3.h"
+
 
 namespace
 {
@@ -21,12 +21,12 @@ namespace
 Camera::Camera()
 {
 	//âúçs0.1Å`1000Ç‹Ç≈ÇÉJÉÅÉâÇÃï`âÊîÕàÕÇ∆Ç∑ÇÈ
-	SetCameraNearFar(0.1f, 1000.0f);
+	SetCameraNearFar(1.f,500.f);
 
 	// FOV(éãñÏäp)Ç60ìxÇ…
 	SetupCamera_Perspective(60.0f * (static_cast<float>(DX_PI_F) / 180.0f));
 
-	pos = VGet(0, 300, -300.0f);
+	m_pos = { 0,0, -300.0f };
 }
 
 Camera::~Camera()
@@ -34,33 +34,32 @@ Camera::~Camera()
 	// èàóùÇ»Çµ.
 }
 
-void Camera::Update()
+void Camera::Update(Vec3 LookPoint)
 {
+	m_cameraAngle = 0;
 	//if ((GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT))
 	if ((GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_5))
 	{
-		cameraAngle += kcameraRotateSpeed;
+		m_cameraAngle = kcameraRotateSpeed;
 	}
 	if ((GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_6))
 	{
-		cameraAngle -= kcameraRotateSpeed;
+		m_cameraAngle = -kcameraRotateSpeed;
 	}
+	/*Vec3 toVec = m_pos - LookPoint;
+	m_cameraAngle = atan2f(toVec.z, toVec.x);*/
 
 	SetCameraNearFar(kCameraNear, kCameraFar);
-	VECTOR cameraPos;
-
-	float Length = sqrt(pos.x * pos.x + pos.z * pos.z);
-
-
-	cameraPos.x = Length * static_cast<float>(cos(-fmodf(cameraAngle, 360)));
-	cameraPos.z = Length * static_cast<float>(sin(-fmodf(cameraAngle, 360)));
-	cameraPos.y = pos.y;
-	pos = cameraPos;
-
 	
-	SetCameraNearFar(1.0f, 500.0f);
+	float angle = fmodf(m_cameraAngle, 360.f);
+	m_myQ.SetMove(angle, m_upVec);
+	Vec3 zero(0, 0, 0);
+	m_pos =m_myQ.Move(m_pos,zero);
+	
+	SetCameraNearFar(1.f, 500.f);
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraPositionAndTarget_UpVecY(cameraPos, VGet(0, 20, 0));
+	Vec3 vecY = m_upVec * 300;
+	SetCameraPositionAndTargetAndUpVec(VAdd(VAdd(m_pos.VGet(),LookPoint.VGet()) , vecY.VGet()),LookPoint.VGet(), m_upVec.VGet());
 
 	Pad::Update();
 }
@@ -68,6 +67,6 @@ void Camera::Update()
 Vec3 Camera::cameraToPlayer(const Vec3& targetPos)
 {
 
-	Vec3 cameraToPlayer = VGet(sqrt((targetPos.x - pos.x) * (targetPos.x - pos.x)), 0.0f, sqrt((targetPos.z - pos.z) * (targetPos.z - pos.z)));
+	Vec3 cameraToPlayer (sqrt((targetPos.x - m_pos.x) * (targetPos.x - m_pos.x)), 0.0f, sqrt((targetPos.z - m_pos.z) * (targetPos.z - m_pos.z)) );
 	return cameraToPlayer;
 }

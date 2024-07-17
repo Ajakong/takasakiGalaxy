@@ -58,7 +58,6 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒv
 	ansVelocity += toObj*objVelocity.y;//ƒvƒŒƒCƒ„[‚ÌƒWƒƒƒ“ƒv•ª‚ÌƒxƒNƒgƒ‹‚Ì‰ÁZ
 
 	ansVelocity += toObj * kGravityPower;
-	DrawFormatString(0, 0, 0xffffff, "%f,%f,%f", ansVelocity.x, ansVelocity.y, ansVelocity.z);
 	/*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
 	ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
 	ansVelocity = ANSVECTOR;*/
@@ -68,4 +67,11 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒv
 	//d—Í‚Ì‚İ
 	toObj = toObj * gravityPower;
 	return toObj;
+}
+
+Vec3 SpherePlanet::GetNormVec(Vec3 pos)
+{
+	Vec3 norm = pos - m_rigid.GetPos();
+	norm.Normalize();
+	return norm;
 }

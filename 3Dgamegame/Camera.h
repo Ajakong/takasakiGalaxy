@@ -1,11 +1,10 @@
 #pragma once
-#include "DxLib.h"
-#include<iostream>
-
+#include"MyLib/Vec3.h"
+#include"Quaternion.h"
 using namespace std;
 
 class Player;
-class Vec3;
+
 
 class Camera
 {
@@ -13,18 +12,21 @@ public:
 	Camera();							// コンストラクタ.
 	~Camera();							// デストラクタ.
 
-	void Update();	// 更新.
+	void Update(Vec3 LookPoint);	// 更新.
 	Vec3 cameraToPlayer(const Vec3& targetPos);
-	// ポジションのgetter/setter.
-	const VECTOR& GetPos() const { return pos; }
+	
+	const Vec3& GetPos() const { return m_pos; }
 
-	float GetCameraAngle() const { return cameraAngle; }
+	float GetCameraAngle() const { return m_cameraAngle; }
+	void SetUpVec(Vec3 upDir) { m_upVec = upDir; }
 
 private:
-	VECTOR	pos;			// ポジション.
+	Quaternion m_myQ;
+	Vec3	m_pos;			// ポジション.
 
-	float cameraAngle = -DX_PI_F / 2;
-	VECTOR velocity = VGet(0, 0, 0);
-
+	float m_cameraAngle = -DX_PI_F / 2;
+	Vec3 m_velocity;
+	Vec3 m_playerNormVec;
+	Vec3 m_upVec;
 
 };
