@@ -13,6 +13,7 @@ public:
 	~Camera();							// デストラクタ.
 
 	void Update(Vec3 LookPoint);	// 更新.
+	void DebagDraw();
 	Vec3 cameraToPlayer(const Vec3& targetPos);
 	
 	const Vec3& GetPos() const { return m_pos; }
@@ -28,5 +29,8 @@ private:
 	Vec3 m_velocity;
 	Vec3 m_playerNormVec;
 	Vec3 m_upVec;
-
+	/// <summary>
+	/// プレイヤーから見たカメラの位置ベクトル
+	/// </summary>
+	Vec3 m_playerToCameraVec;
 };

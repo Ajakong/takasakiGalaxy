@@ -48,16 +48,21 @@ private:
 
 public:
 
+	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; };
 
-
-	void SetMove(float _angle, Vec3& _axis)
+	void SetMove(float _angle, Vec3 _axis)
 	{
 		Qu.w = cos(_angle / 2.0f);//é¿ïî
 		Qu.x = _axis.x * sin(_angle / 2.0f);
 		Qu.y = _axis.y * sin(_angle / 2.0f);
 		Qu.z = _axis.z * sin(_angle / 2.0f);
 	}
-
+	/// <summary>
+	/// ïΩçsà⁄ìÆ
+	/// </summary>
+	/// <param name="_pos"></param>
+	/// <param name="_vec"></param>
+	/// <returns></returns>
 	Vec3 Move(Vec3& _pos, Vec3& _vec)
 	{
 		Q qPos, qInv;

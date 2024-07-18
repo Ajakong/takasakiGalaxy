@@ -209,6 +209,7 @@ void GameManager::Draw()
 {
 	planet->Draw();
 	player->Draw();
+	camera->DebagDraw();
 	SetRenderTargetToShader(1, -1);		// RT‚Ì‰ğœ
 	SetRenderTargetToShader(2, -1);		// RT‚Ì‰ğœ
 
