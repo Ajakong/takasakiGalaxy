@@ -28,7 +28,7 @@ Camera::Camera()
 
 	m_pos = { 0.0f,300.0f, -100.0f };
 	m_playerToCameraVec = { 0.f,300.f,-100.f };
-	SetCameraPositionAndTarget_UpVecY(VGet(0,500.0f,-500.0f), VGet(0, 0, 0));
+	m_postLookPointPos = { 0,0,0 };
 }
 
 Camera::~Camera()
@@ -36,7 +36,7 @@ Camera::~Camera()
 	// 処理なし.
 }
 
-void Camera::Update(Vec3 LookPoint)
+void Camera::Update(const Vec3 LookPoint)
 {
 	m_cameraAngle = 0;
 	//if ((GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT))
@@ -48,33 +48,57 @@ void Camera::Update(Vec3 LookPoint)
 	{
 		m_cameraAngle = -kcameraRotateSpeed;
 	}
-	Vec3 toVec = m_pos - LookPoint;
-	
+	Vec3 toVec = m_pos;
+	Vec3 right = Vec3::Right();
 	
 	Vec3 zero(0, 0, 0);
-	m_pos = LookPoint;
+	
 	/*float angleZ = DX_PI_F / 2 + atan2(m_upVec.y, m_upVec.z);
 	ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };*/
-	float pitchAngle = fmodf(atan2f(m_upVec.y, m_upVec.z), 360.f);
-	m_myQ.SetQuaternion(m_pos);
-	m_myQ.SetMove(pitchAngle, Vec3::Right());
 	
+	m_myQ.SetQuaternion(m_pos);
+	//m_myQ.SetMove(m_pitchAngle, right);
+	//
+	//m_pos = m_myQ.Move(m_pos, zero);
+	//
+	//m_pos = m_myQ.Move(toVec, zero);
+
 	float yawAngle = fmodf(m_cameraAngle, 360.f);
 	m_myQ.SetMove(yawAngle, m_upVec);
 	
-	m_pos = m_myQ.Move(m_pos, zero);
 
+	Vec3 item = LookPoint;
+	m_pos = m_myQ.Move(m_pos,zero );
 	
 	Vec3 vecY = m_upVec * 300;
-	Vec3 cameraPos = VAdd(VAdd(m_pos.VGet(), LookPoint.VGet()), vecY.VGet());
-	//SetCameraPositionAndTargetAndUpVec(VAdd(m_pos.VGet(), LookPoint.VGet()),LookPoint.VGet(), m_upVec.VGet());
+	Vec3 fowardVec = LookPoint - m_postLookPointPos;
 
+	Vec3 pos = m_upVec*300+LookPoint-fowardVec*200;
+
+	DrawSphere3D(pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
+	SetCameraPositionAndTargetAndUpVec(pos.VGet(), LookPoint.VGet(), m_upVec.VGet());
+	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), pos.VGet());
+
+	//プレイヤーの前ベクトルと法線ベクトルの外積で軸が得られる
+	
+	//Vec3 cross = Cross(fowardVec, m_upVec);
+	//Quaternion q;
+	//q.SetQuaternion(pos);
+	//if (m_upVec.y > 0)
+	//	m_pitchAngle = (fmodf(atan2f(m_upVec.y, m_upVec.z) - m_pitchAngle - DX_PI_F / 2, DX_PI_F * 2)) * DX_PI_F / 360;
+	//else
+	//	m_pitchAngle = (fmodf(atan2f(m_upVec.y, m_upVec.z) - m_pitchAngle + DX_PI_F / 2, DX_PI_F * 2)) * DX_PI_F / 360;
+	//q.SetMove(acosf(Dot(fowardVec, m_upVec) / 1), cross);
+	//pos = q.Move(pos,item);
+	
+	
 	Pad::Update();
+	m_postLookPointPos = LookPoint;
 }
 
 void Camera::DebagDraw()
 {
-	DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff,true);
+	
 }
 
 Vec3 Camera::cameraToPlayer(const Vec3& targetPos)

@@ -97,5 +97,10 @@ public:
 
 		return vPos;
 	}
+
+	Vec3 ToVec3()
+	{
+		return Vec3(Qu.x, Qu.y, Qu.z);
+	}
 };
 

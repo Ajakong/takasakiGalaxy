@@ -18,7 +18,7 @@ namespace
 	constexpr float kAnimChangeRateSpeed = 1.0f / kAnimChangeFrame;
 
 	//アナログスティックによる移動関連
-	constexpr float kMaxSpeed = 10.0f;//プレイヤーの最大速度
+	constexpr float kMaxSpeed = 7.0f;//プレイヤーの最大速度
 	constexpr float kAnalogRangeMin = 0.1f;//アナログスティックの入力判定範囲
 	constexpr float kAnalogRangeMax = 0.8f;
 	constexpr float kAnalogInputMax = 1000.0f;//アナログスティックから入力されるベクトルの最大値
@@ -213,12 +213,12 @@ void Player::NeutralUpdate()
 	move = move.GetNormalized();
 	float speed = kMaxSpeed * rate;
 
-	m_angle = fmodf(m_cameraAngle, 360);//mod:余り　
-	MATRIX rotate = MGetRotY((m_angle)-DX_PI_F / 2);//本来はカメラを行列で制御し、その行列でY軸回転
+	//m_angle = fmodf(m_cameraAngle, 360);//mod:余り　
+	//MATRIX rotate = MGetRotY((m_angle)-DX_PI_F / 2);//本来はカメラを行列で制御し、その行列でY軸回転
 
 	move = move * speed;
-	auto v = VTransform(VGet(move.x, 0, move.z), rotate);
-	move = Vec3(v);
+	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
+	move = Vec3(v);*/
 	m_rigid.SetVelocity(move);
 
 	//プレイヤーの最大移動速度は0.01f/frame

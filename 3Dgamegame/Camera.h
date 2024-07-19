@@ -24,8 +24,9 @@ public:
 private:
 	Quaternion m_myQ;
 	Vec3	m_pos;			// ƒ|ƒWƒVƒ‡ƒ“.
-
+	Vec3 m_postLookPointPos;
 	float m_cameraAngle = -DX_PI_F / 2;
+	float m_pitchAngle;
 	Vec3 m_velocity;
 	Vec3 m_playerNormVec;
 	Vec3 m_upVec;
