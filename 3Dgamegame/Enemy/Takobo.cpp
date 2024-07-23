@@ -27,11 +27,7 @@ void Takobo::Update()
 
 void Takobo::SetMatrix()
 {
-	MATRIX mtx;
-
 	MATRIX moving = MGetTranslate(m_rigid.GetPos().VGet());
-
-	mtx = MMult(mtx, moving);
 
 	MV1SetMatrix(m_handle, moving);
 }

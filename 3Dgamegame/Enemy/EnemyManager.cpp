@@ -4,6 +4,7 @@
 
 EnemyManager::EnemyManager()
 {
+	
 }
 
 EnemyManager::~EnemyManager()
