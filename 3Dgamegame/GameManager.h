@@ -1,10 +1,9 @@
 #pragma once
 #include<iostream>
 
-using namespace std;
-
 class Camera;
-class Physics;
+class Player;
+class Planet;
 
 class GameManager
 {
@@ -19,14 +18,60 @@ public:
 	bool GetClear() { return m_isClearFlag; }
 private:
 
+	struct UserData
+	{
+		float dissolveY;	// ディゾルヴしたい高さ
+		float minY;
+		float maxY;
+		float dummy;
+		float clickedU;
+		float clickedV;
+		float dummy2[2];
+	};
+	int cbuffH = CreateShaderConstantBuffer(sizeof(UserData));
+	UserData* userData = static_cast<UserData*>(GetBufferShaderConstantBuffer(cbuffH));
+
 	std::shared_ptr<Camera> camera;
-	std::shared_ptr<MyEngine::Physics> physics;
 	std::shared_ptr<Player> player;
+	std::shared_ptr<Planet> planet;
 
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
 
+	int modelH ;
 	
+	int sphMapH ;
+	
+	int roughH;
+	
+	int metalH;
+	
+	int toonH;
+	
+	int psH;
+	
+	int vsH;
+	
+	int outlinePsH;
+	
+	int outlineVsH;
+	
+	int dissolveH;
+	
+	int postEffectH;
+	
+	// 通常のRT
+	int RT;
+	int RT2;
+	// アウトラインのRT
+	int outlineRT;
+	// 法線情報のRT
+	int normRT;
+	// ぼかし用RT
+	int blurRT;
+	int shrinkRT;
 
+	
+	int depthRT;
 };
 

@@ -1,56 +1,106 @@
 #pragma once
-#include"MyLib/Vec3.h"
+#include "MyLib/Vec3.h"
+#include <cmath>
 
 class Quaternion
 {
 public:
-    float w;
-    float x;
-    float y;
-    float z;
+	Quaternion()
+	{
+		Qu.w = 1;
+		Qu.x = 0;
+		Qu.y = 0;
+		Qu.z = 0;
+	};
+	Quaternion(float _w, float _x, float _y, float _z)
+	{
+		Qu.w = _w;
+		Qu.x = _x;
+		Qu.y = _y;
+		Qu.z = _z;
+	};
+	virtual ~Quaternion() {}
+
+private:
+	struct Q
+	{
+		float w;
+		float x;
+		float y;
+		float z;
+
+		Q operator * (const Q& _q) const
+		{
+			Q tempQ;
+
+			/*クオータニオンの掛け算*/
+			//公式通りです。
+			tempQ.w = w * _q.w - x * _q.x - y * _q.y - z * _q.z;//実部
+			tempQ.x = w * _q.x + x * _q.w + y * _q.z - z * _q.y;//虚部x
+			tempQ.y = w * _q.y + y * _q.w + z * _q.x - x * _q.z;//虚部y
+			tempQ.z = w * _q.z + z * _q.w + x * _q.y - y * _q.x;//虚部z
+
+			return tempQ;
+		}
+	};
+
+	Q Qu;
 
 public:
-    Quaternion() { w = 0; x = 0; y = 0; z = 0; }
-    Quaternion(float inW, float inX, float inY, float inZ) { w = inW; x = inX, y = inY, z = inZ; }//区別はつける
 
-    Quaternion operator *(Quaternion qua)
-    {
-        Quaternion a;
-        a.w = w * qua.w - x * qua.x - y * qua.y - z * qua.z;//実部
-        a.x = w * qua.x + x * qua.w + y * qua.z - z * qua.y;//虚部x
-        a.y = w * qua.y + y * qua.w + z * qua.x - x * qua.z;//虚部y
-        a.z = w * qua.z + z * qua.w + x * qua.y - y * qua.x;//虚部z
-        return a;
-    }
+	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; };
 
-    Vec3 operator *(Vec3 vec)
-    {
-        Quaternion qPos, qInv, qRot;
-        Vec3 vPos;
+	void SetMove(float _angle, Vec3 _axis)
+	{
+		Qu.w = cos(_angle / 2.0f);//実部
+		Qu.x = _axis.x * sin(_angle / 2.0f);
+		Qu.y = _axis.y * sin(_angle / 2.0f);
+		Qu.z = _axis.z * sin(_angle / 2.0f);
+	}
+	/// <summary>
+	/// 平行移動
+	/// </summary>
+	/// <param name="_pos"></param>
+	/// <param name="_vec"></param>
+	/// <returns></returns>
+	Vec3 Move(Vec3& _pos, Vec3& _vec)
+	{
+		Q qPos, qInv;
+		Vec3 vPos;
 
-        qRot.w = w;
-        qRot.x = x;
-        qRot.z = z;
-        qRot.y = y;
-        //3次元座標をクオータニオンに変換
-        qPos.w = 1.0f;
-        qPos.x = vec.x;
-        qPos.y = vec.y;
-        qPos.z = vec.z;
+		//3次元座標をクオータニオンに変換
+		qPos.w = 1.0f;
+		qPos.x = _pos.x;
+		qPos.y = _pos.y;
+		qPos.z = _pos.z;
 
-        //回転クォータニオンのインバースの作成
-        //逆クォータニオンを出すのは大変なので、
-        //3次元だと同じ値になる共役クオータニオンで作成(虚部だけマイナス反転)
-        qInv = Quaternion(w, -x, -y, -z);
+		//回転クォータニオンのインバースの作成
+		//逆クォータニオンを出すのは大変なので、
+		//3次元だと同じ値になる共役クオータニオンで作成(虚部だけマイナス反転)
+		qInv.w = Qu.w;
+		qInv.x = -Qu.x;
+		qInv.y = -Qu.y;
+		qInv.z = -Qu.z;
 
-        //回転後のクオータニオンの作成
-        qPos = qRot * qPos * qInv; //[回転クオータニオン] * [現在のクオータニオン] * [回転クオータニオンのインバース]
+		//回転後のクオータニオンの作成
+		qPos = Qu * qPos * qInv;
 
-        //３次元座標に戻す
-        vPos.x = qPos.x;
-        vPos.y = qPos.y;
-        vPos.z = qPos.z;
+		//３次元座標に戻す
+		vPos.x = qPos.x;
+		vPos.y = qPos.y;
+		vPos.z = qPos.z;
 
-        return vPos;
-    }
+		// 回転後に移動
+		vPos.x += _vec.x;
+		vPos.y += _vec.y;
+		vPos.z += _vec.z;
+
+		return vPos;
+	}
+
+	Vec3 ToVec3()
+	{
+		return Vec3(Qu.x, Qu.y, Qu.z);
+	}
 };
+

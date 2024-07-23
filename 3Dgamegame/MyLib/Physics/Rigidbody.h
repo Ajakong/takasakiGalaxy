@@ -20,12 +20,16 @@ namespace MyEngine
 		void SetPos(const Vec3& pos) { m_pos = pos; }
 		void SetNextPos(const Vec3& nextPos) { m_nextPos = nextPos; }
 		void SetVelocity(const Vec3& velocity);
+		void AddVelocity(const Vec3& velocity) { m_velocity += velocity; };
+		//void SetGravity(const float& gravity) { m_gravityPower = gravity; }
 
 	private:
 		Vec3 m_pos;
 		Vec3 m_nextPos;
 		Vec3 m_velocity;
 		Vec3 m_dir;
+		//float m_gravityPower;//–œ—Lˆø—Í
+		
 	};
 }
 

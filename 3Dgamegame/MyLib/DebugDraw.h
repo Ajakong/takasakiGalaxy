@@ -1,6 +1,6 @@
 #pragma once
 #include <list>
-#include "Geometry/Vec3.h"
+#include "Vec3.h"
 
 namespace MyEngine
 {

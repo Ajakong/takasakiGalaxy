@@ -18,8 +18,6 @@ namespace
     constexpr int kIconID = 573;
 }
 
-using namespace std;
-
 int MyLoadGraph(const TCHAR* path)
 {
     int handle = LoadGraph(path);
@@ -72,7 +70,7 @@ bool Application::Init()
     SetUseBackCulling(true);
 
 
-    SetWindowText("3DDemo");
+    SetWindowText("Astro Seeker");
     if (DxLib_Init() == -1)
     {
         return false;
@@ -95,7 +93,7 @@ void Application::Run()
 
         LONGLONG time;
 
-
+        
 
         while (ProcessMessage() != -1)
         {
@@ -107,9 +105,6 @@ void Application::Run()
             {
                 ChangeWindowMode(true);
             }
-
-
-
 
 
             sceneManager.Update();
@@ -128,7 +123,6 @@ void Application::Run()
     std::vector<VECTOR> num;
 
 }
-
 
 
 const Size& Application::GetWindowSize() const

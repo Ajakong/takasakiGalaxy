@@ -41,6 +41,14 @@ namespace MyEngine
 		ObjectTag GetTag() const { return m_tag; }
 		Priority GetPriority() const { return m_priority; }
 
+		// 当たり判定を無視（スルー）するタグの追加/削除
+		void AddThroughTag(ObjectTag tag);
+		void RemoveThroughTag(ObjectTag tag);
+		Rigidbody PlanetOnlyGetRigid() { return m_rigid; };
+
+		// 当たり判定を無視（スルー）する対象かどうか
+		bool IsThroughTarget(std::shared_ptr<Collidable>) const;
+
 	protected:
 		std::shared_ptr<ColliderBase> AddCollider(const ColliderBase::Kind& kind);
 
@@ -49,8 +57,10 @@ namespace MyEngine
 		Rigidbody m_rigid;
 		// 当たり判定データ
 		std::list<std::shared_ptr<ColliderBase>> m_colliders;
-
+	
 	private:
+		std::list<ObjectTag>	throughTags;
+
 		ObjectTag m_tag;
 		Priority m_priority;
 	};

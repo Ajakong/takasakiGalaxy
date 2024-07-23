@@ -28,6 +28,21 @@ Vec3 Vec3::Up()
 	return Vec3(0.0f, 1.0f, 0.0f);
 }
 
+Vec3 Vec3::Right()
+{
+	return Vec3(1.0f,0.0f,0.0f);
+}
+
+Vec3 Vec3::Front()
+{
+	return Vec3(0.0f,0.0f,1.0f);
+}
+
+Vec3 Vec3::Zero()
+{
+	return Vec3(0.0f,0.0f,0.0f);
+}
+
 Vec3 Vec3::operator+(const Vec3& val) const
 {
 	return Vec3(x + val.x, y + val.y, z + val.z);
@@ -150,6 +165,8 @@ void Vec3::SetVECTOR(DxLib::VECTOR vec)
 {
 	x = vec.x, y = vec.y, z = vec.z;
 }
+
+
 
 float Dot(const Vec3& item1, const Vec3& item2)
 {

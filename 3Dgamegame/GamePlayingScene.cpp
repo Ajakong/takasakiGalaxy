@@ -22,10 +22,11 @@ namespace
 
 GamePlayingScene::GamePlayingScene(SceneManager& manager) :
 	Scene(manager),
-	m_gameManager(make_shared<GameManager>())
+	m_gameManager(std::make_shared<GameManager>())
 {
 	m_updateFunc = &GamePlayingScene::FadeInUpdate;
 	m_drawFunc = &GamePlayingScene::FadeDraw;
+	m_gameManager->Init();
 }
 
 GamePlayingScene::~GamePlayingScene()

@@ -6,8 +6,6 @@
 
 class GameManager;
 
-using namespace std;
-
 class GamePlayingScene : public Scene
 {
 public:

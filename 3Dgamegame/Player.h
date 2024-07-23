@@ -1,6 +1,7 @@
 #pragma once
 #include "MyLib/Physics/Collidable.h"
 #include"MyLib/Vec3.h"
+
 class Player : public MyEngine::Collidable
 {
 public:
@@ -10,12 +11,15 @@ public:
 	void Init();
 
 	void Update();
+	void SetMatrix();
 	void Draw();
 
 
+	Vec3 GetPos() const { return  m_rigid.GetPos(); }
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 
-	void Hit();
+	float GetRegenerationRange() { return m_regeneRange; }
+	virtual void OnCollideEnter(const Collidable& colider);
 	int WatchHp()const { return m_Hp; }
 
 	void SetCameraAngle(float cameraAngle);
@@ -57,6 +61,17 @@ private:
 	Vec3 GetCameraToPlayer()const;
 
 private:
+	struct UserData
+	{
+		float dissolveY;	// ディゾルヴしたい高さ
+		float minY;
+		float maxY;
+		float dummy;
+		float clickedU;
+		float clickedV;
+		float dummy2[2];
+	};
+
 	int m_Hp;
 	int m_modelHandle = 0;
 
@@ -67,9 +82,10 @@ private:
 	/// </summary>
 	int actionFrame = 0;
 
+	float m_regeneRange;
+	float m_angle;
 	float m_radius = 0;
 
-	Vec3 m_velocity;
 	Vec3 m_cameraToPlayer;
 
 	int m_currentAnimNo;//現在のアニメーション
