@@ -144,6 +144,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ColliderHelper.cpp" />
+    <ClCompile Include="EnemyAccessor.cpp" />
+    <ClCompile Include="Enemy\Enemy.cpp" />
+    <ClCompile Include="Enemy\EnemyAI.cpp" />
+    <ClCompile Include="Enemy\EnemyMover.cpp" />
+    <ClCompile Include="Enemy\Takobo.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
     <ClCompile Include="MyLib\Physics\Collidable.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderBase.cpp" />
@@ -172,6 +178,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColliderHelper.h" />
+    <ClInclude Include="Enemy\Enemy.h" />
+    <ClInclude Include="Enemy\EnemyAccessor.h" />
+    <ClInclude Include="Enemy\EnemyAI.h" />
+    <ClInclude Include="Enemy\EnemyMover.h" />
+    <ClInclude Include="Enemy\Takobo.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
     <ClInclude Include="MyLib\ObjectTag.h" />
     <ClInclude Include="MyLib\Physics\Collidable.h" />

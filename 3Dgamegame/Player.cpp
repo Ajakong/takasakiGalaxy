@@ -4,7 +4,7 @@
 
 namespace
 {
-	constexpr int kNetralRadius = 100;//通常時の当たり半径
+	constexpr int kNetralRadius = 20;//通常時の当たり半径
 
 	//アニメーション番号
 	constexpr int kIdleAnimIndex = 1;

@@ -34,4 +34,5 @@ private:
 	/// プレイヤーから見たカメラの位置ベクトル
 	/// </summary>
 	Vec3 m_playerToCameraVec;
+	Vec3 m_fowardVec;
 };
