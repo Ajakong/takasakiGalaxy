@@ -4,6 +4,7 @@
 #include"MyLib/Physics/Physics.h"
 #include"Player.h"
 #include"SpherePlanet.h"
+#include"Enemy/Takobo.h"
 #include<cassert>
 
 GameManager::GameManager() :
@@ -44,6 +45,7 @@ GameManager::GameManager() :
 	
 	player = std::make_shared<Player>(modelH);
 	planet = std::make_shared<SpherePlanet>();
+	takobo = std::make_shared<Takobo>();
 }
 
 GameManager::~GameManager()
@@ -94,7 +96,7 @@ void GameManager::Init()
 
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
-
+	MyEngine::Physics::GetInstance().Entry(takobo);
 }
 
 void GameManager::Update()
@@ -136,15 +138,20 @@ void GameManager::Update()
 	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
 	camera->Update(player->GetPos());
 	planet->Update();
+
 	player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
 
 	player->SetCameraAngle(camera->GetCameraAngle());
 	player->Update();
+	
+	takobo->Update();
+	
 	userData->dissolveY = player->GetRegenerationRange();
 
 	MyEngine::Physics::GetInstance().Update();
 
 	player->SetMatrix();
+	takobo->SetMatrix();
 	//// ƒJƒŠƒ“ƒO•ûŒü‚Ì”½“]
 	//for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
 	//{
@@ -209,6 +216,7 @@ void GameManager::Draw()
 {
 	planet->Draw();
 	player->Draw();
+	takobo->Draw();
 	camera->DebagDraw();
 	SetRenderTargetToShader(1, -1);		// RT‚Ì‰ğœ
 	SetRenderTargetToShader(2, -1);		// RT‚Ì‰ğœ

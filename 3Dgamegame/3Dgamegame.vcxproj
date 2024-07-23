@@ -147,6 +147,7 @@
     <ClCompile Include="EnemyAccessor.cpp" />
     <ClCompile Include="Enemy\Enemy.cpp" />
     <ClCompile Include="Enemy\EnemyAI.cpp" />
+    <ClCompile Include="Enemy\EnemyManager.cpp" />
     <ClCompile Include="Enemy\EnemyMover.cpp" />
     <ClCompile Include="Enemy\Takobo.cpp" />
     <ClCompile Include="Event.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Enemy\Enemy.h" />
     <ClInclude Include="Enemy\EnemyAccessor.h" />
     <ClInclude Include="Enemy\EnemyAI.h" />
+    <ClInclude Include="Enemy\EnemyManager.h" />
     <ClInclude Include="Enemy\EnemyMover.h" />
     <ClInclude Include="Enemy\Takobo.h" />
     <ClInclude Include="Event.h" />
