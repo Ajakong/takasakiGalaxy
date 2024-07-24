@@ -150,6 +150,8 @@ void GameManager::Update()
 
 	MyEngine::Physics::GetInstance().Update();
 
+	camera->SetCameraPos(player->GetPos());
+
 	player->SetMatrix();
 	takobo->SetMatrix();
 	//// ƒJƒŠƒ“ƒO•ûŒü‚Ì”½“]

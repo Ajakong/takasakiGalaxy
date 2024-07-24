@@ -218,6 +218,7 @@ void MyEngine::Physics::CheckCollide()
 		if (isCheck && checkCount > CHECK_COUNT_MAX)
 		{
 			printfDx("‹K’è”(%d)‚ð’´‚¦‚Ü‚µ‚½", CHECK_COUNT_MAX);
+			break;
 		}
 	}
 }

@@ -1,5 +1,7 @@
 #pragma once
+#include <memory>
 #include<list>
+
 class Colidable;
 class Enemy;
 
@@ -10,6 +12,6 @@ public:
 
 	virtual ~EnemyManager();
 private:
-	std::list<std::shared_ptr<Enemy>>m_enemies;
+	std::list<std::shared_ptr<Enemy>> m_enemies;
 };
 
