@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "SceneManager.h"
 #include "GamePlayingScene.h"
+#include"GameOverScene.h"
 #include<iostream>
 #include<vector>
 #include"Game.h"

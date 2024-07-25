@@ -6,17 +6,23 @@
 #include"GamePlayingScene.h"
 #include "TitleScene.h"
 #include"Pad.h"
+namespace
+{
+	const char* const kModekHandlePath = "Player/jump_Falling.mv1";
+}
 
 
 GameOverScene::GameOverScene(SceneManager& mgr) :
 	Scene(mgr),
-	m_fadeSoundFrame(200)
+	m_fadeSoundFrame(200),
+	m_modelHandle(MV1LoadModel(kModekHandlePath)),
+	m_handleVelo(0,0,0)
 {
 	m_frame = 60;
 	m_updateFunc = &GameOverScene::FadeInUpdate;
 	m_drawFunc = &GameOverScene::FadeDraw;
 
-
+	SetCameraPositionAndTarget_UpVecY(VGet(0,30,-500), VGet(0, 0, 0));
 
 
 }
@@ -54,7 +60,14 @@ void GameOverScene::FadeInUpdate()
 
 void GameOverScene::NormalUpdate()
 {
+
 	m_btnFrame++;
+	
+
+	MV1SetPosition(m_modelHandle,m_handleVelo.VGet());
+	MV1SetScale(m_modelHandle, VGet(0.1f, 0.1f, 0.1f));
+	MV1SetRotationXYZ(m_modelHandle, VGet(0, DX_PI_F / 2,0));
+
 	if (Pad::IsTrigger(PAD_INPUT_1))
 	{
 		m_updateFunc = &GameOverScene::FadeOutUpdate;
@@ -76,7 +89,7 @@ void GameOverScene::FadeOutUpdate()
 	m_frame++;
 	m_fadeSoundFrame -= 3;
 
-
+	
 	if (60 <= m_frame)
 	{
 
@@ -123,6 +136,10 @@ void GameOverScene::FadeDraw()
 
 void GameOverScene::NormalDraw()
 {
+
+	MV1DrawModel(m_modelHandle);
+
+
 	DrawString(1000, 500, "Continue", 0xffffff);
 	DrawString(1000, 600, "To Title", 0xffffff);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
@@ -135,6 +152,7 @@ void GameOverScene::NormalDraw()
 		DrawBox(950, 570, 1200, 630, 0xffffff, true);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 
 	auto& app = Application::GetInstance();
 	auto size = app.GetWindowSize();

@@ -1,7 +1,9 @@
 #pragma once
 #include "Scene.h"
+#include"MyLib//Vec3.h"
 
 class GamePlayingScene;
+class Player;
 
 class GameOverScene : public Scene
 {
@@ -22,11 +24,9 @@ private:
 
     int m_selectNumber = 0;
 
+    int m_modelHandle = -1;
 
-
-
-
-
+    Vec3 m_handleVelo;
     // メンバ関数ポインタの宣言
     using UpdateFunc_t = void (GameOverScene::*)();
     using DrawFunc_t = void (GameOverScene::*)();

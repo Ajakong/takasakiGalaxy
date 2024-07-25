@@ -68,9 +68,9 @@ namespace MyEngine
 		indces = { 0,1,3,0,3,2 };
 
 		return DrawPrimitiveIndexed2DToShader(vertices.data(),			//アドレス
-			vertices.size(),			//頂点数
+			static_cast<int>(vertices.size()),			//頂点数
 			indces.data(),
-			indces.size(),
+			static_cast<int>(indces.size()),
 			DX_PRIMTYPE_TRIANGLELIST);//トポロジ－
 	}
 }

@@ -139,6 +139,7 @@ void GameManager::Update()
 	camera->Update(player->GetPos());
 	planet->Update();
 
+	player->SetNormVec(planet->GetNormVec(player->GetPos()));
 	player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
 
 	player->SetCameraAngle(camera->GetCameraAngle());
@@ -209,7 +210,10 @@ void GameManager::Update()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 #endif
 
-
+	if (player->GetHp() <= 0)
+	{
+		m_isGameOverFlag = true;
+	}
 
 
 }

@@ -16,6 +16,8 @@ namespace
 	constexpr float kCameraFOV = 60.0f;
 
 	constexpr float kcameraRotateSpeed = 0.05f;
+
+	constexpr float kOneRapAngle = 360.f;
 }
 
 Camera::Camera()
@@ -37,7 +39,7 @@ Camera::~Camera()
 	// èàóùÇ»Çµ.
 }
 
-void Camera::Update(const Vec3 LookPoint)
+void Camera::Update(Vec3 LookPoint)
 {
 	m_setCameraPos = &Camera::SetCameraThirdPersonPos;
 
@@ -135,7 +137,10 @@ void Camera::Update(const Vec3 LookPoint)
 	{
 		m_fowardVec = LookPoint - m_postLookPointPos;
 	}
-	m_pos = m_upVec * 300 + LookPoint - m_fowardVec * 100;
+	m_pos = LookPoint;
+
+	m_pos += m_upVec * 300 + LookPoint - m_fowardVec * 100;
+	
 
 	/*DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
 	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(), LookPoint.VGet(), m_upVec.VGet());*/
