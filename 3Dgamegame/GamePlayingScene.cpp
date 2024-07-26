@@ -27,6 +27,8 @@ GamePlayingScene::GamePlayingScene(SceneManager& manager) :
 	m_updateFunc = &GamePlayingScene::FadeInUpdate;
 	m_drawFunc = &GamePlayingScene::FadeDraw;
 	m_gameManager->Init();
+
+	SetUseASyncLoadFlag(true);
 }
 
 GamePlayingScene::~GamePlayingScene()
@@ -103,6 +105,7 @@ void GamePlayingScene::FadeOutUpdate()
 
 void GamePlayingScene::ChangeScene(std::shared_ptr<Scene> nextScene)
 {
+
 	m_manager.ChangeScene(nextScene);
 }
 

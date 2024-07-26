@@ -1,4 +1,6 @@
 #include"DxLib.h"
+// EffekseerForDXLib.hをインクルードします。
+#include "EffekseerForDXLib.h"
 #include "GameManager.h"
 #include"Camera.h"
 #include"MyLib/Physics/Physics.h"
