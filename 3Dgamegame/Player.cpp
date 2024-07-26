@@ -99,7 +99,7 @@ void Player::Draw()
 {
 	if (m_visibleCount % 5 == 0)
 	{
-		//MV1DrawModel(m_modelHandle);
+		MV1DrawModel(m_modelHandle);
 	}
 
 	MakeShadowMap(50, 50);

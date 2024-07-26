@@ -138,10 +138,11 @@ void Camera::Update(Vec3 LookPoint)
 		m_fowardVec = LookPoint - m_postLookPointPos;
 	}
 	m_pos = LookPoint;
+	m_fowardVec = m_fowardVec.GetNormalized();
 
 	m_pos += m_upVec * 300 + LookPoint - m_fowardVec * 100;
 	
-
+	DrawFormatString(0, 0, 0xffffff, "pos:%f,%f,%f", m_pos.x, m_pos.y, m_pos.z);
 	/*DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
 	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(), LookPoint.VGet(), m_upVec.VGet());*/
 

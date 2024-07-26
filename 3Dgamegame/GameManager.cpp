@@ -101,9 +101,9 @@ void GameManager::Init()
 
 void GameManager::Update()
 {
-	/*FillGraph(depthRT, 0, 0, 0, 0);
+	FillGraph(depthRT, 0, 0, 0, 0);
 	FillGraph(shrinkRT, 0, 0, 0, 0);
-	FillGraph(normRT, 0, 0, 0, 0);*/
+	FillGraph(normRT, 0, 0, 0, 0);
 
 	for (int x = -50; x <= 50; x += 10)
 	{
@@ -113,27 +113,27 @@ void GameManager::Update()
 	{
 		DrawLine3D(VGet(-50, 0, static_cast<float>(z)), VGet(50, 0, static_cast<float>(z)), 0xff0000);
 	}
-	//// 使用するシェーダをセットしておく
-	//SetUseVertexShader(vsH);
-	//SetUsePixelShader(psH);
+	// 使用するシェーダをセットしておく
+	SetUseVertexShader(vsH);
+	SetUsePixelShader(psH);
 
-	//UpdateShaderConstantBuffer(cbuffH);
-	//SetShaderConstantBuffer(cbuffH, DX_SHADERTYPE_PIXEL, 4);
+	UpdateShaderConstantBuffer(cbuffH);
+	SetShaderConstantBuffer(cbuffH, DX_SHADERTYPE_PIXEL, 4);
 
-	//// シェーダーやってる部分
-	//SetUseTextureToShader(3, dissolveH);
-	//SetUseTextureToShader(4, sphMapH);
-	//SetUseTextureToShader(5, roughH);
-	//SetUseTextureToShader(6, metalH);
-	//SetUseTextureToShader(7, toonH);
-	////		SetRenderTargetToShader(0, RT);	// 0番にRTを設定
-	//SetRenderTargetToShader(1, depthRT);
-	//SetRenderTargetToShader(2, normRT);
+	// シェーダーやってる部分
+	SetUseTextureToShader(3, dissolveH);
+	SetUseTextureToShader(4, sphMapH);
+	SetUseTextureToShader(5, roughH);
+	SetUseTextureToShader(6, metalH);
+	SetUseTextureToShader(7, toonH);
+	//		SetRenderTargetToShader(0, RT);	// 0番にRTを設定
+	SetRenderTargetToShader(1, depthRT);
+	SetRenderTargetToShader(2, normRT);
 
-	//MV1SetUseOrigShader(true);
+	MV1SetUseOrigShader(true);
 
-	// カメラの設定
-	// RTを設定するとカメラの初期化が入ってるかもなので、RTの設定後にカメラの設定を行う
+	/* カメラの設定
+	 RTを設定するとカメラの初期化が入ってるかもなので、RTの設定後にカメラの設定を行う*/
 	
 	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
 	camera->Update(player->GetPos());
@@ -155,19 +155,19 @@ void GameManager::Update()
 
 	player->SetMatrix();
 	takobo->SetMatrix();
-	//// カリング方向の反転
-	//for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
-	//{
-	//	MV1SetMeshBackCulling(modelH, i, DX_CULLING_RIGHT);
-	//}
-	//SetUseVertexShader(outlineVsH);
-	//SetUsePixelShader(outlinePsH);
-	//MV1DrawModel(modelH);
-	//// カリング方向を元に戻す
-	//for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
-	//{
-	//	MV1SetMeshBackCulling(modelH, i, DX_CULLING_LEFT);
-	//}
+	// カリング方向の反転
+	for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
+	{
+		MV1SetMeshBackCulling(modelH, i, DX_CULLING_RIGHT);
+	}
+	SetUseVertexShader(outlineVsH);
+	SetUsePixelShader(outlinePsH);
+	MV1DrawModel(modelH);
+	// カリング方向を元に戻す
+	for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
+	{
+		MV1SetMeshBackCulling(modelH, i, DX_CULLING_LEFT);
+	}
 
 #if false
 		//MV1SetRotationXYZ(modelH, VGet(0, angle, 0));
