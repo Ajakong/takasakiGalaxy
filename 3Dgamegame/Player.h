@@ -19,10 +19,6 @@ public:
 	int GetHp() { return m_Hp; }
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 
-
-	void SetNormVec(Vec3 norm) { m_normVec = norm; }
-
-
 	float GetRegenerationRange() { return m_regeneRange; }
 	virtual void OnCollideEnter(const Collidable& colider);
 	int WatchHp()const { return m_Hp; }
@@ -92,7 +88,6 @@ private:
 	float m_radius = 0;
 
 	Vec3 m_cameraToPlayer;
-	Vec3 m_normVec;
 
 	int m_currentAnimNo;//現在のアニメーション
 	int m_prevAnimNo;//変更前のアニメーション

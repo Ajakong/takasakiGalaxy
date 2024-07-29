@@ -103,10 +103,10 @@ void TitleScene::FadeDraw()
 
 void TitleScene::NormalDraw()
 {
-	DrawFormatString(0, 0, 0xffffff, "TitleScene");
+	DrawFormatString(0, 0, 0xffffff, L"TitleScene");
 
 	DrawRotaGraph(800, 450, 1, 0, m_titleHandle, true);
 
 	//DrawString(10, 100, "TitleScene", 0xffffff);
-	DrawFormatString(730, 650, 0xffffff, "Push Z to Start");
+	DrawFormatString(730, 650, 0xffffff, L"Push Z to Start");
 }

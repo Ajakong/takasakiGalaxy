@@ -71,8 +71,8 @@ void ClearScene::FadeOutUpdate()
 
 void ClearScene::FadeDraw()
 {
-	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "Clear");
-	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "タイトルへ");
+	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, L"Clear");
+	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, L"タイトルへ");
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / 60.0f));
 	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
 	DrawBox(0, 0, 2000, 2000, 0x000000, true);
@@ -81,8 +81,8 @@ void ClearScene::FadeDraw()
 
 void ClearScene::NormalDraw()
 {
-	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "Clear");
-	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "タイトルへ");
+	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, L"Clear");
+	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, L"タイトルへ");
 	auto& app = Application::GetInstance();
 	auto size = app.GetWindowSize();
 	int idx = m_btnFrame / 10 % 3;

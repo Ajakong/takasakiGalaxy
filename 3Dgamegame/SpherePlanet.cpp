@@ -58,6 +58,8 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒvŽ
 	ansVelocity += toObj*objVelocity.y;//ƒvƒŒƒCƒ„[‚ÌƒWƒƒƒ“ƒv•ª‚ÌƒxƒNƒgƒ‹‚Ì‰ÁŽZ
 
 	ansVelocity += toObj * kGravityPower;
+	obj->SetReverceGravityVec(toObj.GetNormalized());
+
 	/*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
 	ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
 	ansVelocity = ANSVECTOR;*/

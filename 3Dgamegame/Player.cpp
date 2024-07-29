@@ -26,6 +26,8 @@ namespace
 	constexpr float kFrameParSecond = 60.0f;
 
 	constexpr int kAvoidFrame = 60;
+
+	constexpr int kJumpPower = 50;
 }
 
 
@@ -35,7 +37,11 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_radius(kNetralRadius),
 	m_Hp(50),
 	m_playerUpdate(&Player::StartUpdate),
-	m_regeneRange(0)
+	m_regeneRange(0),
+	m_angle(0),
+	m_animBlendRate(0),
+	m_currentAnimNo(0),
+	m_prevAnimNo(0)
 {
 	m_rigid.SetPos(Vec3(0, 0, 0));
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
@@ -223,7 +229,7 @@ void Player::NeutralUpdate()
 	//プレイヤーの最大移動速度は0.01f/frame
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
-		move += m_normVec;
+		move += m_upVec* kJumpPower;
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
