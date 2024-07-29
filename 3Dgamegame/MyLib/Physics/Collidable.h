@@ -45,6 +45,7 @@ namespace MyEngine
 		void AddThroughTag(ObjectTag tag);
 		void RemoveThroughTag(ObjectTag tag);
 		Rigidbody PlanetOnlyGetRigid() { return m_rigid; };
+		void SetReverceGravityVec(Vec3 gravityReverce) { m_upVec = gravityReverce; }
 
 		// 当たり判定を無視（スルー）する対象かどうか
 		bool IsThroughTarget(std::shared_ptr<Collidable>) const;
@@ -57,6 +58,7 @@ namespace MyEngine
 		Rigidbody m_rigid;
 		// 当たり判定データ
 		std::list<std::shared_ptr<ColliderBase>> m_colliders;
+		Vec3 m_upVec;
 	
 	private:
 		std::list<ObjectTag>	throughTags;

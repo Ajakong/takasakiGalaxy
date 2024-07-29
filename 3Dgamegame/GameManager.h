@@ -4,6 +4,7 @@
 class Camera;
 class Player;
 class Planet;
+class Takobo;
 
 class GameManager
 {
@@ -34,6 +35,7 @@ private:
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Planet> planet;
+	std::shared_ptr<Takobo> takobo;
 
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;

@@ -68,16 +68,16 @@ namespace MyEngine
 		indces = { 0,1,3,0,3,2 };
 
 		return DrawPrimitiveIndexed2DToShader(vertices.data(),			//アドレス
-			vertices.size(),			//頂点数
+			static_cast<int>(vertices.size()),			//頂点数
 			indces.data(),
-			indces.size(),
+			static_cast<int>(indces.size()),
 			DX_PRIMTYPE_TRIANGLELIST);//トポロジ－
 	}
 }
 
 
 // プログラムは WinMain から始まります
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
 	Application& application = Application::GetInstance();
 
 	if (!application.Init())

@@ -18,9 +18,15 @@ public:
 	
 	const Vec3& GetPos() const { return m_pos; }
 
+	void SetCameraPos(Vec3 LookPoint);
+	void SetCameraFirstPersonPos(Vec3 LookPoint);
+	void SetCameraThirdPersonPos(Vec3 LookPoint);
 	float GetCameraAngle() const { return m_cameraAngle; }
 	void SetUpVec(Vec3 upDir) { m_upVec = upDir; }
 
+	//メンバ関数ポインタ
+	using cameraState_t = void(Camera::*)(Vec3 LookPoint);
+	cameraState_t m_setCameraPos;
 private:
 	Quaternion m_myQ;
 	Vec3	m_pos;			// ポジション.

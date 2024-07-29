@@ -25,6 +25,12 @@
     <Filter Include="ソース ファイル\Enemy">
       <UniqueIdentifier>{dc8f0ad0-8af5-4449-af2a-79b8ff4fc1ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\System">
+      <UniqueIdentifier>{22f1c380-6dca-447d-b67c-09717d435bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Enemy\Takobo">
+      <UniqueIdentifier>{5a693aac-96a1-48ab-aae4-fffd290c47ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -121,7 +127,16 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Enemy\Takobo.cpp">
+      <Filter>ソース ファイル\Enemy\Takobo</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemyManager.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemySphere.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="System\AFile.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,8 +236,17 @@
     <ClInclude Include="Event.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy\EnemyManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemySphere.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="Enemy\Takobo.h">
-      <Filter>ソース ファイル\Enemy</Filter>
+      <Filter>ソース ファイル\Enemy\Takobo</Filter>
+    </ClInclude>
+    <ClInclude Include="System\AFile.h">
+      <Filter>ソース ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

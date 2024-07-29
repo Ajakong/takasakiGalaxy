@@ -16,6 +16,8 @@ namespace
 	constexpr float kCameraFOV = 60.0f;
 
 	constexpr float kcameraRotateSpeed = 0.05f;
+
+	constexpr float kOneRapAngle = 360.f;
 }
 
 Camera::Camera()
@@ -37,8 +39,10 @@ Camera::~Camera()
 	// ˆ—‚È‚µ.
 }
 
-void Camera::Update(const Vec3 LookPoint)
+void Camera::Update(Vec3 LookPoint)
 {
+	m_setCameraPos = &Camera::SetCameraThirdPersonPos;
+
 	//m_cameraAngle = 0;
 	////if ((GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_LEFT))
 	//if ((GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_5))
@@ -105,10 +109,12 @@ void Camera::Update(const Vec3 LookPoint)
 	if ((GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_5))
 	{
 		m_cameraAngle = kcameraRotateSpeed;
+		m_setCameraPos = &Camera::SetCameraFirstPersonPos;
 	}
 	if ((GetJoypadInputState(DX_INPUT_KEY_PAD1) & PAD_INPUT_6))
 	{
 		m_cameraAngle = -kcameraRotateSpeed;
+		m_setCameraPos = &Camera::SetCameraFirstPersonPos;
 	}
 	Vec3 toVec = m_pos;
 	Vec3 right = Vec3::Right();
@@ -120,18 +126,25 @@ void Camera::Update(const Vec3 LookPoint)
 	
 	float yawAngle = fmodf(m_cameraAngle, 360.f);
 	m_myQ.SetMove(yawAngle, m_upVec);
+	
 
 
 	Vec3 item = LookPoint;
 	m_pos = m_myQ.Move(m_pos, zero);
 
 	Vec3 vecY = m_upVec * 300;
-	Vec3 fowardVec = LookPoint - m_postLookPointPos;
+	if ((LookPoint - m_postLookPointPos).Length() != 0)
+	{
+		m_fowardVec = LookPoint - m_postLookPointPos;
+	}
+	m_pos = LookPoint;
+	m_fowardVec = m_fowardVec.GetNormalized();
 
-	Vec3 pos = m_upVec * 300 + LookPoint - fowardVec * 200;
-
-	DrawSphere3D(pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
-	SetCameraPositionAndTargetAndUpVec(pos.VGet(), LookPoint.VGet(), m_upVec.VGet());
+	m_pos += m_upVec * 300 + LookPoint - m_fowardVec * 100;
+	
+	DrawFormatString(0, 0, 0xffffff, L"pos:%f,%f,%f", m_pos.x, m_pos.y, m_pos.z);
+	/*DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
+	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(), LookPoint.VGet(), m_upVec.VGet());*/
 
 	Pad::Update();
 	m_postLookPointPos = LookPoint;
@@ -147,4 +160,23 @@ Vec3 Camera::cameraToPlayer(const Vec3& targetPos)
 
 	Vec3 cameraToPlayer (sqrt((targetPos.x - m_pos.x) * (targetPos.x - m_pos.x)), 0.0f, sqrt((targetPos.z - m_pos.z) * (targetPos.z - m_pos.z)) );
 	return cameraToPlayer;
+}
+
+void Camera::SetCameraPos(Vec3 LookPoint)
+{
+	(this->*m_setCameraPos)(LookPoint);
+}
+
+void Camera::SetCameraFirstPersonPos(Vec3 LookPoint)
+{
+	Vec3 target = LookPoint + m_fowardVec.GetNormalized();
+	DrawSphere3D(LookPoint.VGet(), 50, 8, 0xffffff, 0xffffff, true);
+	SetCameraPositionAndTargetAndUpVec(LookPoint.VGet(),target.VGet(), m_upVec.VGet());
+}
+
+void Camera::SetCameraThirdPersonPos(Vec3 LookPoint)
+{
+
+	DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
+	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(), LookPoint.VGet(), m_upVec.VGet());
 }

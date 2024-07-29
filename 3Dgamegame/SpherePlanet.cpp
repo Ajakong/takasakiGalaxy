@@ -3,9 +3,9 @@
 
 namespace
 {
-	constexpr float kGroundRadius = 500;
-	constexpr float  kGravityRange = 1500;
-	constexpr float  kGravityPower = 30;
+	constexpr float kGroundRadius = 1000;
+	constexpr float  kGravityRange = 3000;
+	constexpr float  kGravityPower = 3;
 
 
 }
@@ -58,6 +58,8 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒvŽ
 	ansVelocity += toObj*objVelocity.y;//ƒvƒŒƒCƒ„[‚ÌƒWƒƒƒ“ƒv•ª‚ÌƒxƒNƒgƒ‹‚Ì‰ÁŽZ
 
 	ansVelocity += toObj * kGravityPower;
+	obj->SetReverceGravityVec(toObj.GetNormalized());
+
 	/*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
 	ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
 	ansVelocity = ANSVECTOR;*/

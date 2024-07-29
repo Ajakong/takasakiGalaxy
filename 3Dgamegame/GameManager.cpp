@@ -1,22 +1,25 @@
 #include"DxLib.h"
+// EffekseerForDXLib.hをインクルードします。
+#include "EffekseerForDXLib.h"
 #include "GameManager.h"
 #include"Camera.h"
 #include"MyLib/Physics/Physics.h"
 #include"Player.h"
 #include"SpherePlanet.h"
+#include"Enemy/Takobo.h"
 #include<cassert>
 
 GameManager::GameManager() :
-	modelH(MV1LoadModel("Player/knight.mv1")),
-	roughH(LoadGraph("Model/Sphere/roughness.png")),
-	metalH(LoadGraph("Model/Sphere/metalness.png")),
-	toonH(LoadGraph("Image/toon01.bmp")),
-	psH(LoadPixelShader("PixelShader.pso")),
-	vsH(LoadVertexShader("VertexShader.vso")),
-	outlinePsH(LoadPixelShader("OutlinePS.pso")),
-	outlineVsH(LoadVertexShader("OutlineVS.vso")),
-	dissolveH(LoadGraph("Image/dissolve.png")),
-	postEffectH(LoadPixelShader("PostEffect.pso")),
+	modelH(MV1LoadModel(L"Player/knight.mv1")),
+	roughH(LoadGraph(L"Model/Sphere/roughness.png")),
+	metalH(LoadGraph(L"Model/Sphere/metalness.png")),
+	toonH(LoadGraph(L"Image/toon01.bmp")),
+	psH(LoadPixelShader(L"PixelShader.pso")),
+	vsH(LoadVertexShader(L"VertexShader.vso")),
+	outlinePsH(LoadPixelShader(L"OutlinePS.pso")),
+	outlineVsH(LoadVertexShader(L"OutlineVS.vso")),
+	dissolveH(LoadGraph(L"Image/dissolve.png")),
+	postEffectH(LoadPixelShader(L"PostEffect.pso")),
 	// 通常のRT
 	RT(MakeScreen(640, 480, true)),
 	RT2(MakeScreen(640, 480, true)),
@@ -44,6 +47,7 @@ GameManager::GameManager() :
 	
 	player = std::make_shared<Player>(modelH);
 	planet = std::make_shared<SpherePlanet>();
+	takobo = std::make_shared<Takobo>();
 }
 
 GameManager::~GameManager()
@@ -94,14 +98,14 @@ void GameManager::Init()
 
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
-
+	MyEngine::Physics::GetInstance().Entry(takobo);
 }
 
 void GameManager::Update()
 {
-	/*FillGraph(depthRT, 0, 0, 0, 0);
+	FillGraph(depthRT, 0, 0, 0, 0);
 	FillGraph(shrinkRT, 0, 0, 0, 0);
-	FillGraph(normRT, 0, 0, 0, 0);*/
+	FillGraph(normRT, 0, 0, 0, 0);
 
 	for (int x = -50; x <= 50; x += 10)
 	{
@@ -111,53 +115,60 @@ void GameManager::Update()
 	{
 		DrawLine3D(VGet(-50, 0, static_cast<float>(z)), VGet(50, 0, static_cast<float>(z)), 0xff0000);
 	}
-	//// 使用するシェーダをセットしておく
-	//SetUseVertexShader(vsH);
-	//SetUsePixelShader(psH);
+	// 使用するシェーダをセットしておく
+	SetUseVertexShader(vsH);
+	SetUsePixelShader(psH);
 
-	//UpdateShaderConstantBuffer(cbuffH);
-	//SetShaderConstantBuffer(cbuffH, DX_SHADERTYPE_PIXEL, 4);
+	UpdateShaderConstantBuffer(cbuffH);
+	SetShaderConstantBuffer(cbuffH, DX_SHADERTYPE_PIXEL, 4);
 
-	//// シェーダーやってる部分
-	//SetUseTextureToShader(3, dissolveH);
-	//SetUseTextureToShader(4, sphMapH);
-	//SetUseTextureToShader(5, roughH);
-	//SetUseTextureToShader(6, metalH);
-	//SetUseTextureToShader(7, toonH);
-	////		SetRenderTargetToShader(0, RT);	// 0番にRTを設定
-	//SetRenderTargetToShader(1, depthRT);
-	//SetRenderTargetToShader(2, normRT);
+	// シェーダーやってる部分
+	SetUseTextureToShader(3, dissolveH);
+	SetUseTextureToShader(4, sphMapH);
+	SetUseTextureToShader(5, roughH);
+	SetUseTextureToShader(6, metalH);
+	SetUseTextureToShader(7, toonH);
+	//		SetRenderTargetToShader(0, RT);	// 0番にRTを設定
+	SetRenderTargetToShader(1, depthRT);
+	SetRenderTargetToShader(2, normRT);
 
-	//MV1SetUseOrigShader(true);
+	MV1SetUseOrigShader(true);
 
-	// カメラの設定
-	// RTを設定するとカメラの初期化が入ってるかもなので、RTの設定後にカメラの設定を行う
+	/* カメラの設定
+	 RTを設定するとカメラの初期化が入ってるかもなので、RTの設定後にカメラの設定を行う*/
 	
 	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
 	camera->Update(player->GetPos());
 	planet->Update();
+
 	player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
 
 	player->SetCameraAngle(camera->GetCameraAngle());
 	player->Update();
+	
+	takobo->Update();
+	
 	userData->dissolveY = player->GetRegenerationRange();
 
 	MyEngine::Physics::GetInstance().Update();
 
+	camera->SetCameraPos(player->GetPos());
+
 	player->SetMatrix();
-	//// カリング方向の反転
-	//for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
-	//{
-	//	MV1SetMeshBackCulling(modelH, i, DX_CULLING_RIGHT);
-	//}
-	//SetUseVertexShader(outlineVsH);
-	//SetUsePixelShader(outlinePsH);
-	//MV1DrawModel(modelH);
-	//// カリング方向を元に戻す
-	//for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
-	//{
-	//	MV1SetMeshBackCulling(modelH, i, DX_CULLING_LEFT);
-	//}
+	takobo->SetMatrix();
+	// カリング方向の反転
+	for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
+	{
+		MV1SetMeshBackCulling(modelH, i, DX_CULLING_RIGHT);
+	}
+	SetUseVertexShader(outlineVsH);
+	SetUsePixelShader(outlinePsH);
+	MV1DrawModel(modelH);
+	// カリング方向を元に戻す
+	for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
+	{
+		MV1SetMeshBackCulling(modelH, i, DX_CULLING_LEFT);
+	}
 
 #if false
 		//MV1SetRotationXYZ(modelH, VGet(0, angle, 0));
@@ -200,7 +211,10 @@ void GameManager::Update()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 #endif
 
-
+	if (player->GetHp() <= 0)
+	{
+		m_isGameOverFlag = true;
+	}
 
 
 }
@@ -209,6 +223,7 @@ void GameManager::Draw()
 {
 	planet->Draw();
 	player->Draw();
+	takobo->Draw();
 	camera->DebagDraw();
 	SetRenderTargetToShader(1, -1);		// RTの解除
 	SetRenderTargetToShader(2, -1);		// RTの解除

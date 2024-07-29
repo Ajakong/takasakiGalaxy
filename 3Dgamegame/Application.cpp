@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "SceneManager.h"
 #include "GamePlayingScene.h"
+#include"GameOverScene.h"
 #include<iostream>
 #include<vector>
 #include"Game.h"
@@ -70,7 +71,7 @@ bool Application::Init()
     SetUseBackCulling(true);
 
 
-    SetWindowText("Astro Seeker");
+    SetWindowText(L"Astro Seeker");
     if (DxLib_Init() == -1)
     {
         return false;

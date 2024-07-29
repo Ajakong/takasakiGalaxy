@@ -3,6 +3,7 @@
 enum class ObjectTag
 {
 	Stage,
-	Character,
+	Player,
+	Takobo,
 	Object
 };

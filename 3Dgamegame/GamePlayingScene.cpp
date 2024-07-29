@@ -27,6 +27,8 @@ GamePlayingScene::GamePlayingScene(SceneManager& manager) :
 	m_updateFunc = &GamePlayingScene::FadeInUpdate;
 	m_drawFunc = &GamePlayingScene::FadeDraw;
 	m_gameManager->Init();
+
+	SetUseASyncLoadFlag(true);
 }
 
 GamePlayingScene::~GamePlayingScene()
@@ -103,13 +105,14 @@ void GamePlayingScene::FadeOutUpdate()
 
 void GamePlayingScene::ChangeScene(std::shared_ptr<Scene> nextScene)
 {
+
 	m_manager.ChangeScene(nextScene);
 }
 
 void GamePlayingScene::FadeDraw()
 {
 	m_gameManager->Draw();
-	DrawString(10, 100, "GamePlayingScene", 0xffffff);
+	DrawString(10, 100, L"GamePlayingScene", 0xffffff);
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / kFadeFrameMax));
 	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
@@ -119,6 +122,6 @@ void GamePlayingScene::FadeDraw()
 void GamePlayingScene::NormalDraw()
 {
 	m_gameManager->Draw();
-	DrawString(10, 100, "GamePlayingScene", 0xffffff);
+	DrawString(10, 100, L"GamePlayingScene", 0xffffff);
 	//DrawFormatString(10, 10, 0xffffff, "fps = %2.2f", m_fps);
 }

@@ -16,6 +16,7 @@ public:
 
 
 	Vec3 GetPos() const { return  m_rigid.GetPos(); }
+	int GetHp() { return m_Hp; }
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 
 	float GetRegenerationRange() { return m_regeneRange; }

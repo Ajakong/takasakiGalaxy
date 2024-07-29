@@ -26,16 +26,22 @@ namespace
 	constexpr float kFrameParSecond = 60.0f;
 
 	constexpr int kAvoidFrame = 60;
+
+	constexpr int kJumpPower = 50;
 }
 
 
-Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Character),
+Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_modelHandle(MV1DuplicateModel(modelhandle)),
 	m_anim_move(),
 	m_radius(kNetralRadius),
 	m_Hp(50),
 	m_playerUpdate(&Player::StartUpdate),
-	m_regeneRange(0)
+	m_regeneRange(0),
+	m_angle(0),
+	m_animBlendRate(0),
+	m_currentAnimNo(0),
+	m_prevAnimNo(0)
 {
 	m_rigid.SetPos(Vec3(0, 0, 0));
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
@@ -118,7 +124,10 @@ void Player::SetCameraToPlayer(Vec3 cameraToPlayer)
 
 void Player::OnCollideEnter(const Collidable& colider)
 {
-	printf("aaaaPlayerHit");
+	if (colider.GetTag() == ObjectTag::Takobo)
+	{
+		m_Hp = 0;
+	}
 }
 
 void Player::SetCameraAngle(float cameraAngle)
@@ -217,16 +226,21 @@ void Player::NeutralUpdate()
 	//MATRIX rotate = MGetRotY((m_angle)-DX_PI_F / 2);//本来はカメラを行列で制御し、その行列でY軸回転
 
 	move = move * speed;
+	//プレイヤーの最大移動速度は0.01f/frame
+	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
+	{
+		move += m_upVec* kJumpPower;
+	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
 	m_rigid.SetVelocity(move);
 
 	//プレイヤーの最大移動速度は0.01f/frame
-	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
-	{
-		m_radius = 0;
-		m_playerUpdate = &Player::AvoidUpdate;
-	}
+	//if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
+	//{
+	//	m_radius = 0;
+	//	m_playerUpdate = &Player::AvoidUpdate;
+	//}
 }
 
 void Player::WalkingUpdate()
@@ -239,6 +253,7 @@ void Player::JumpingUpdate()
 
 void Player::HitUpdate()
 {
+
 	//ダメージアニメーションのみ
 	m_playerUpdate = &Player::NeutralUpdate;
 

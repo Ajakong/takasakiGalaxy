@@ -43,7 +43,7 @@ void Collidable::AddThroughTag(ObjectTag tag)
 	bool found = (std::find(throughTags.begin(), throughTags.end(), tag) != throughTags.end());
 	if (found)
 	{
-		assert(0 && "指定タグは既に追加されています");
+		assert(0 && L"指定タグは既に追加されています");
 	}
 	else
 	{
@@ -59,7 +59,7 @@ void Collidable::RemoveThroughTag(ObjectTag tag)
 	bool found = (std::find(throughTags.begin(), throughTags.end(), tag) != throughTags.end());
 	if (!found)
 	{
-		assert(0 && "指定タグは存在しません");
+		assert(0 && L"指定タグは存在しません");
 	}
 	else
 	{
