@@ -43,14 +43,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -176,6 +176,8 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SpherePlanet.cpp" />
     <ClCompile Include="System\AFile.cpp" />
+    <ClCompile Include="System\Model.cpp" />
+    <ClCompile Include="System\ModelLoader.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="WorldTimer.cpp" />
   </ItemGroup>
@@ -214,6 +216,8 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SpherePlanet.h" />
     <ClInclude Include="System\AFile.h" />
+    <ClInclude Include="System\Model.h" />
+    <ClInclude Include="System\ModelLoader.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="WorldTimer.h" />
   </ItemGroup>

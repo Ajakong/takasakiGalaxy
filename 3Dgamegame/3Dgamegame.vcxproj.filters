@@ -31,6 +31,36 @@
     <Filter Include="ソース ファイル\Enemy\Takobo">
       <UniqueIdentifier>{5a693aac-96a1-48ab-aae4-fffd290c47ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Enemy\cpp">
+      <UniqueIdentifier>{ee2ca180-945a-4eb9-974b-50a9eaec6d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Enemy\h">
+      <UniqueIdentifier>{245c0a8c-314e-4a29-8a30-73867eaac103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\MyLib\cpp">
+      <UniqueIdentifier>{2c9d9858-2063-42b5-a5e7-fb07d92d2859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\MyLib\h">
+      <UniqueIdentifier>{70469fb5-341b-4f52-9666-00e9cbc6ff45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\MyLib\Physics\cpp">
+      <UniqueIdentifier>{974d08ae-848a-4255-b9a6-cd758daff084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\MyLib\Physics\h">
+      <UniqueIdentifier>{25dd61ec-7fe9-4db4-a851-2d615cfefba9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\cpp">
+      <UniqueIdentifier>{64ad4fcd-fcc2-4ea8-a7a5-ff4afedce9ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\System\h">
+      <UniqueIdentifier>{cc414c8b-cbf1-4cc6-8d20-8301a5a5b137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Planet\cpp">
+      <UniqueIdentifier>{e0a1347d-8616-4b5c-8d8b-587e594a050f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Planet\h">
+      <UniqueIdentifier>{91136f27-1a5d-4ba5-b3b0-0c26ef5be65a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -69,59 +99,11 @@
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Easing.cpp">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClCompile>
-    <ClCompile Include="Quaternion.cpp">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClCompile>
-    <ClCompile Include="MyLib\Vec3.cpp">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClCompile>
-    <ClCompile Include="MyLib\DebugDraw.cpp">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClCompile>
-    <ClCompile Include="MyLib\Physics\Collidable.cpp">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MyLib\Physics\ColliderBase.cpp">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MyLib\Physics\ColliderCapsule.cpp">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MyLib\Physics\ColliderSphere.cpp">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MyLib\Physics\Physics.cpp">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MyLib\Physics\Rigidbody.cpp">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Planet.cpp">
-      <Filter>ソース ファイル\Planet</Filter>
-    </ClCompile>
-    <ClCompile Include="SpherePlanet.cpp">
-      <Filter>ソース ファイル\Planet</Filter>
-    </ClCompile>
     <ClCompile Include="ColliderHelper.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy\Enemy.cpp">
-      <Filter>ソース ファイル\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyAccessor.cpp">
-      <Filter>ソース ファイル\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy\EnemyAI.cpp">
-      <Filter>ソース ファイル\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy\EnemyMover.cpp">
-      <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>ソース ファイル</Filter>
@@ -129,14 +111,68 @@
     <ClCompile Include="Enemy\Takobo.cpp">
       <Filter>ソース ファイル\Enemy\Takobo</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Enemy\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyAccessor.cpp">
+      <Filter>ソース ファイル\Enemy\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemyAI.cpp">
+      <Filter>ソース ファイル\Enemy\cpp</Filter>
+    </ClCompile>
     <ClCompile Include="Enemy\EnemyManager.cpp">
-      <Filter>ソース ファイル\Enemy</Filter>
+      <Filter>ソース ファイル\Enemy\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemyMover.cpp">
+      <Filter>ソース ファイル\Enemy\cpp</Filter>
     </ClCompile>
     <ClCompile Include="Enemy\EnemySphere.cpp">
-      <Filter>ソース ファイル\Enemy</Filter>
+      <Filter>ソース ファイル\Enemy\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\DebugDraw.cpp">
+      <Filter>ソース ファイル\MyLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Easing.cpp">
+      <Filter>ソース ファイル\MyLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>ソース ファイル\MyLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Vec3.cpp">
+      <Filter>ソース ファイル\MyLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Physics\Collidable.cpp">
+      <Filter>ソース ファイル\MyLib\Physics\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Physics\ColliderBase.cpp">
+      <Filter>ソース ファイル\MyLib\Physics\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Physics\ColliderCapsule.cpp">
+      <Filter>ソース ファイル\MyLib\Physics\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Physics\ColliderSphere.cpp">
+      <Filter>ソース ファイル\MyLib\Physics\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Physics\Physics.cpp">
+      <Filter>ソース ファイル\MyLib\Physics\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Physics\Rigidbody.cpp">
+      <Filter>ソース ファイル\MyLib\Physics\cpp</Filter>
     </ClCompile>
     <ClCompile Include="System\AFile.cpp">
-      <Filter>ソース ファイル\System</Filter>
+      <Filter>ソース ファイル\System\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Model.cpp">
+      <Filter>ソース ファイル\System\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ModelLoader.cpp">
+      <Filter>ソース ファイル\System\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Planet.cpp">
+      <Filter>ソース ファイル\Planet\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SpherePlanet.cpp">
+      <Filter>ソース ファイル\Planet\cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,62 +212,11 @@
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Easing.h">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="Quaternion.h">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\Vec3.h">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\ObjectTag.h">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\DebugDraw.h">
-      <Filter>ソース ファイル\MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\Physics\Collidable.h">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\Physics\ColliderBase.h">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\Physics\ColliderCapsule.h">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\Physics\ColliderSphere.h">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\Physics\Physics.h">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MyLib\Physics\Rigidbody.h">
-      <Filter>ソース ファイル\MyLib\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Planet.h">
-      <Filter>ソース ファイル\Planet</Filter>
-    </ClInclude>
-    <ClInclude Include="SpherePlanet.h">
-      <Filter>ソース ファイル\Planet</Filter>
-    </ClInclude>
     <ClInclude Include="ColliderHelper.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy\Enemy.h">
-      <Filter>ソース ファイル\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy\EnemyAccessor.h">
-      <Filter>ソース ファイル\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy\EnemyAI.h">
-      <Filter>ソース ファイル\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy\EnemyMover.h">
-      <Filter>ソース ファイル\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -245,8 +230,65 @@
     <ClInclude Include="Enemy\Takobo.h">
       <Filter>ソース ファイル\Enemy\Takobo</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy\Enemy.h">
+      <Filter>ソース ファイル\Enemy\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyAccessor.h">
+      <Filter>ソース ファイル\Enemy\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyAI.h">
+      <Filter>ソース ファイル\Enemy\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyMover.h">
+      <Filter>ソース ファイル\Enemy\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\DebugDraw.h">
+      <Filter>ソース ファイル\MyLib\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>ソース ファイル\MyLib\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\ObjectTag.h">
+      <Filter>ソース ファイル\MyLib\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>ソース ファイル\MyLib\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Vec3.h">
+      <Filter>ソース ファイル\MyLib\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Physics\Collidable.h">
+      <Filter>ソース ファイル\MyLib\Physics\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Physics\ColliderBase.h">
+      <Filter>ソース ファイル\MyLib\Physics\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Physics\ColliderCapsule.h">
+      <Filter>ソース ファイル\MyLib\Physics\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Physics\ColliderSphere.h">
+      <Filter>ソース ファイル\MyLib\Physics\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Physics\Physics.h">
+      <Filter>ソース ファイル\MyLib\Physics\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Physics\Rigidbody.h">
+      <Filter>ソース ファイル\MyLib\Physics\h</Filter>
+    </ClInclude>
     <ClInclude Include="System\AFile.h">
-      <Filter>ソース ファイル\System</Filter>
+      <Filter>ソース ファイル\System\h</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Model.h">
+      <Filter>ソース ファイル\System\h</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ModelLoader.h">
+      <Filter>ソース ファイル\System\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Planet.h">
+      <Filter>ソース ファイル\Planet\h</Filter>
+    </ClInclude>
+    <ClInclude Include="SpherePlanet.h">
+      <Filter>ソース ファイル\Planet\h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
