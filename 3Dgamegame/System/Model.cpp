@@ -2,7 +2,7 @@
 #include<DxLib.h>
 
 namespace {
-	VECTOR GetVECTORFromVector3(const Vector3f& v) {
+	VECTOR GetVECTORFromVector3(const Vec3f& v) {
 		return VGet(v.x, v.y, v.z);
 	}
 }
