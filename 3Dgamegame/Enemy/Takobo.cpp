@@ -6,7 +6,7 @@ namespace
 	constexpr float kCollisionRadius = 50.f;
 }
 
-Takobo::Takobo():Enemy(MV1LoadModel(L"../Model/Enemy/bodyeater.mv1"),Priority::Low,ObjectTag::Takobo),
+Takobo::Takobo():Enemy(MV1LoadModel("../Model/Enemy/bodyeater.mv1"),Priority::Low,ObjectTag::Takobo),
 m_position(0,0,100)
 {
 	m_rigid.SetPos(m_position);
