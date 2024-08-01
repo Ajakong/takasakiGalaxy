@@ -159,6 +159,7 @@
     <ClCompile Include="MyLib\Physics\ColliderSphere.cpp" />
     <ClCompile Include="MyLib\Physics\Physics.cpp" />
     <ClCompile Include="MyLib\Physics\Rigidbody.cpp" />
+    <ClCompile Include="MyLib\Rect.cpp" />
     <ClCompile Include="MyLib\Vec3.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="MyLib\Physics\ColliderSphere.h" />
     <ClInclude Include="MyLib\Physics\Physics.h" />
     <ClInclude Include="MyLib\Physics\Rigidbody.h" />
+    <ClInclude Include="MyLib\Rect.h" />
     <ClInclude Include="MyLib\Vec3.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
