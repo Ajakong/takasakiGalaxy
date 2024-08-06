@@ -296,6 +296,9 @@
     <ClInclude Include="MyLib\Rect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="MyLib\Geometry.h">
+      <Filter>ソース ファイル\MyLib\h</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl" />

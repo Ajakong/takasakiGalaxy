@@ -193,6 +193,7 @@
     <ClInclude Include="Enemy\Takobo.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
+    <ClInclude Include="MyLib\Geometry.h" />
     <ClInclude Include="MyLib\ObjectTag.h" />
     <ClInclude Include="MyLib\Physics\Collidable.h" />
     <ClInclude Include="MyLib\Physics\ColliderBase.h" />
