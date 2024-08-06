@@ -1,8 +1,9 @@
 #include "Model.h"
 #include<DxLib.h>
 
+
 namespace {
-	VECTOR GetVECTORFromVector3(const Vec3f& v) {
+	VECTOR GetVECTORFromVector3(const Vec3& v) {
 		return VGet(v.x, v.y, v.z);
 	}
 }
@@ -81,7 +82,7 @@ Model::RotateY(float yrot) {
 ///特定の座標に移動させる
 ///@param pos いるべき座標
 void
-Model::SetPosition(const Position3f& pos) {
+Model::SetPosition(const Vec3& pos) {
 	_pos = pos;
 	DxLib::MV1SetPosition(_handle, GetVECTORFromVector3(_pos));
 }
@@ -89,13 +90,13 @@ Model::SetPosition(const Position3f& pos) {
 ///特定の座標から移動する
 ///@param vel 今の座標からのオフセット
 void
-Model::Move(const Vector3f& vel) {
+Model::Move(const Vec3& vel) {
 	_pos += vel;
 	DxLib::MV1SetPosition(_handle, GetVECTORFromVector3(_pos));
 }
 
 void
-Model::Move(const Vector3f& vel, const RectF& range) {
+Model::Move(const Vec3& vel, const RectF& range) {
 	_pos += vel;
 	_pos.x = min(max(_pos.x, range.Left() + 0.01f), range.Right() - 0.01f);
 	_pos.z = min(max(_pos.z, range.Top()), range.Bottom());
@@ -104,7 +105,7 @@ Model::Move(const Vector3f& vel, const RectF& range) {
 
 
 void
-Model::Move(const Vector3f& vel, const RectF& range, const RectF& pushOutRect) {
+Model::Move(const Vec3& vel, const RectF& range, const RectF& pushOutRect) {
 	auto pos = _pos;
 	_pos += vel;
 	_pos.x = min(max(_pos.x, range.Left() + 0.01f), range.Right() - 0.01f);
