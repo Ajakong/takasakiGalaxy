@@ -8,7 +8,7 @@
 #include"Pad.h"
 namespace
 {
-	const TCHAR* kModekHandlePath = L"Player/jump_Falling.mv1";
+	const TCHAR* kModekHandlePath = "Player/jump_Falling.mv1";
 }
 
 
@@ -115,8 +115,8 @@ void GameOverScene::FadeDraw()
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / 60.0f));
 
 
-	DrawString(1000, 500, L"Continue", 0xffffff);
-	DrawString(1000, 600, L"To Title", 0xffffff);
+	DrawString(1000, 500, "Continue", 0xffffff);
+	DrawString(1000, 600, "To Title", 0xffffff);
 
 	SetDrawBlendMode(DX_BLENDMODE_ADD, alpha / 3);
 	if (m_selectNumber % 2 == 0)
@@ -129,8 +129,8 @@ void GameOverScene::FadeDraw()
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
-	DrawString(1000, 500, L"Continue", 0x000000);
-	DrawString(1000, 600, L"To Title", 0x000000);
+	DrawString(1000, 500, "Continue", 0x000000);
+	DrawString(1000, 600, "To Title", 0x000000);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 

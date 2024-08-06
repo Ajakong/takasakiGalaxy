@@ -1,7 +1,7 @@
 #include "AFile.h"
 #include<DxLib.h>
 #include<cassert>
-AFile::AFile(const wchar_t* path)
+AFile::AFile(const TCHAR* path)
 {
 	m_cursor = 0;
 	int size = FileRead_size(path);

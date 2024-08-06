@@ -50,12 +50,12 @@ public:
 
 	///特定の座標から移動する(制限範囲付き)
 	///@param vel 今の座標からのオフセット
-	void Move(const Vec3& vel, const RectF& range);
+	void Move(const Vec3& vel, const Rect& range);
 
 
 	///特定の座標から移動する(制限範囲および押し出し矩形付き)
 	///@param vel 今の座標からのオフセット
-	void Move(const Vec3& vel, const RectF& range, const RectF& pushOutRect);
+	void Move(const Vec3& vel, const Rect& range, const Rect& pushOutRect);
 
 	///アニメーションをアタッチする
 	///@param animno アニメーション番号

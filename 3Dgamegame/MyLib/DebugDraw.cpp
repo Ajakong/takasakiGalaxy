@@ -44,25 +44,25 @@ void DebugDraw::Gulid() const
     VECTOR dispPos = ConvWorldPosToScreenPos(VGet(200, 0, 0));
     if (dispPos.z >= 0.0f && dispPos.z <= 1.0f)
     {
-        DrawStringF(dispPos.x, dispPos.y, L"X+", 0xffffff);
+        DrawStringF(dispPos.x, dispPos.y, "X+", 0xffffff);
     }
 
     dispPos = ConvWorldPosToScreenPos(VGet(-200, 0, 0));
     if (dispPos.z >= 0.0f && dispPos.z <= 1.0f)
     {
-        DrawStringF(dispPos.x, dispPos.y, L"X-", 0xffffff);
+        DrawStringF(dispPos.x, dispPos.y, "X-", 0xffffff);
     }
 
     dispPos = ConvWorldPosToScreenPos(VGet(0, 0, 200));
     if (dispPos.z >= 0.0f && dispPos.z <= 1.0f)
     {
-        DrawStringF(dispPos.x, dispPos.y, L"Z+", 0xffffff);
+        DrawStringF(dispPos.x, dispPos.y, "Z+", 0xffffff);
     }
 
     dispPos = ConvWorldPosToScreenPos(VGet(0, 0, -200));
     if (dispPos.z >= 0.0f && dispPos.z <= 1.0f)
     {
-        DrawStringF(dispPos.x, dispPos.y, L"Z-", 0xffffff);
+        DrawStringF(dispPos.x, dispPos.y, "Z-", 0xffffff);
     }
 
 }

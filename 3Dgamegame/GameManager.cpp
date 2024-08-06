@@ -10,16 +10,16 @@
 #include<cassert>
 
 GameManager::GameManager() :
-	modelH(MV1LoadModel(L"Player/knight.mv1")),
-	roughH(LoadGraph(L"Model/Sphere/roughness.png")),
-	metalH(LoadGraph(L"Model/Sphere/metalness.png")),
-	toonH(LoadGraph(L"Image/toon01.bmp")),
-	psH(LoadPixelShader(L"PixelShader.pso")),
-	vsH(LoadVertexShader(L"VertexShader.vso")),
-	outlinePsH(LoadPixelShader(L"OutlinePS.pso")),
-	outlineVsH(LoadVertexShader(L"OutlineVS.vso")),
-	dissolveH(LoadGraph(L"Image/dissolve.png")),
-	postEffectH(LoadPixelShader(L"PostEffect.pso")),
+	modelH(MV1LoadModel("Player/knight.mv1")),
+	roughH(LoadGraph("Model/Sphere/roughness.png")),
+	metalH(LoadGraph("Model/Sphere/metalness.png")),
+	toonH(LoadGraph("Image/toon01.bmp")),
+	psH(LoadPixelShader("PixelShader.pso")),
+	vsH(LoadVertexShader("VertexShader.vso")),
+	outlinePsH(LoadPixelShader("OutlinePS.pso")),
+	outlineVsH(LoadVertexShader("OutlineVS.vso")),
+	dissolveH(LoadGraph("Image/dissolve.png")),
+	postEffectH(LoadPixelShader("PostEffect.pso")),
 	// í èÌÇÃRT
 	RT(MakeScreen(640, 480, true)),
 	RT2(MakeScreen(640, 480, true)),
