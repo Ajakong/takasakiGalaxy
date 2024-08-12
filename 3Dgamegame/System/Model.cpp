@@ -1,6 +1,8 @@
 #include "Model.h"
 #include<DxLib.h>
+#include<algorithm>
 
+using namespace std;
 
 namespace {
 	VECTOR GetVECTORFromVector3(const Vec3& v) {
@@ -96,7 +98,7 @@ Model::Move(const Vec3& vel) {
 }
 
 void
-Model::Move(const Vec3& vel, const RectF& range) {
+Model::Move(const Vec3& vel, const Rect& range) {
 	_pos += vel;
 	_pos.x = min(max(_pos.x, range.Left() + 0.01f), range.Right() - 0.01f);
 	_pos.z = min(max(_pos.z, range.Top()), range.Bottom());
@@ -105,7 +107,7 @@ Model::Move(const Vec3& vel, const RectF& range) {
 
 
 void
-Model::Move(const Vec3& vel, const RectF& range, const RectF& pushOutRect) {
+Model::Move(const Vec3& vel, const Rect& range, const Rect& pushOutRect) {
 	auto pos = _pos;
 	_pos += vel;
 	_pos.x = min(max(_pos.x, range.Left() + 0.01f), range.Right() - 0.01f);
@@ -115,18 +117,18 @@ Model::Move(const Vec3& vel, const RectF& range, const RectF& pushOutRect) {
 	//	pushOutRect.Top() <= _pos.z&&_pos.z <= pushOutRect.Bottom()) {//内部にある
 		//外積を用いて交点があるかどうかを計算する…その前に移動ベクトルの向きで交点と交差する可能性のある辺を選別
 		//右成分があれば左の壁。奥成分があれば手前の壁。左成分があれば右の壁。手前成分があれば奥の壁と判定します
-	auto pos2 = Position2f(pos.x, pos.z);
-	auto vec2 = Vector2f(vel.x, vel.z);
+	auto pos2 = Vec2(pos.x, pos.z);
+	auto vec2 = Vec2(vel.x, vel.z);
 	if (vel.z > 0.0f) {//奥成分がある
 		//手前の壁と交差判定
-		if (Cross(Position2f(pushOutRect.Left(), pushOutRect.Top()) - pos2, vec2) * Cross(Position2f(pushOutRect.Right(), pushOutRect.Top()) - pos2, vec2) <= 0) {
+		if (Cross(Vec2(pushOutRect.Left(), pushOutRect.Top()) - pos2, vec2) * Cross(Vec2(pushOutRect.Right(), pushOutRect.Top()) - pos2, vec2) <= 0) {
 			//手前に戻す
 			_pos.z = pushOutRect.Top() - 0.01f;;
 		}
 	}
 	if (vel.x > 0.0f) {//右成分がある
 		//左の壁と交差判定
-		if (Cross(Position2f(pushOutRect.Left(), pushOutRect.Bottom()) - pos2, vec2) * Cross(Position2f(pushOutRect.Left(), pushOutRect.Top()) - pos2, vec2) <= 0) {
+		if (Cross(Vec2(pushOutRect.Left(), pushOutRect.Bottom()) - pos2, vec2) * Cross(Vec2(pushOutRect.Left(), pushOutRect.Top()) - pos2, vec2) <= 0) {
 			//左に戻す
 			_pos.x = pushOutRect.Left() - 0.01f;;
 		}
@@ -134,14 +136,14 @@ Model::Move(const Vec3& vel, const RectF& range, const RectF& pushOutRect) {
 
 	if (vel.x < 0.0f) {//左成分がある
 		//右の壁と交差判定
-		if (Cross(Position2f(pushOutRect.Right(), pushOutRect.Top()) - pos2, vec2) * Cross(Position2f(pushOutRect.Right(), pushOutRect.Bottom()) - pos2, vec2) <= 0) {
+		if (Cross(Vec2(pushOutRect.Right(), pushOutRect.Top()) - pos2, vec2) * Cross(Vec2(pushOutRect.Right(), pushOutRect.Bottom()) - pos2, vec2) <= 0) {
 			//右に戻す
 			_pos.x = pushOutRect.Right() + 0.01f;;
 		}
 	}
 	if (vel.z < 0.0f) {//手前成分がある
 		//奥の壁と交差判定
-		if (Cross(Position2f(pushOutRect.Left(), pushOutRect.Bottom()) - pos2, vec2) * Cross(Position2f(pushOutRect.Right(), pushOutRect.Bottom()) - pos2, vec2) <= 0) {
+		if (Cross(Vec2(pushOutRect.Left(), pushOutRect.Bottom()) - pos2, vec2) * Cross(Vec2(pushOutRect.Right(), pushOutRect.Bottom()) - pos2, vec2) <= 0) {
 			//奥に戻す
 			_pos.z = pushOutRect.Bottom() + 0.01f;;
 		}
@@ -158,7 +160,7 @@ Model::AttachAnimaton(const int animno) {
 }
 
 
-const Position3f&
+const Vec3&
 Model::GetPosition()const {
 	return _pos;
 }

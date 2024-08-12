@@ -140,8 +140,8 @@ void GameOverScene::NormalDraw()
 	MV1DrawModel(m_modelHandle);
 
 
-	DrawString(1000, 500, L"Continue", 0xffffff);
-	DrawString(1000, 600, L"To Title", 0xffffff);
+	DrawString(1000, 500, "Continue", 0xffffff);
+	DrawString(1000, 600, "To Title", 0xffffff);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
 	if (m_selectNumber % 2 == 0)
 	{

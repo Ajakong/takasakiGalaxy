@@ -1,5 +1,5 @@
 #pragma once
-#include"../MyLib/Vec3.h"
+#include"../MyLib/Geometry.h"
 
 
 class Model

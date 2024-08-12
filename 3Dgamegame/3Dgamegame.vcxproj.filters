@@ -174,8 +174,11 @@
     <ClCompile Include="SpherePlanet.cpp">
       <Filter>ソース ファイル\Planet\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="MyLib\Rect.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="MyLib\Vec2.cpp">
+      <Filter>ソース ファイル\MyLib\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Geometry.cpp">
+      <Filter>ソース ファイル\MyLib\cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -293,10 +296,10 @@
     <ClInclude Include="SpherePlanet.h">
       <Filter>ソース ファイル\Planet\h</Filter>
     </ClInclude>
-    <ClInclude Include="MyLib\Rect.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="MyLib\Geometry.h">
+      <Filter>ソース ファイル\MyLib\h</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Vec2.h">
       <Filter>ソース ファイル\MyLib\h</Filter>
     </ClInclude>
   </ItemGroup>
