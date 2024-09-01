@@ -38,7 +38,3 @@ public:
 	Vec2 Normalized()const;
 	
 };
-
-float Cross(const Vec2& lv, const Vec2& rv) {
-	return lv.x * rv.y - lv.y * rv.x;
-}

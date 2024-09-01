@@ -48,7 +48,7 @@ private:
 
 public:
 
-	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; };
+	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; }
 
 	void SetMove(float _angle, Vec3 _axis)
 	{

@@ -13,7 +13,7 @@ namespace MyEngine
 	/// <summary>
 	/// Õ“Ë‚Å‚«‚é‚à‚Ì
 	/// </summary>
-	class Collidable abstract
+	class Collidable : public std::enable_shared_from_this<Collidable>
 	{
 		friend Physics;
 	public:

@@ -4,6 +4,12 @@
 
 using namespace std;
 
+
+float Cross(const Vec2& lv, const Vec2& rv) {
+	return lv.x * rv.y - lv.y * rv.x;
+}
+
+
 namespace {
 	VECTOR GetVECTORFromVector3(const Vec3& v) {
 		return VGet(v.x, v.y, v.z);

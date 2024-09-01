@@ -3,8 +3,8 @@
 
 namespace
 {
-	constexpr float kGroundRadius = 1000;
-	constexpr float  kGravityRange = 3000;
+	constexpr float kGroundRadius = 500;
+	constexpr float  kGravityRange = 1500;
 	constexpr float  kGravityPower = 3;
 
 

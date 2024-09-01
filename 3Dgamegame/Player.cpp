@@ -112,6 +112,7 @@ void Player::Draw()
 
 #if _DEBUG
 	DrawSphere3D(m_rigid.GetPos().VGet(), m_radius, 10, 0x000000, 0x00ffff, false);
+	
 	//printfDx("%d", HitCount);
 #endif
 
