@@ -48,7 +48,8 @@ GameManager::GameManager() :
 	player = std::make_shared<Player>(modelH);
 	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
 	planet2 = std::make_shared<SpherePlanet>(Vec3(1000,0,1000));
-	takobo = std::make_shared<Takobo>(Vec3(300,0,200));
+	takobo = { std::make_shared<Takobo>(Vec3(100,0,200)),std::make_shared<Takobo>(Vec3(-100,0,200)),std::make_shared<Takobo>(Vec3(0,0,300)) };
+	
 }
 
 GameManager::~GameManager()
@@ -100,7 +101,7 @@ void GameManager::Init()
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
 	MyEngine::Physics::GetInstance().Entry(planet2);
-	MyEngine::Physics::GetInstance().Entry(takobo);
+	for(auto& item : takobo)MyEngine::Physics::GetInstance().Entry(item);
 }
 
 void GameManager::Update()
@@ -148,7 +149,7 @@ void GameManager::Update()
 	player->SetCameraAngle(camera->GetCameraAngle());
 	player->Update();
 	
-	takobo->Update();
+	for (auto& item : takobo)item->Update();
 	
 	userData->dissolveY = player->GetRegenerationRange();
 
@@ -157,7 +158,7 @@ void GameManager::Update()
 	camera->SetCameraPos(player->GetPos());
 
 	player->SetMatrix();
-	takobo->SetMatrix();
+	for (auto& item : takobo)item->SetMatrix();
 	// ƒJƒŠƒ“ƒO•ûŒü‚Ì”½“]
 	for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
 	{
@@ -225,7 +226,7 @@ void GameManager::Draw()
 {
 	planet->Draw();
 	player->Draw();
-	takobo->Draw();
+	for (auto& item : takobo)item->Draw();
 	camera->DebagDraw();
 	SetRenderTargetToShader(1, -1);		// RT‚Ì‰ğœ
 	SetRenderTargetToShader(2, -1);		// RT‚Ì‰ğœ
