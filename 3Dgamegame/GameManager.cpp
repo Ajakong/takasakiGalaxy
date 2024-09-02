@@ -42,12 +42,10 @@ GameManager::GameManager() :
 	assert(outlineVsH != -1);
 	assert(dissolveH != -1);
 	assert(postEffectH != -1);
-	camera = std::make_shared<Camera>();
-
-	
 	player = std::make_shared<Player>(modelH);
+	camera = std::make_shared<Camera>();
 	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
-	planet2 = std::make_shared<SpherePlanet>(Vec3(1000,0,1000));
+	planet2 = std::make_shared<SpherePlanet>(Vec3(3000,0,1000));
 	takobo = { std::make_shared<Takobo>(Vec3(300,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,0,700)) };
 	
 }
@@ -140,13 +138,13 @@ void GameManager::Update()
 	/* カメラの設定
 	 RTを設定するとカメラの初期化が入ってるかもなので、RTの設定後にカメラの設定を行う*/
 	
-	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
-	camera->Update(player->GetPos());
+	/*camera->SetUpVec(planet->GetNormVec(player->GetPos()));
+	camera->Update(player->GetPos());*/
 	planet->Update();
 	planet2->Update();
-	player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
+	//player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
 
-	player->SetCameraAngle(camera->GetCameraAngle());
+	
 	player->Update();
 	
 	for (auto& item : takobo)item->Update();
@@ -154,8 +152,21 @@ void GameManager::Update()
 	userData->dissolveY = player->GetRegenerationRange();
 
 	MyEngine::Physics::GetInstance().Update();
+	for (int i=0;i<takobo.size();i++)
+	{
+		if (takobo[i]->WatchHp() < 0)
+		{
+			MyEngine::Physics::GetInstance().Exit(takobo[i]);
 
-	camera->SetCameraPos(player->GetPos());
+			takobo.erase(takobo.begin()+i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
+			i--;
+		}
+	}
+	
+	camera->SetCameraPoint(player->GetPos()+Vec3(GetCameraUpVector()) * 30 - Vec3(GetCameraFrontVector()) * 100);
+	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
+	camera->Update(player->GetPos() + Vec3(GetCameraUpVector()) * 30);
+	//camera->SetCameraPos(player->GetPos());
 
 	player->SetMatrix();
 	for (auto& item : takobo)item->SetMatrix();

@@ -1,5 +1,5 @@
-#include "SpherePlanet.h"
 #include"MyLib/Physics/ColliderSphere.h"
+#include "SpherePlanet.h"
 
 namespace
 {
@@ -54,22 +54,22 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//ê¨ï™Ç≤Ç∆Ç…åvé
 	Vec3 toObj= m_rigid.GetPos()-objPos;
 	toObj=toObj.GetNormalized();
 
-	float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
-	float angleZ= DX_PI_F / 2 + atan2(toObj.y, toObj.z);
-	ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };
-	ansVelocity += toObj*objVelocity.y;//ÉvÉåÉCÉÑÅ[ÇÃÉWÉÉÉìÉvï™ÇÃÉxÉNÉgÉãÇÃâ¡éZ
+	//float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
+	//float angleZ= DX_PI_F / 2 + atan2(toObj.y, toObj.z);
+	//ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };
+	//ansVelocity += toObj*objVelocity.y;//ÉvÉåÉCÉÑÅ[ÇÃÉWÉÉÉìÉvï™ÇÃÉxÉNÉgÉãÇÃâ¡éZ
 
-	ansVelocity += toObj * kGravityPower;
-	obj->SetReverceGravityVec(toObj.GetNormalized());
+	//ansVelocity += toObj * kGravityPower;
+	//obj->SetReverceGravityVec(toObj.GetNormalized());
 
-	/*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
-	ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
-	ansVelocity = ANSVECTOR;*/
-	//ansVelocity -= toObj;
-	return ansVelocity;
+	///*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
+	//ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
+	//ansVelocity = ANSVECTOR;*/
+	////ansVelocity -= toObj;
+	//return ansVelocity;
 	
 	//èdóÕÇÃÇ›
-	toObj = toObj * gravityPower;
+	toObj = toObj * gravityPower+objVelocity;
 	return toObj;
 }
 

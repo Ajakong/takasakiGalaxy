@@ -56,11 +56,13 @@ void Physics::Entry(const std::shared_ptr<Collidable>& collidable)
 
 void Physics::Exit(const std::shared_ptr<Collidable>& collidable)
 {
-	bool isFound = std::find(m_collidables.begin(), m_collidables.end(), collidable) != m_collidables.end();
+	auto it = std::find(m_collidables.begin(), m_collidables.end(), collidable);
 	// “o˜^Ï‚Ý‚È‚çíœ
-	if (isFound)
+	if (it!= m_collidables.end())
 	{
-		m_collidables.remove(collidable);
+		int index = distance(m_collidables.begin(), it);
+
+		m_collidables.erase(m_collidables.begin());
 	}
 	// –¢“o˜^‚È‚ç–³Ž‹
 	else
@@ -99,13 +101,28 @@ void MyEngine::Physics::MoveNextPos() const
 {
 	for (const auto& item : m_stageCollidables)
 	{
-		for (auto& obj : m_collidables)
+		for (const auto& obj : m_collidables)
 		{
 			if (obj->GetTag() != ObjectTag::Stage)
 			{
 				auto planet = dynamic_cast<Planet*>(item.get());
-				planet->OnCollideEnter(obj);;
-				obj->m_rigid.SetVelocity(planet->GravityEffect(obj));
+				for (const auto& col : item->m_colliders)
+				{
+					if (col->isTrigger == true)
+					{
+						for (const auto& objCol : obj->m_colliders)
+						{
+							if (IsCollide(item->m_rigid, obj->m_rigid, col, objCol))
+							{
+								planet->OnTriggerEnter(obj);
+								obj->m_rigid.SetVelocity(planet->GravityEffect(obj));
+							}
+
+						}
+						
+					}
+				}
+				
 			}
 
 		}
@@ -224,7 +241,7 @@ void MyEngine::Physics::CheckCollide()
 	}
 }
 
-bool Physics::IsCollide(const Rigidbody& rigidA, const Rigidbody& rigidB, const std::shared_ptr<ColliderBase>& colliderA, const std::shared_ptr<ColliderBase>& colliderB)
+bool Physics::IsCollide(const Rigidbody& rigidA, const Rigidbody& rigidB, const std::shared_ptr<ColliderBase>& colliderA, const std::shared_ptr<ColliderBase>& colliderB) const
 {
 
 	bool isCollide = false;

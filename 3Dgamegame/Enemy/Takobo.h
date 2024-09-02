@@ -24,7 +24,7 @@ public:
 
 	void WantToPlayer(Vec3 toPlayer);
 
-	void Hit();
+	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);
 
 
 	void SetCameraAngle(float cameraAngle);

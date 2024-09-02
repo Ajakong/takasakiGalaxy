@@ -6,7 +6,7 @@ namespace
 }
 
 Enemy::Enemy(int handle, Priority priority, ObjectTag tag):Collidable(priority,tag),
-	m_Hp(50),
+	//m_Hp(50),
 	m_handle(handle)
 {
 }

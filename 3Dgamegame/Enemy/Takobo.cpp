@@ -91,6 +91,14 @@ void Takobo::Draw()
 	MV1DrawModel(m_handle);
 }
 
+void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
+{
+	if (colider->GetTag() == ObjectTag::Player)
+	{
+		m_Hp -= 20;
+	}
+}
+
 Vec3 Takobo::GetMyPos()
 {
 	return  VGet(m_rigid.GetPos().x, m_rigid.GetPos().y + kFootToCenter, m_rigid.GetPos().z);;

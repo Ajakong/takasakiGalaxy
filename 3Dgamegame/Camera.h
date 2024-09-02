@@ -23,6 +23,7 @@ public:
 	void SetCameraThirdPersonPos(Vec3 LookPoint);
 	float GetCameraAngle() const { return m_cameraAngle; }
 	void SetUpVec(Vec3 upDir) { m_upVec = upDir; }
+	void SetCameraPoint(Vec3 pos) { m_cameraPoint = pos; }
 
 	//メンバ関数ポインタ
 	using cameraState_t = void(Camera::*)(Vec3 LookPoint);
@@ -30,6 +31,7 @@ public:
 private:
 	Quaternion m_myQ;
 	Vec3	m_pos;			// ポジション.
+	Vec3 m_cameraPoint;//カメラが移動してほしい位置
 	Vec3 m_postLookPointPos;
 	float m_cameraAngle = -DX_PI_F / 2;
 	float m_pitchAngle;
