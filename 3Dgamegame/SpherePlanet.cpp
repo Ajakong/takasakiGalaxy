@@ -41,6 +41,7 @@ void SpherePlanet::Draw()
 {
 	DrawSphere3D(m_rigid.GetPos().VGet(), kGravityRange, 10, 0xddddff, 0x0000ff, false);
 	DrawSphere3D(m_rigid.GetPos().VGet(), kGroundRadius, 50, 0xaadd33, 0xff0000, true);
+	//printfDX("m_enemyCount:%d", m_enemyCount);
 }
 
 Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//成分ごとに計算し、補正後のベクトルを返す

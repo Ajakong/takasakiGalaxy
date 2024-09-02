@@ -19,7 +19,8 @@ namespace
 TitleScene::TitleScene(SceneManager& manager) :
 	Scene(manager)
 {
-	
+	m_updateFunc = &TitleScene::NormalUpdate;
+	m_drawFunc = &TitleScene::FadeDraw;
 }
 
 TitleScene::~TitleScene()
@@ -69,6 +70,7 @@ void TitleScene::NormalUpdate()
 	
 	if (Pad::IsTrigger(PAD_INPUT_1))
 	{
+		m_isGamePlaying = true;
 		m_updateFunc = &TitleScene::FadeOutUpdate;
 		m_drawFunc = &TitleScene::FadeDraw;
 	}

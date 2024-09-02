@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "SceneManager.h"
 #include "GamePlayingScene.h"
+#include"TitleScene.h"
 #include"GameOverScene.h"
 #include<iostream>
 #include<vector>
@@ -112,8 +113,7 @@ void Application::Run()
             sceneManager.Draw();
 
 
-
-
+            
             ScreenFlip();
 
             // 60FPS‚ÉŒÅ’è

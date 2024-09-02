@@ -48,7 +48,7 @@ GameManager::GameManager() :
 	player = std::make_shared<Player>(modelH);
 	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
 	planet2 = std::make_shared<SpherePlanet>(Vec3(1000,0,1000));
-	takobo = { std::make_shared<Takobo>(Vec3(100,0,200)),std::make_shared<Takobo>(Vec3(-100,0,200)),std::make_shared<Takobo>(Vec3(0,0,300)) };
+	takobo = { std::make_shared<Takobo>(Vec3(300,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,0,700)) };
 	
 }
 

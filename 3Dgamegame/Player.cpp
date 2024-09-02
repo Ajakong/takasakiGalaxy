@@ -109,8 +109,6 @@ void Player::Draw()
 		MV1DrawModel(m_modelHandle);
 	}
 
-	MakeShadowMap(50, 50);
-
 #if _DEBUG
 	DrawSphere3D(m_rigid.GetPos().VGet(), m_radius, 10, 0x000000, 0x00ffff, false);
 	
