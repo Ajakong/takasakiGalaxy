@@ -50,6 +50,7 @@ private:
 	void NeutralUpdate();
 	void WalkingUpdate();
 	void JumpingUpdate();
+	void spiningUpdate();
 	/// <summary>
 	/// Õ“ËŠÖ”
 	/// </summary>
@@ -85,6 +86,7 @@ private:
 
 	float m_regeneRange;
 	float m_angle;
+	float m_spinAngle;
 	float m_radius = 0;
 
 	Vec3 m_cameraToPlayer;

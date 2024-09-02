@@ -104,6 +104,7 @@ void MyEngine::Physics::MoveNextPos() const
 			if (obj->GetTag() != ObjectTag::Stage)
 			{
 				auto planet = dynamic_cast<Planet*>(item.get());
+				planet->OnCollideEnter(obj);;
 				obj->m_rigid.SetVelocity(planet->GravityEffect(obj));
 			}
 
@@ -398,29 +399,30 @@ void MyEngine::Physics::AddOnCollideInfo(Collidable* own, Collidable* send, OnCo
 
 void MyEngine::Physics::OnCollideInfo(Collidable* own, Collidable* send, OnCollideInfoKind kind)
 {
+	auto item=std::make_shared<Collidable>(send);
 	if (kind == OnCollideInfoKind::CollideEnter)
 	{
-		own->OnCollideEnter(*send);
+		own->OnCollideEnter(item);
 	}
 	else if (kind == OnCollideInfoKind::CollideStay)
 	{
-		own->OnCollideStay(*send);
+		own->OnCollideStay(item);
 	}
 	else if (kind == OnCollideInfoKind::CollideExit)
 	{
-		own->OnCollideExit(*send);
+		own->OnCollideExit(item);
 	}
 	else if (kind == OnCollideInfoKind::TriggerEnter)
 	{
-		own->OnTriggerEnter(*send);
+		own->OnTriggerEnter(item);
 	}
 	else if (kind == OnCollideInfoKind::TriggerStay)
 	{
-		own->OnTriggerStay(*send);
+		own->OnTriggerStay(item);
 	}
 	else if (kind == OnCollideInfoKind::TriggerExit)
 	{
-		own->OnTriggerExit(*send);
+		own->OnTriggerExit(item);
 	}
 }
 

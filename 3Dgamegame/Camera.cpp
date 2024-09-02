@@ -20,7 +20,9 @@ namespace
 	constexpr float kOneRapAngle = 360.f;
 }
 
-Camera::Camera()
+Camera::Camera():
+	m_pitchAngle(0),
+	m_setCameraPos(0)
 {
 	//‰œs0.1`1000‚Ü‚Å‚ğƒJƒƒ‰‚Ì•`‰æ”ÍˆÍ‚Æ‚·‚é
 	SetCameraNearFar(kCameraNear, kCameraFar);

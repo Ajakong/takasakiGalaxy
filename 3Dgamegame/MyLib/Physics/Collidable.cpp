@@ -11,6 +11,16 @@ Collidable::Collidable(Priority priority, ObjectTag tag) :
 	
 }
 
+MyEngine::Collidable::Collidable(Collidable* col) :
+	m_rigid(col->m_rigid),
+	m_colliders(col->m_colliders),
+	m_upVec(col->m_upVec),
+	throughTags(col->throughTags),
+	m_tag(col->m_tag),
+	m_priority(col->m_priority)
+{
+}
+
 Collidable::~Collidable()
 {
 }

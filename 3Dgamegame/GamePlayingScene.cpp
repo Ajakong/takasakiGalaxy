@@ -44,7 +44,7 @@ void GamePlayingScene::Update()
 {
 
 	(this->*m_updateFunc)();
-
+	WorldTimer::Update();
 
 	Pad::Update();
 }
@@ -105,8 +105,9 @@ void GamePlayingScene::FadeOutUpdate()
 
 void GamePlayingScene::ChangeScene(std::shared_ptr<Scene> nextScene)
 {
-
+	
 	m_manager.ChangeScene(nextScene);
+	WorldTimer::Reset();
 }
 
 void GamePlayingScene::FadeDraw()

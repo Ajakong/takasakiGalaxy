@@ -17,5 +17,6 @@ public:
 protected:
 	int modelH;
 	float gravityPower;
+	bool clearFlag=false;
 };
 

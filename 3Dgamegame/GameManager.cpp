@@ -46,8 +46,9 @@ GameManager::GameManager() :
 
 	
 	player = std::make_shared<Player>(modelH);
-	planet = std::make_shared<SpherePlanet>();
-	takobo = std::make_shared<Takobo>();
+	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
+	planet2 = std::make_shared<SpherePlanet>(Vec3(1000,0,1000));
+	takobo = std::make_shared<Takobo>(Vec3(300,0,200));
 }
 
 GameManager::~GameManager()
@@ -98,6 +99,7 @@ void GameManager::Init()
 
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
+	MyEngine::Physics::GetInstance().Entry(planet2);
 	MyEngine::Physics::GetInstance().Entry(takobo);
 }
 
@@ -140,7 +142,7 @@ void GameManager::Update()
 	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
 	camera->Update(player->GetPos());
 	planet->Update();
-
+	planet2->Update();
 	player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
 
 	player->SetCameraAngle(camera->GetCameraAngle());

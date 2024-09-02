@@ -7,14 +7,14 @@ class Model
 	bool useOriginalShader_ = false;
 	int vsH_;
 	int psH_;
-	int _handle;//モデルのハンドル
-	bool _loadcompleted;//モデルのロードが完了している
-	Vec3 _pos;//現在の座標
-	Vec3 _vel;//現在の速度ベクトル
-	float _direction;//現在の向き(X軸を起点としたY軸中心回転角度)
-	int _currentAttachedNo;//現在のメインのアタッチ番号
-	float _totalTime;//現在アタッチ中のアニメーションの総時間
-	float _time;//現在のアニメーション時間
+	int m_handle;//モデルのハンドル
+	bool m_loadcompleted;//モデルのロードが完了している
+	Vec3 m_pos;//現在の座標
+	Vec3 m_vel;//現在の速度ベクトル
+	float m_direction;//現在の向き(X軸を起点としたY軸中心回転角度)
+	int m_currentAttachedNo;//現在のメインのアタッチ番号
+	float m_totalTime;//現在アタッチ中のアニメーションの総時間
+	float m_time;//現在のアニメーション時間
 public:
 	Model(int h, int vsH = -1, int psH = -1);
 	~Model();

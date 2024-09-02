@@ -34,6 +34,7 @@ private:
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Planet> planet;
+	std::shared_ptr<Planet> planet2;
 	std::shared_ptr<Takobo> takobo;
 
 	bool m_isGameOverFlag = false;

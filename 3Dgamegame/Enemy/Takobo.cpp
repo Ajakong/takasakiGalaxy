@@ -46,10 +46,13 @@ Vec3 ToVec(Vec3 a, Vec3 b);
 Vec3 norm(Vec3 a);
 float lerp(float start, float end, float t);
 
-Takobo::Takobo() :Enemy(MV1LoadModel("../Model/Enemy/bodyeater.mv1"), Priority::Low, ObjectTag::Enemy),
-m_position(0, 0, 100)
+Takobo::Takobo(Vec3 pos) :Enemy(MV1LoadModel("../Model/Enemy/bodyeater.mv1"), Priority::Low, ObjectTag::Enemy),
+	m_Hp(kHp),
+	m_attackCoolDownCount(0),
+	m_centerToEnemyAngle(0)
 {
-	m_rigid.SetPos(m_position);
+
+	m_rigid.SetPos(pos);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = kCollisionRadius;

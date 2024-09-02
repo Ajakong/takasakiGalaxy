@@ -39,6 +39,7 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_playerUpdate(&Player::StartUpdate),
 	m_regeneRange(0),
 	m_angle(0),
+	m_spinAngle(0),
 	m_animBlendRate(0),
 	m_currentAnimNo(0),
 	m_prevAnimNo(0)
@@ -127,7 +128,7 @@ void Player::OnCollideEnter(const Collidable& colider)
 {
 	if (colider.GetTag() == ObjectTag::Takobo)
 	{
-		m_Hp = 0;
+		m_Hp -= 10;
 	}
 }
 
@@ -232,6 +233,10 @@ void Player::NeutralUpdate()
 	{
 		move += m_upVec* kJumpPower;
 	}
+	if (Pad::IsTrigger(PAD_INPUT_2))//XBox‚Ì
+	{
+		m_playerUpdate=&Player::spiningUpdate;
+	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
 	m_rigid.SetVelocity(move);
@@ -250,6 +255,17 @@ void Player::WalkingUpdate()
 
 void Player::JumpingUpdate()
 {
+}
+
+void Player::spiningUpdate()
+{
+	m_spinAngle+=DX_PI_F/60;
+	m_angle += DX_PI_F / 60;
+	if (m_spinAngle >= DX_PI_F * 2)
+	{
+		m_playerUpdate = &Player::NeutralUpdate;
+		m_spinAngle = 0;
+	}
 }
 
 void Player::HitUpdate()

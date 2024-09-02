@@ -14,7 +14,7 @@ public:
 
 	/// <param name="m_modelhandle">エネミーのモデル</param>
 	/// <param name="obj">影響を与えるオブジェ</param>
-	Takobo();
+	Takobo(Vec3 pos);
 	~Takobo();
 
 	void Init();
@@ -85,7 +85,6 @@ private:
 
 	Vec3 m_vec;
 	Vec3 m_attackDir;
-	Vec3 m_position;
 	Vec3 m_moveShaftPos;
 	//アニメーション変数
 	int m_anim_nutral = 0;
