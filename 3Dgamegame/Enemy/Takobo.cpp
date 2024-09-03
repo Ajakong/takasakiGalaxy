@@ -51,7 +51,7 @@ Takobo::Takobo(Vec3 pos) :Enemy(MV1LoadModel("../Model/Enemy/bodyeater.mv1"), Pr
 	m_attackCoolDownCount(0),
 	m_centerToEnemyAngle(0)
 {
-
+	m_enemyUpdate = &Takobo::IdleUpdate;
 	m_rigid.SetPos(pos);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());

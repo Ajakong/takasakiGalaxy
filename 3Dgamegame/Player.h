@@ -20,7 +20,7 @@ public:
 	Vec3 GetPos() const { return  m_rigid.GetPos(); }
 	int GetHp() { return m_Hp; }
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
-
+	Vec3 GetMoveDir() const{ return m_moveDir; }
 	float GetRegenerationRange() { return m_regeneRange; }
 	virtual void OnCollideEnter(const Collidable& colider);
 	int WatchHp()const { return m_Hp; }
@@ -99,8 +99,8 @@ private:
 
 	Vec3 m_cameraToPlayer;
 	Vec3 m_cameraPos;
-	std::shared_ptr<Camera> m_camera;
-
+	//std::shared_ptr<Camera> m_camera;
+	Vec3 m_moveDir;
 	int m_currentAnimNo;//現在のアニメーション
 	int m_prevAnimNo;//変更前のアニメーション
 	float m_animBlendRate;//アニメーションの合成割合

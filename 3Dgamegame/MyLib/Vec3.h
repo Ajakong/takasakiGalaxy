@@ -26,6 +26,9 @@ public:
 	void operator-=(const Vec3& val);
 	Vec3 operator*(float scale) const;
 	void operator*=(float scale);
+	Vec3 operator*(Vec3& val)const;
+	Vec3 operator*(Vec3 val);
+	void operator*=(Vec3& val);
 	Vec3 operator/(float scale) const;
 	void operator/=(float scale);
 	bool operator==(const Vec3& val) const;
