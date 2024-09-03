@@ -56,11 +56,17 @@ void Physics::Entry(const std::shared_ptr<Collidable>& collidable)
 
 void Physics::Exit(const std::shared_ptr<Collidable>& collidable)
 {
-	bool isFound = std::find(m_collidables.begin(), m_collidables.end(), collidable) != m_collidables.end();
+	auto it = std::find(m_collidables.begin(), m_collidables.end(), collidable);
 	// “o˜^Ï‚İ‚È‚çíœ
-	if (isFound)
+	if (it!= m_collidables.end())
 	{
-		m_collidables.remove(collidable);
+		int index = distance(m_collidables.begin(), it);
+		auto iterater = m_collidables.begin();
+		for (int i = 0; i < index; i++)
+		{
+			iterater++;
+		}
+		m_collidables.erase(iterater);
 	}
 	// –¢“o˜^‚È‚ç–³‹
 	else
@@ -99,12 +105,28 @@ void MyEngine::Physics::MoveNextPos() const
 {
 	for (const auto& item : m_stageCollidables)
 	{
-		for (auto& obj : m_collidables)
+		for (const auto& obj : m_collidables)
 		{
 			if (obj->GetTag() != ObjectTag::Stage)
 			{
 				auto planet = dynamic_cast<Planet*>(item.get());
-				obj->m_rigid.SetVelocity(planet->GravityEffect(obj));
+				for (const auto& col : item->m_colliders)
+				{
+					if (col->isTrigger == true)
+					{
+						for (const auto& objCol : obj->m_colliders)
+						{
+							if (IsCollide(item->m_rigid, obj->m_rigid, col, objCol))
+							{
+								planet->OnTriggerEnter(obj);
+								obj->m_rigid.SetVelocity(planet->GravityEffect(obj));
+							}
+
+						}
+						
+					}
+				}
+				
 			}
 
 		}
@@ -217,13 +239,13 @@ void MyEngine::Physics::CheckCollide()
 
 		if (isCheck && checkCount > CHECK_COUNT_MAX)
 		{
-			printfDx(L"‹K’è”(%d)‚ğ’´‚¦‚Ü‚µ‚½", CHECK_COUNT_MAX);
+			printfDx("‹K’è”(%d)‚ğ’´‚¦‚Ü‚µ‚½", CHECK_COUNT_MAX);
 			break;
 		}
 	}
 }
 
-bool Physics::IsCollide(const Rigidbody& rigidA, const Rigidbody& rigidB, const std::shared_ptr<ColliderBase>& colliderA, const std::shared_ptr<ColliderBase>& colliderB)
+bool Physics::IsCollide(const Rigidbody& rigidA, const Rigidbody& rigidB, const std::shared_ptr<ColliderBase>& colliderA, const std::shared_ptr<ColliderBase>& colliderB) const
 {
 
 	bool isCollide = false;
@@ -398,29 +420,30 @@ void MyEngine::Physics::AddOnCollideInfo(Collidable* own, Collidable* send, OnCo
 
 void MyEngine::Physics::OnCollideInfo(Collidable* own, Collidable* send, OnCollideInfoKind kind)
 {
+	auto item=std::make_shared<Collidable>(send);
 	if (kind == OnCollideInfoKind::CollideEnter)
 	{
-		own->OnCollideEnter(*send);
+		own->OnCollideEnter(item);
 	}
 	else if (kind == OnCollideInfoKind::CollideStay)
 	{
-		own->OnCollideStay(*send);
+		own->OnCollideStay(item);
 	}
 	else if (kind == OnCollideInfoKind::CollideExit)
 	{
-		own->OnCollideExit(*send);
+		own->OnCollideExit(item);
 	}
 	else if (kind == OnCollideInfoKind::TriggerEnter)
 	{
-		own->OnTriggerEnter(*send);
+		own->OnTriggerEnter(item);
 	}
 	else if (kind == OnCollideInfoKind::TriggerStay)
 	{
-		own->OnTriggerStay(*send);
+		own->OnTriggerStay(item);
 	}
 	else if (kind == OnCollideInfoKind::TriggerExit)
 	{
-		own->OnTriggerExit(*send);
+		own->OnTriggerExit(item);
 	}
 }
 

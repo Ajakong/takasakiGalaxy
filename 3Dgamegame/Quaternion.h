@@ -48,7 +48,7 @@ private:
 
 public:
 
-	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; };
+	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; }
 
 	void SetMove(float _angle, Vec3 _axis)
 	{
@@ -60,19 +60,19 @@ public:
 	/// <summary>
 	/// 平行移動
 	/// </summary>
-	/// <param name="_pos"></param>
+	/// <param name="m_pos"></param>
 	/// <param name="_vec"></param>
 	/// <returns></returns>
-	Vec3 Move(Vec3& _pos, Vec3& _vec)
+	Vec3 Move(Vec3& m_pos, Vec3& _vec)
 	{
 		Q qPos, qInv;
 		Vec3 vPos;
 
 		//3次元座標をクオータニオンに変換
 		qPos.w = 1.0f;
-		qPos.x = _pos.x;
-		qPos.y = _pos.y;
-		qPos.z = _pos.z;
+		qPos.x = m_pos.x;
+		qPos.y = m_pos.y;
+		qPos.z = m_pos.z;
 
 		//回転クォータニオンのインバースの作成
 		//逆クォータニオンを出すのは大変なので、

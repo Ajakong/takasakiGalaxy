@@ -1,16 +1,17 @@
-#include "SpherePlanet.h"
 #include"MyLib/Physics/ColliderSphere.h"
+#include "SpherePlanet.h"
 
 namespace
 {
-	constexpr float kGroundRadius = 1000;
-	constexpr float  kGravityRange = 3000;
+	constexpr float kGroundRadius = 500;
+	constexpr float  kGravityRange = 1500;
 	constexpr float  kGravityPower = 3;
 
 
 }
 
-SpherePlanet::SpherePlanet():Planet()
+SpherePlanet::SpherePlanet(Vec3 pos):Planet(),
+m_enemyCount(0)
 {
 	gravityPower = 3;
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//Ç±Ç±Ç≈ì¸ÇÍÇΩÇÃÇÕèdóÕÇÃâeãøîÕàÕ
@@ -21,7 +22,7 @@ SpherePlanet::SpherePlanet():Planet()
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//É}ÉbÉvÇÃìñÇΩÇËîªíË
 	auto item2 = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item2->radius = kGroundRadius;
-	m_rigid.SetPos(Vec3(0, -500, 0));
+	m_rigid.SetPos(pos);
 }
 
 SpherePlanet::~SpherePlanet()
@@ -40,6 +41,7 @@ void SpherePlanet::Draw()
 {
 	DrawSphere3D(m_rigid.GetPos().VGet(), kGravityRange, 10, 0xddddff, 0x0000ff, false);
 	DrawSphere3D(m_rigid.GetPos().VGet(), kGroundRadius, 50, 0xaadd33, 0xff0000, true);
+	//printfDX("m_enemyCount:%d", m_enemyCount);
 }
 
 Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//ê¨ï™Ç≤Ç∆Ç…åvéZÇµÅAï‚ê≥å„ÇÃÉxÉNÉgÉãÇï‘Ç∑
@@ -52,22 +54,22 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//ê¨ï™Ç≤Ç∆Ç…åvé
 	Vec3 toObj= m_rigid.GetPos()-objPos;
 	toObj=toObj.GetNormalized();
 
-	float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
-	float angleZ= DX_PI_F / 2 + atan2(toObj.y, toObj.z);
-	ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };
-	ansVelocity += toObj*objVelocity.y;//ÉvÉåÉCÉÑÅ[ÇÃÉWÉÉÉìÉvï™ÇÃÉxÉNÉgÉãÇÃâ¡éZ
+	//float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
+	//float angleZ= DX_PI_F / 2 + atan2(toObj.y, toObj.z);
+	//ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };
+	//ansVelocity += toObj*objVelocity.y;//ÉvÉåÉCÉÑÅ[ÇÃÉWÉÉÉìÉvï™ÇÃÉxÉNÉgÉãÇÃâ¡éZ
 
-	ansVelocity += toObj * kGravityPower;
-	obj->SetReverceGravityVec(toObj.GetNormalized());
+	//ansVelocity += toObj * kGravityPower;
+	//obj->SetReverceGravityVec(toObj.GetNormalized());
 
-	/*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
-	ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
-	ansVelocity = ANSVECTOR;*/
-	//ansVelocity -= toObj;
-	return ansVelocity;
+	///*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
+	//ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
+	//ansVelocity = ANSVECTOR;*/
+	////ansVelocity -= toObj;
+	//return ansVelocity;
 	
 	//èdóÕÇÃÇ›
-	toObj = toObj * gravityPower;
+	toObj = toObj * gravityPower+objVelocity;
 	return toObj;
 }
 
@@ -76,4 +78,24 @@ Vec3 SpherePlanet::GetNormVec(Vec3 pos)
 	Vec3 norm = pos - m_rigid.GetPos();
 	norm.Normalize();
 	return norm;
+}
+
+void SpherePlanet::OnTriggerEnter(std::shared_ptr<Collidable> colider)
+{
+	if (colider->GetTag() == ObjectTag::Takobo)
+	{
+		m_enemyCount++;
+	}
+}
+
+void SpherePlanet::OnTriggerExit(std::shared_ptr<Collidable> colider)
+{
+	if (colider->GetTag() == ObjectTag::Takobo)
+	{
+		m_enemyCount--;
+	}
+	if (m_enemyCount <= 0)
+	{
+		clearFlag = true;
+	}
 }

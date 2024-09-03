@@ -23,7 +23,7 @@ struct VS_OUTPUT
     float3 Tangent : TANGENT; //接線ベクトル
     float3 Binormal : BINORMAL; //従法線ベクトル
     float2 TexCoords0 : TEXCOORD0; // テクスチャ座標
-    float4 svPosition : SV_POSITION; // 座標( プロジェクション空間 )    // Pと同様
+    float4 svPosition : SVm_posITION; // 座標( プロジェクション空間 )    // Pと同様
     float4 Position : POSITION0; // 座標( ワールド空間 )                // 
     float4 P : POSITION1; // 座標( プロジェクション空間 )               // 3D→2Dに正規化された座標
     float4 VPosition : POSITION2; // 座標( ワールド空間*ビュー )

@@ -2,6 +2,8 @@
 #include "MyLib/Physics/Collidable.h"
 #include"MyLib/Vec3.h"
 
+class Camera;
+
 class Player : public MyEngine::Collidable
 {
 public:
@@ -31,6 +33,9 @@ public:
 	using playerState_t = void(Player::*)();
 	playerState_t m_playerUpdate;
 
+	using cameraState_t = void(Player::*)();
+	cameraState_t m_cameraUpdate;
+
 private:
 	//アニメーションの進行
 	//ループしたかどうかを返す
@@ -39,7 +44,7 @@ private:
 	void ChangeAnim(int animIndex);
 
 	//状態別関数(ポインタで呼び出す)
-
+	/*m_playerUpdateで使う*/
 	/// <summary>
 	/// 開始直後に呼ばれる
 	/// </summary>
@@ -50,6 +55,7 @@ private:
 	void NeutralUpdate();
 	void WalkingUpdate();
 	void JumpingUpdate();
+	void SpiningUpdate();
 	/// <summary>
 	/// 衝突関数
 	/// </summary>
@@ -58,7 +64,10 @@ private:
 	/// 回避
 	/// </summary>
 	void AvoidUpdate();
+	/*m_cameraUpdateで使う*/
+	void Planet1Update();
 
+	
 	Vec3 GetCameraToPlayer()const;
 
 private:
@@ -85,9 +94,12 @@ private:
 
 	float m_regeneRange;
 	float m_angle;
+	float m_spinAngle;
 	float m_radius = 0;
 
 	Vec3 m_cameraToPlayer;
+	Vec3 m_cameraPos;
+	std::shared_ptr<Camera> m_camera;
 
 	int m_currentAnimNo;//現在のアニメーション
 	int m_prevAnimNo;//変更前のアニメーション

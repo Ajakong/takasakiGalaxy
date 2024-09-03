@@ -2,14 +2,16 @@
 #include"MyLib/Physics/ColliderBase.h"
 
 
-Planet::Planet():Collidable(Priority::Static, ObjectTag::Stage)
-, modelH(-1)
+Planet::Planet():Collidable(Priority::Static, ObjectTag::Stage),
+	gravityPower(0),
+	modelH(-1)
 {
 	
 }
 
-Planet::Planet(int modelHandle):Collidable(Priority::Static,ObjectTag::Stage)
-	,modelH(modelHandle)
+Planet::Planet(int modelHandle):Collidable(Priority::Static,ObjectTag::Stage),
+	gravityPower(0),
+	modelH(modelHandle)
 {
 	
 }

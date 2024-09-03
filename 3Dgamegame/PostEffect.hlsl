@@ -6,7 +6,7 @@ SamplerState smp : register(s0);
 
 struct PS_INPUT
 {
-    float4 pos : SV_POSITION;
+    float4 pos : SVm_posITION;
     float4 dif : COLOR0;
     float4 spec : COLOR1;
     float2 uv : TEXCOORD0;

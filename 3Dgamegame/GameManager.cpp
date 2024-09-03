@@ -10,16 +10,16 @@
 #include<cassert>
 
 GameManager::GameManager() :
-	modelH(MV1LoadModel(L"Player/knight.mv1")),
-	roughH(LoadGraph(L"Model/Sphere/roughness.png")),
-	metalH(LoadGraph(L"Model/Sphere/metalness.png")),
-	toonH(LoadGraph(L"Image/toon01.bmp")),
-	psH(LoadPixelShader(L"PixelShader.pso")),
-	vsH(LoadVertexShader(L"VertexShader.vso")),
-	outlinePsH(LoadPixelShader(L"OutlinePS.pso")),
-	outlineVsH(LoadVertexShader(L"OutlineVS.vso")),
-	dissolveH(LoadGraph(L"Image/dissolve.png")),
-	postEffectH(LoadPixelShader(L"PostEffect.pso")),
+	modelH(MV1LoadModel("Player/knight.mv1")),
+	roughH(LoadGraph("Model/Sphere/roughness.png")),
+	metalH(LoadGraph("Model/Sphere/metalness.png")),
+	toonH(LoadGraph("Image/toon01.bmp")),
+	psH(LoadPixelShader("PixelShader.pso")),
+	vsH(LoadVertexShader("VertexShader.vso")),
+	outlinePsH(LoadPixelShader("OutlinePS.pso")),
+	outlineVsH(LoadVertexShader("OutlineVS.vso")),
+	dissolveH(LoadGraph("Image/dissolve.png")),
+	postEffectH(LoadPixelShader("PostEffect.pso")),
 	// 通常のRT
 	RT(MakeScreen(640, 480, true)),
 	RT2(MakeScreen(640, 480, true)),
@@ -42,12 +42,12 @@ GameManager::GameManager() :
 	assert(outlineVsH != -1);
 	assert(dissolveH != -1);
 	assert(postEffectH != -1);
-	camera = std::make_shared<Camera>();
-
-	
 	player = std::make_shared<Player>(modelH);
-	planet = std::make_shared<SpherePlanet>();
-	takobo = std::make_shared<Takobo>();
+	camera = std::make_shared<Camera>();
+	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
+	planet2 = std::make_shared<SpherePlanet>(Vec3(3000,0,1000));
+	takobo = { std::make_shared<Takobo>(Vec3(300,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,0,700)) };
+	
 }
 
 GameManager::~GameManager()
@@ -98,7 +98,8 @@ void GameManager::Init()
 
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
-	MyEngine::Physics::GetInstance().Entry(takobo);
+	MyEngine::Physics::GetInstance().Entry(planet2);
+	for(auto& item : takobo)MyEngine::Physics::GetInstance().Entry(item);
 }
 
 void GameManager::Update()
@@ -137,25 +138,38 @@ void GameManager::Update()
 	/* カメラの設定
 	 RTを設定するとカメラの初期化が入ってるかもなので、RTの設定後にカメラの設定を行う*/
 	
-	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
-	camera->Update(player->GetPos());
+	/*camera->SetUpVec(planet->GetNormVec(player->GetPos()));
+	camera->Update(player->GetPos());*/
 	planet->Update();
+	planet2->Update();
+	//player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
 
-	player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
-
-	player->SetCameraAngle(camera->GetCameraAngle());
+	
 	player->Update();
 	
-	takobo->Update();
+	for (auto& item : takobo)item->Update();
 	
 	userData->dissolveY = player->GetRegenerationRange();
 
 	MyEngine::Physics::GetInstance().Update();
+	for (int i=0;i<takobo.size();i++)
+	{
+		if (takobo[i]->WatchHp() < 0)
+		{
+			MyEngine::Physics::GetInstance().Exit(takobo[i]);
 
-	camera->SetCameraPos(player->GetPos());
+			takobo.erase(takobo.begin()+i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
+			i--;
+		}
+	}
+	
+	camera->SetCameraPoint(player->GetPos()+Vec3(GetCameraUpVector()) * 100 - Vec3(GetCameraFrontVector()) * 200);
+	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
+	camera->Update(player->GetPos() );
+	//camera->SetCameraPos(player->GetPos());
 
 	player->SetMatrix();
-	takobo->SetMatrix();
+	for (auto& item : takobo)item->SetMatrix();
 	// カリング方向の反転
 	for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
 	{
@@ -223,7 +237,7 @@ void GameManager::Draw()
 {
 	planet->Draw();
 	player->Draw();
-	takobo->Draw();
+	for (auto& item : takobo)item->Draw();
 	camera->DebagDraw();
 	SetRenderTargetToShader(1, -1);		// RTの解除
 	SetRenderTargetToShader(2, -1);		// RTの解除

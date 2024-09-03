@@ -13,7 +13,7 @@ namespace MyEngine
 	/// <summary>
 	/// è’ìÀÇ≈Ç´ÇÈÇ‡ÇÃ
 	/// </summary>
-	class Collidable abstract
+	class Collidable : public std::enable_shared_from_this<Collidable>
 	{
 		friend Physics;
 	public:
@@ -27,15 +27,16 @@ namespace MyEngine
 		};
 	public:
 		Collidable(Priority priority, ObjectTag tag);
+		Collidable(Collidable* col);
 		virtual ~Collidable();
 
 		// è’ìÀÇµÇΩÇ∆Ç´
-		virtual void OnCollideEnter(const Collidable& colider) {}
-		virtual void OnCollideStay(const Collidable& colider) {}
-		virtual void OnCollideExit(const Collidable& colider) {}
-		virtual void OnTriggerEnter(const Collidable& colider) {}
-		virtual void OnTriggerStay(const Collidable& colider) {}
-		virtual void OnTriggerExit(const Collidable& colider) {}
+		virtual void OnCollideEnter(std::shared_ptr<Collidable> colider) {}
+		virtual void OnCollideStay(std::shared_ptr<Collidable> colider) {}
+		virtual void OnCollideExit(std::shared_ptr<Collidable> colider) {}
+		virtual void OnTriggerEnter(std::shared_ptr<Collidable> colider) {}
+		virtual void OnTriggerStay(std::shared_ptr<Collidable> colider) {}
+		virtual void OnTriggerExit(std::shared_ptr<Collidable> colider) {}
 
 		/* Getter */
 		ObjectTag GetTag() const { return m_tag; }

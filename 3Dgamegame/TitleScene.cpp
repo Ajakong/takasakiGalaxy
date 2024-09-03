@@ -19,7 +19,8 @@ namespace
 TitleScene::TitleScene(SceneManager& manager) :
 	Scene(manager)
 {
-	
+	m_updateFunc = &TitleScene::NormalUpdate;
+	m_drawFunc = &TitleScene::FadeDraw;
 }
 
 TitleScene::~TitleScene()
@@ -69,6 +70,7 @@ void TitleScene::NormalUpdate()
 	
 	if (Pad::IsTrigger(PAD_INPUT_1))
 	{
+		m_isGamePlaying = true;
 		m_updateFunc = &TitleScene::FadeOutUpdate;
 		m_drawFunc = &TitleScene::FadeDraw;
 	}
@@ -103,10 +105,10 @@ void TitleScene::FadeDraw()
 
 void TitleScene::NormalDraw()
 {
-	DrawFormatString(0, 0, 0xffffff, L"TitleScene");
+	DrawFormatString(0, 0, 0xffffff, "TitleScene");
 
 	DrawRotaGraph(800, 450, 1, 0, m_titleHandle, true);
 
 	//DrawString(10, 100, "TitleScene", 0xffffff);
-	DrawFormatString(730, 650, 0xffffff, L"Push Z to Start");
+	DrawFormatString(730, 650, 0xffffff, "Push Z to Start");
 }

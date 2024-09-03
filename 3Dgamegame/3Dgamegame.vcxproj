@@ -43,14 +43,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -153,12 +153,14 @@
     <ClCompile Include="Enemy\Takobo.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
+    <ClCompile Include="MyLib\Geometry.cpp" />
     <ClCompile Include="MyLib\Physics\Collidable.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderBase.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderCapsule.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderSphere.cpp" />
     <ClCompile Include="MyLib\Physics\Physics.cpp" />
     <ClCompile Include="MyLib\Physics\Rigidbody.cpp" />
+    <ClCompile Include="MyLib\Vec2.cpp" />
     <ClCompile Include="MyLib\Vec3.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -176,6 +178,8 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SpherePlanet.cpp" />
     <ClCompile Include="System\AFile.cpp" />
+    <ClCompile Include="System\Model.cpp" />
+    <ClCompile Include="System\ModelLoader.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="WorldTimer.cpp" />
   </ItemGroup>
@@ -190,6 +194,7 @@
     <ClInclude Include="Enemy\Takobo.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
+    <ClInclude Include="MyLib\Geometry.h" />
     <ClInclude Include="MyLib\ObjectTag.h" />
     <ClInclude Include="MyLib\Physics\Collidable.h" />
     <ClInclude Include="MyLib\Physics\ColliderBase.h" />
@@ -197,6 +202,7 @@
     <ClInclude Include="MyLib\Physics\ColliderSphere.h" />
     <ClInclude Include="MyLib\Physics\Physics.h" />
     <ClInclude Include="MyLib\Physics\Rigidbody.h" />
+    <ClInclude Include="MyLib\Vec2.h" />
     <ClInclude Include="MyLib\Vec3.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
@@ -214,6 +220,8 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SpherePlanet.h" />
     <ClInclude Include="System\AFile.h" />
+    <ClInclude Include="System\Model.h" />
+    <ClInclude Include="System\ModelLoader.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="WorldTimer.h" />
   </ItemGroup>

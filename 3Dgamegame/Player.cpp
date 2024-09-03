@@ -1,6 +1,7 @@
 #include "Player.h"
 #include"Pad.h"
 #include"MyLib/Physics/ColliderSphere.h"
+#include"Camera.h"
 
 namespace
 {
@@ -37,12 +38,15 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_radius(kNetralRadius),
 	m_Hp(50),
 	m_playerUpdate(&Player::StartUpdate),
+	m_cameraUpdate(&Player::Planet1Update),
 	m_regeneRange(0),
 	m_angle(0),
+	m_spinAngle(0),
 	m_animBlendRate(0),
 	m_currentAnimNo(0),
 	m_prevAnimNo(0)
 {
+	m_camera = std::make_shared<Camera>();
 	m_rigid.SetPos(Vec3(0, 0, 0));
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
@@ -66,6 +70,9 @@ void Player::Update()
 	(this->*m_playerUpdate)();
 
 	Pad::Update();
+	//(this->*m_cameraUpdate)();
+	//m_camera->SetUpVec(GetCameraUpVector());
+	//m_camera->Update(m_rigid.GetPos()+Vec3(GetCameraUpVector())*300);
 
 	if (m_visibleCount > 200)
 	{
@@ -108,10 +115,9 @@ void Player::Draw()
 		MV1DrawModel(m_modelHandle);
 	}
 
-	MakeShadowMap(50, 50);
-
 #if _DEBUG
 	DrawSphere3D(m_rigid.GetPos().VGet(), m_radius, 10, 0x000000, 0x00ffff, false);
+	
 	//printfDx("%d", HitCount);
 #endif
 
@@ -126,7 +132,7 @@ void Player::OnCollideEnter(const Collidable& colider)
 {
 	if (colider.GetTag() == ObjectTag::Takobo)
 	{
-		m_Hp = 0;
+		m_Hp -= 10;
 	}
 }
 
@@ -203,15 +209,23 @@ void Player::NeutralUpdate()
 	int analogX = 0, analogY = 0;
 
 	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
-
+	analogY = -analogY;
+	if (analogX * analogY != 0)
+	{
+		int a = 0;
+	}
 	//アナログスティックの入力10%~80%を使用する
 	//ベクトルの長さが最大1000になる
 	//ベクトルの長さを取得
-	Vec3 move = Vec3(static_cast<float>(analogX), 0.0f, static_cast<float>(-analogY));
+	Vec3 move;
 
 	float len = move.Length();
 	//ベクトルの長さを0.0~1.0の割合に変換する
 	float rate = len / kAnalogInputMax;
+	Vec3 front=GetCameraFrontVector();
+	Vec3 right = GetCameraRightVector();
+	move=front* analogY;//入力が大きいほど利教が大きい,0の時は0
+	move+=right* analogX;
 
 	//アナログスティック無効な範囲を除外する
 	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
@@ -220,7 +234,7 @@ void Player::NeutralUpdate()
 
 	//速度が決定できるので移動ベクトルに反映
 	move = move.GetNormalized();
-	float speed = kMaxSpeed * rate;
+	float speed = kMaxSpeed;
 
 	//m_angle = fmodf(m_cameraAngle, 360);//mod:余り　
 	//MATRIX rotate = MGetRotY((m_angle)-DX_PI_F / 2);//本来はカメラを行列で制御し、その行列でY軸回転
@@ -229,7 +243,11 @@ void Player::NeutralUpdate()
 	//プレイヤーの最大移動速度は0.01f/frame
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
-		move += m_upVec* kJumpPower;
+		
+	}
+	if (Pad::IsTrigger(PAD_INPUT_2))//XBoxの
+	{
+		m_playerUpdate=&Player::SpiningUpdate;
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
@@ -251,6 +269,17 @@ void Player::JumpingUpdate()
 {
 }
 
+void Player::SpiningUpdate()
+{
+	m_spinAngle+=DX_PI_F/60;
+	m_angle += DX_PI_F / 60;
+	if (m_spinAngle >= DX_PI_F * 2)
+	{
+		m_playerUpdate = &Player::NeutralUpdate;
+		m_spinAngle = 0;
+	}
+}
+
 void Player::HitUpdate()
 {
 
@@ -270,4 +299,10 @@ void Player::AvoidUpdate()
 		m_radius = kNetralRadius;
 		m_playerUpdate = &Player::NeutralUpdate;
 	}
+}
+
+void Player::Planet1Update()
+{
+
+	
 }
