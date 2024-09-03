@@ -48,7 +48,7 @@ void Camera::Update(Vec3 LookPoint)
 	velocity.y = (m_cameraPoint.y - m_pos.y) / 10.f;
 	velocity.z = (m_cameraPoint.z - m_pos.z) / 10.f;
 	m_pos += velocity;
-	m_pos = m_cameraPoint;
+	//m_pos = m_cameraPoint;
 	DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
 	
 	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
