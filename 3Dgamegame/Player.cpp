@@ -36,6 +36,11 @@ namespace
 	constexpr int kJumpPower = 50;
 }
 
+float GetAngle(Vec3 a ,Vec3 b)
+{
+	return acos(Dot(a.GetNormalized(), b.GetNormalized())) * 180 / DX_PI_F;
+}
+
 
 Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_modelHandle(MV1DuplicateModel(modelhandle)),
@@ -257,11 +262,11 @@ void Player::NeutralUpdate()
 	//プレイヤーの最大移動速度は0.01f/frame
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
-		
+		m_playerUpdate = &Player::SpiningUpdate;
 	}
 	if (Pad::IsTrigger(PAD_INPUT_2))//XBoxの
 	{
-		m_playerUpdate=&Player::SpiningUpdate;
+		
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/

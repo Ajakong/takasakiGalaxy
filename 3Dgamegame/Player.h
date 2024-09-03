@@ -28,6 +28,7 @@ public:
 	void SetCameraAngle(float cameraAngle);
 	void SetSideVec(Vec3 right) { m_sideVec = right; }
 	void SetFrontVec(Vec3 front) { m_frontVec = front; }
+	void SetUpVec(Vec3 up) { m_upVec = up; }
 	int GetPlayerModelhandle() { return m_modelHandle; }
 
 	int& SetReverse() { return m_reverseFlag; }
@@ -109,6 +110,7 @@ private:
 
 	Vec3 m_frontVec;
 	Vec3 m_sideVec;
+	Vec3 m_upVec;
 	
 	
 	int m_currentAnimNo;//現在のアニメーション

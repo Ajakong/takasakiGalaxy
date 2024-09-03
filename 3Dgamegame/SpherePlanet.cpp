@@ -46,11 +46,16 @@ void SpherePlanet::Draw()
 
 Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//成分ごとに計算し、補正後のベクトルを返す
 {
+	Vec3 objVelocity = obj->PlanetOnlyGetRigid().GetVelocity();
+
+	if (obj->GetTag() == ObjectTag::EnemyAttack)
+	{
+		return objVelocity;
+	}
 	////惑星の中心からy方向に伸ばした線を軸にし、オブジェクトの位置を見て軸と惑星の中心からオブジェクトに向かうベクトルの角度分だけオブジェクトのベロシティのy方向に影響させるという考え方、Xに進みたい場合軸のXを基準に,Zに進みたい場合軸のZを基準
 	////Yは法線の角度に回転させる
 	Vec3 ansVelocity;
 	Vec3 objPos=obj->PlanetOnlyGetRigid().GetPos();
-	Vec3 objVelocity = obj->PlanetOnlyGetRigid().GetVelocity();
 	Vec3 toObj= m_rigid.GetPos()-objPos;
 	toObj=toObj.GetNormalized();
 
