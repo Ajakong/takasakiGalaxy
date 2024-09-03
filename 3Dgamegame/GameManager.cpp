@@ -194,7 +194,6 @@ void GameManager::Update()
 	}
 	/*SetUseVertexShader(outlineVsH);
 	SetUsePixelShader(outlinePsH);*/
-	//MV1DrawModel(modelH);
 	// ƒJƒŠƒ“ƒO•ûŒü‚ğŒ³‚É–ß‚·
 	for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
 	{
@@ -245,6 +244,10 @@ void GameManager::Update()
 	if (player->GetHp() <= 0)
 	{
 		m_isGameOverFlag = true;
+	}
+	if (planet->GetClearFlag())
+	{
+		m_isClearFlag = true;
 	}
 
 

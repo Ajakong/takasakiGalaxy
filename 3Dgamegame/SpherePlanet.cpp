@@ -11,7 +11,7 @@ namespace
 }
 
 SpherePlanet::SpherePlanet(Vec3 pos):Planet(),
-m_enemyCount(0)
+m_enemyCount(3)
 {
 	gravityPower = 3;
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//‚±‚±‚Å“ü‚ê‚½‚Ì‚Íd—Í‚Ì‰e‹¿”ÍˆÍ
@@ -82,10 +82,10 @@ Vec3 SpherePlanet::GetNormVec(Vec3 pos)
 
 void SpherePlanet::OnTriggerEnter(std::shared_ptr<Collidable> colider)
 {
-	if (colider->GetTag() == ObjectTag::Takobo)
+	/*if (colider->GetTag() == ObjectTag::Takobo)
 	{
 		m_enemyCount++;
-	}
+	}*/
 }
 
 void SpherePlanet::OnTriggerExit(std::shared_ptr<Collidable> colider)

@@ -9,7 +9,7 @@ namespace
 	/// <summary>
 		/// ç≈ëÂHP
 		/// </summary>
-	constexpr int kHp = 80;
+	constexpr int kHp = 20;
 
 	constexpr int kStartPosX = 200;
 	constexpr int kStartPosY = 50;

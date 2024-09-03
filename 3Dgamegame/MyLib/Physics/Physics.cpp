@@ -359,7 +359,7 @@ void MyEngine::Physics::CheckSendOnCollideInfo(SendCollideInfo& preSendInfo, Sen
 				}
 			}
 
-			// Stary‚Í–ˆ“xŒÄ‚Ô
+			// Stay‚Í–ˆ“xŒÄ‚Ô
 			if (isTrigger)
 			{
 				AddOnCollideInfo(parent.first, child, OnCollideInfoKind::TriggerStay);

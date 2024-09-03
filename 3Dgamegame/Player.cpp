@@ -3,6 +3,11 @@
 #include"MyLib/Physics/ColliderSphere.h"
 #include"Camera.h"
 
+/// <summary>
+/// やること:足の当たり判定を生成・踏みつけに使う
+/// スピン専用の当たり判定を生成・体より半径が大きい当たり判定にし、スピン中にだけ出現
+/// </summary>
+
 namespace
 {
 	constexpr int kNetralRadius = 20;//通常時の当たり半径
@@ -94,10 +99,10 @@ void Player::SetMatrix()
 	//カメラのいる角度から
 	//コントローラーによる移動方向を決定する
 	MATRIX mtx;
-	MATRIX scale = MGetScale(VGet(0.1f, 0.1f, 0.1f));
+	MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
 	
 
-	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F / 2);
+	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F);
 	mtx = MMult(scale, moveDir);
 
 	MATRIX moving = MGetTranslate(m_rigid.GetPos().VGet());
@@ -109,6 +114,7 @@ void Player::SetMatrix()
 
 void Player::Draw()
 {
+	DrawBox(100, 20, 100 + m_Hp*10, 70, 0x00ff00,true );
 	if (m_visibleCount % 5 == 0)
 	{
 		MV1DrawModel(m_modelHandle);
