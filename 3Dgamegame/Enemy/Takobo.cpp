@@ -46,7 +46,7 @@ Vec3 ToVec(Vec3 a, Vec3 b);
 Vec3 norm(Vec3 a);
 float lerp(float start, float end, float t);
 
-Takobo::Takobo(Vec3 pos) :Enemy(MV1LoadModel("../Model/Enemy/bodyeater.mv1"), Priority::Low, ObjectTag::Enemy),
+Takobo::Takobo(Vec3 pos) :Enemy(MV1LoadModel("../Model/Enemy/bodyeater.mv1"), Priority::Low, ObjectTag::Takobo),
 	m_Hp(kHp),
 	m_attackCoolDownCount(0),
 	m_centerToEnemyAngle(0)

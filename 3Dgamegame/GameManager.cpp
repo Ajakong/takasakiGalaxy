@@ -163,7 +163,7 @@ void GameManager::Update()
 		}
 	}
 	
-	camera->SetCameraPoint(player->GetPos()+Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector()).GetNormalized() * 200);
+	camera->SetCameraPoint(player->GetPos()+Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector()).GetNormalized() * 300);
 	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
 	camera->Update(player->GetPos());
 	//camera->SetCameraPos(player->GetPos());

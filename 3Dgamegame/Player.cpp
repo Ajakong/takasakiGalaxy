@@ -19,7 +19,7 @@ namespace
 	constexpr float kAnimChangeRateSpeed = 1.0f / kAnimChangeFrame;
 
 	//アナログスティックによる移動関連
-	constexpr float kMaxSpeed = 7.0f;//プレイヤーの最大速度
+	constexpr float kMaxSpeed = 5.0f;//プレイヤーの最大速度
 	constexpr float kAnalogRangeMin = 0.1f;//アナログスティックの入力判定範囲
 	constexpr float kAnalogRangeMax = 0.8f;
 	constexpr float kAnalogInputMax = 1000.0f;//アナログスティックから入力されるベクトルの最大値
