@@ -162,8 +162,13 @@ void GameManager::Update()
 			i--;
 		}
 	}
-	if()
-	camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector()).GetNormalized() * 300));
+	Vec3 planetToPlayer = player->GetPos() - planet->PlanetOnlyGetRigid().GetPos();
+	Vec3 playerToCamera = camera->GetPos() -player->GetPos();
+	float a = acos(Dot(planetToPlayer.GetNormalized(), playerToCamera.GetNormalized())) * 180 / DX_PI_F;
+	if ( a+32> 90)
+	{
+		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector()).GetNormalized() * 300));
+	}
 	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
 	camera->Update(player->GetPos());
 	//camera->SetCameraPos(player->GetPos());
