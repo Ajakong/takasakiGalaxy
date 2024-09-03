@@ -79,6 +79,23 @@ void Vec3::operator*=(float scale)
 	z *= scale;
 }
 
+Vec3 Vec3::operator*(Vec3& val) const
+{
+	return Vec3(x*val.x,y*val.y,z*val.z);
+}
+
+Vec3 Vec3::operator*(Vec3 val)
+{
+	return Vec3(x * val.x, y * val.y, z * val.z);
+}
+
+void Vec3::operator*=(Vec3& val)
+{
+	x = x * val.x;
+	y = y * val.y;
+	z = z * val.z;
+}
+
 Vec3 Vec3::operator/(float scale) const
 {
 	if (SqLength() == 0.0f)

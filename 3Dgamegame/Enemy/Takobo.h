@@ -40,7 +40,7 @@ public:
 	std::list<std::shared_ptr<EnemySphere>> GetAttackObj() { return m_sphere; }
 
 	//メンバ関数ポインタ
-	using enemyState_t = void(Enemy::*)();
+	using enemyState_t = void(Takobo::*)();
 	enemyState_t m_enemyUpdate;
 private:
 	/// <summary>
