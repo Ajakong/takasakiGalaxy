@@ -69,12 +69,20 @@ void Takobo::Init()
 
 void Takobo::Update()
 {
-	m_vec.x = 1;
-	if (abs(m_rigid.GetPos().x - m_moveShaftPos.x) > 5)
+	(this->*m_enemyUpdate)();
+
+	for (auto& sphere : m_sphere)
 	{
-		m_vec.x *= -1;
+		if (m_sphere.size() == 0)return;
+		sphere->Update();
+
 	}
-	m_rigid.SetVelocity(VGet(m_vec.x, 0, 0));
+
+	m_sphere.remove_if([this](const auto& sphere)
+		{
+			bool isOut = sphere->IsDelete() == true;
+	return isOut;
+		});
 }
 
 void Takobo::SetMatrix()
@@ -102,6 +110,17 @@ void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
 Vec3 Takobo::GetMyPos()
 {
 	return  VGet(m_rigid.GetPos().x, m_rigid.GetPos().y + kFootToCenter, m_rigid.GetPos().z);;
+}
+
+void Takobo::IdleUpdate()
+{
+	m_vec.x = 1;
+	if (abs(m_rigid.GetPos().x - m_moveShaftPos.x) > 5)
+	{
+		m_vec.x *= -1;
+	}
+
+	m_rigid.SetVelocity(VGet(m_vec.x, 0, 0));
 }
 
 void Takobo::AttackSphereUpdate()
