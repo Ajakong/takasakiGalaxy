@@ -122,7 +122,7 @@ void Player::Draw()
 	DrawBox(100, 20, 100 + m_Hp*10, 70, 0x00ff00,true );
 	if (m_visibleCount % 5 == 0)
 	{
-		MV1DrawModel(m_modelHandle);
+		//MV1DrawModel(m_modelHandle);
 	}
 
 #if _DEBUG

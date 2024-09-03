@@ -149,6 +149,7 @@ void Takobo::IdleUpdate()
 
 			/*m_attackCoolDownCount = 0;
 			m_enemyUpdate = &Enemy::AttackBombUpdate;*/
+			break;
 		default:
 			m_attackCoolDownCount =250;
 			break;
