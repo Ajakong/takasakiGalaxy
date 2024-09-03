@@ -36,6 +36,8 @@ public:
 
 	float GetIdleSpeed() { return m_idleSpeed; }
 
+	void SetTarget(std::shared_ptr<Collidable> target);
+
 
 	std::list<std::shared_ptr<EnemySphere>> GetAttackObj() { return m_sphere; }
 
@@ -86,6 +88,7 @@ private:
 	Vec3 m_vec;
 	Vec3 m_attackDir;
 	Vec3 m_moveShaftPos;
+	std::shared_ptr<Collidable> m_target;
 	//アニメーション変数
 	int m_anim_nutral = 0;
 	int m_anim_move = 0;

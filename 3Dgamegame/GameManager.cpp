@@ -7,6 +7,7 @@
 #include"Player.h"
 #include"SpherePlanet.h"
 #include"Enemy/Takobo.h"
+#include"Object/Item.h"
 #include<cassert>
 
 GameManager::GameManager() :
@@ -48,6 +49,8 @@ GameManager::GameManager() :
 	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
 	planet2 = std::make_shared<SpherePlanet>(Vec3(3000,0,1000));
 	takobo = { std::make_shared<Takobo>(Vec3(300,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,0,700)) };
+	poworStone.push_back( std::make_shared<Item>(Vec3(0, -1000, 0)));
+
 }
 
 GameManager::~GameManager()
@@ -99,8 +102,12 @@ void GameManager::Init()
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
 	MyEngine::Physics::GetInstance().Entry(planet2);
-
-	for(auto& item : takobo)MyEngine::Physics::GetInstance().Entry(item);
+	for (auto& item : poworStone)MyEngine::Physics::GetInstance().Entry(item);
+	for (auto& item : takobo)
+	{
+		MyEngine::Physics::GetInstance().Entry(item);
+		item->SetTarget(player);
+	}
 }
 
 void GameManager::Update()
@@ -144,8 +151,10 @@ void GameManager::Update()
 	planet->Update();
 	planet2->Update();
 	//player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
-
-	
+	for (auto& item:poworStone)
+	{
+		item->Update();
+	}
 	player->Update();
 	
 	for (auto& item : takobo)item->Update();
@@ -161,6 +170,17 @@ void GameManager::Update()
 
 			takobo.erase(takobo.begin()+i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
 			i--;
+		}
+	}
+	for (int i = 0; i < poworStone.size(); i++)
+	{
+		if (poworStone[i]->GetDeleteFlag())
+		{
+			MyEngine::Physics::GetInstance().Exit(poworStone[i]);
+
+			poworStone.erase(poworStone.begin() + i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
+			i--;
+			m_isClearFlag = true;
 		}
 	}
 	
@@ -261,6 +281,10 @@ void GameManager::Draw()
 	MV1DrawModel(skyDomeH);
 	planet->Draw();
 	player->Draw();
+	for (auto& item : poworStone)
+	{
+		item->Draw();
+	}
 	for (auto& item : takobo)item->Draw();
 	camera->DebagDraw();
 	SetRenderTargetToShader(1, -1);		// RTの解除

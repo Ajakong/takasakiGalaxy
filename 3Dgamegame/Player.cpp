@@ -140,14 +140,6 @@ void Player::SetCameraToPlayer(Vec3 cameraToPlayer)
 	m_cameraToPlayer = cameraToPlayer;
 }
 
-void Player::OnCollideEnter(const Collidable& colider)
-{
-	if (colider.GetTag() == ObjectTag::Takobo)
-	{
-		m_Hp -= 10;
-	}
-}
-
 void Player::SetCameraAngle(float cameraAngle)
 {
 	m_cameraAngle = cameraAngle;
@@ -155,6 +147,15 @@ void Player::SetCameraAngle(float cameraAngle)
 
 void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
+	if (colider->GetTag() == ObjectTag::Takobo)
+	{
+		m_Hp -= 10;
+	}
+	if (colider->GetTag() == ObjectTag::Item)
+	{
+		m_itemCount++;
+		m_rigid.AddVelocity(colider->GetKnockBackVelocity() * 5);
+	}
 	if (colider->GetTag() == ObjectTag::EnemyAttack)
 	{
 		m_Hp -= 20;

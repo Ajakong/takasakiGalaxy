@@ -126,6 +126,11 @@ Vec3 Takobo::GetMyPos()
 	return  VGet(m_rigid.GetPos().x, m_rigid.GetPos().y + kFootToCenter, m_rigid.GetPos().z);;
 }
 
+void Takobo::SetTarget(std::shared_ptr<Collidable> target)
+{
+	m_target = target;
+}
+
 void Takobo::IdleUpdate()
 {
 	m_vec.x = 1;
@@ -177,8 +182,8 @@ void Takobo::AttackSphereUpdate()
 
 Vec3 Takobo::GetAttackDir() const
 {
-	Vec3 toVec = ToVec(m_rigid.GetPos(), VGet(0, 0, 0));
-	Vec3 vec = norm(ToVec(m_rigid.GetPos(), VGet(0, 0, 0)));
+	Vec3 toVec = ToVec(m_rigid.GetPos(),m_target->GetRigidbody().GetPos());
+	Vec3 vec = norm(ToVec(m_rigid.GetPos(), m_target->GetRigidbody().GetPos()));
 	vec = VGet(vec.x * abs(toVec.x), vec.y * abs(toVec.y), vec.z * abs(toVec.z));
 	return vec;
 }

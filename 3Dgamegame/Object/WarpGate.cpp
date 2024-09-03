@@ -1,6 +1,6 @@
 #include "WarpGate.h"
 
-WarpGate::WarpGate():Collidable(Priority::High, ObjectTag::Object)
+WarpGate::WarpGate():Collidable(Priority::High, ObjectTag::WarpGate)
 {
 }
 

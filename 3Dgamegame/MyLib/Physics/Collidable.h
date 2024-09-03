@@ -51,6 +51,9 @@ namespace MyEngine
 		// 当たり判定を無視（スルー）する対象かどうか
 		bool IsThroughTarget(std::shared_ptr<Collidable>) const;
 
+		Vec3 GetKnockBackVelocity() { return (m_rigid.GetVelocity())*-1; }
+
+		Rigidbody GetRigidbody() const { return m_rigid; }
 	protected:
 		std::shared_ptr<ColliderBase> AddCollider(const ColliderBase::Kind& kind);
 
@@ -60,6 +63,8 @@ namespace MyEngine
 		// 当たり判定データ
 		std::list<std::shared_ptr<ColliderBase>> m_colliders;
 		Vec3 m_upVec;
+
+		
 	
 	private:
 		std::list<ObjectTag>	throughTags;

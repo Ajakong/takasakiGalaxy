@@ -22,7 +22,6 @@ public:
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 	Vec3 GetMoveDir() const{ return m_moveDir; }
 	float GetRegenerationRange() { return m_regeneRange; }
-	virtual void OnCollideEnter(const Collidable& colider);
 	int WatchHp()const { return m_Hp; }
 
 	void SetCameraAngle(float cameraAngle);
@@ -92,6 +91,8 @@ private:
 	int m_modelHandle = 0;
 
 	int rotRad = 0;
+
+	int m_itemCount=0;
 
 	/// <summary>
 	/// s“®‚ÌƒtƒŒ[ƒ€‚ğŠÇ—‚·‚é
