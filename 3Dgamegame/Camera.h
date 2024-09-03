@@ -23,6 +23,7 @@ public:
 	void SetCameraThirdPersonPos(Vec3 LookPoint);
 	float GetCameraAngle() const { return m_cameraAngle; }
 	void SetUpVec(Vec3 upDir) { m_upVec = upDir; }
+	Vec3 GetUpVec() const { return m_upVec; }
 	void SetCameraPoint(Vec3 pos) { m_cameraPoint = pos; }
 
 	//メンバ関数ポインタ

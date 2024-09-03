@@ -30,7 +30,7 @@ Camera::Camera():
 	// FOV(Ž‹–ìŠp)‚ð60“x‚É
 	SetupCamera_Perspective(kCameraFOV * (static_cast<float>(DX_PI_F) / 180.0f));
 
-	m_pos = { 0.0f,300.0f, -100.0f };
+	m_pos = { 0.0f,100.0f, -200.0f };
 	m_playerToCameraVec = { 0.f,30.f,-100.f };
 	m_postLookPointPos = { 0,0,0 };
 	m_fowardVec = { 0.f,0.f,0.1f };
@@ -52,7 +52,7 @@ void Camera::Update(Vec3 LookPoint)
 	DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
 	
 	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
-	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),Vec3(m_pos.x,LookPoint.y, LookPoint.z).VGet(), m_upVec.VGet());
+	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/LookPoint.VGet(), m_upVec.VGet());
 	Pad::Update();
 	m_postLookPointPos = LookPoint;
 

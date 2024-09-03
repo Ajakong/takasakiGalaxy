@@ -163,9 +163,9 @@ void GameManager::Update()
 		}
 	}
 	
-	camera->SetCameraPoint(player->GetPos()+Vec3(GetCameraUpVector()) * 30 - Vec3(GetCameraFrontVector()) * 100);
+	camera->SetCameraPoint(player->GetPos()+Vec3(GetCameraUpVector()) * 100 - Vec3(GetCameraFrontVector()) * 200);
 	camera->SetUpVec(planet->GetNormVec(player->GetPos()));
-	camera->Update(player->GetPos() + Vec3(GetCameraUpVector()) * 30);
+	camera->Update(player->GetPos() );
 	//camera->SetCameraPos(player->GetPos());
 
 	player->SetMatrix();

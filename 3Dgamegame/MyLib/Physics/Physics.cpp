@@ -61,8 +61,12 @@ void Physics::Exit(const std::shared_ptr<Collidable>& collidable)
 	if (it!= m_collidables.end())
 	{
 		int index = distance(m_collidables.begin(), it);
-
-		m_collidables.erase(m_collidables.begin());
+		auto iterater = m_collidables.begin();
+		for (int i = 0; i < index; i++)
+		{
+			iterater++;
+		}
+		m_collidables.erase(iterater);
 	}
 	// –¢“o˜^‚È‚ç–³‹
 	else
