@@ -48,7 +48,6 @@ GameManager::GameManager() :
 	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
 	planet2 = std::make_shared<SpherePlanet>(Vec3(3000,0,1000));
 	takobo = { std::make_shared<Takobo>(Vec3(300,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,0,700)) };
-	
 }
 
 GameManager::~GameManager()
@@ -100,6 +99,7 @@ void GameManager::Init()
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
 	MyEngine::Physics::GetInstance().Entry(planet2);
+
 	for(auto& item : takobo)MyEngine::Physics::GetInstance().Entry(item);
 }
 

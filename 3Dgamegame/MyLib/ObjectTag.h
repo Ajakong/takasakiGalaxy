@@ -7,5 +7,6 @@ enum class ObjectTag
 	Enemy,
 	Takobo,
 	EnemyAttack,
-	Object
+	Object,
+	Item
 };

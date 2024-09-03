@@ -36,7 +36,7 @@ private:
 	std::shared_ptr<Planet> planet;
 	std::shared_ptr<Planet> planet2;
 	std::vector<std::shared_ptr<Takobo>> takobo;
-
+	MyEngine::Collidable item;
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
 

@@ -115,6 +115,8 @@ void Player::SetMatrix()
 	mtx = MMult(mtx, moving);
 
 	MV1SetMatrix(m_modelHandle, mtx);
+
+
 }
 
 void Player::Draw()
@@ -124,9 +126,9 @@ void Player::Draw()
 	{
 		//MV1DrawModel(m_modelHandle);
 	}
-
-#if _DEBUG
 	DrawSphere3D(m_rigid.GetPos().VGet(), m_radius, 10, 0x000000, 0x00ffff, false);
+#if _DEBUG
+	
 	
 	//printfDx("%d", HitCount);
 #endif

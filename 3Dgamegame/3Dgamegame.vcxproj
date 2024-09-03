@@ -170,6 +170,7 @@
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="GamePlayingScene.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\WarpGate.cpp" />
     <ClCompile Include="Pad.cpp" />
     <ClCompile Include="Planet.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="GamePlayingScene.h" />
+    <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\WarpGate.h" />
     <ClInclude Include="Pad.h" />
     <ClInclude Include="Planet.h" />
