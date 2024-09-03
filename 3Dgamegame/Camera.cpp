@@ -52,7 +52,7 @@ void Camera::Update(Vec3 LookPoint)
 	DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
 	
 	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
-	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/LookPoint.VGet(), m_upVec.VGet());
+	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(LookPoint+m_upVec.GetNormalized()*100.0f).VGet(), m_upVec.VGet());
 	Pad::Update();
 	m_postLookPointPos = LookPoint;
 
