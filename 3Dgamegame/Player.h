@@ -32,6 +32,7 @@ public:
 
 	int& SetReverse() { return m_reverseFlag; }
 
+	bool GetJumpFlag() { return m_isJumpFlag; }
 
 	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);
 	//メンバ関数ポインタ
@@ -138,6 +139,7 @@ private:
 	float m_cameraAngle = 0;
 
 	bool m_isVisibleFlag = false;
+	bool m_isJumpFlag = false;
 	int m_visibleCount = 0;
 
 	int HitCount = 0;
