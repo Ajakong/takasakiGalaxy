@@ -5,6 +5,7 @@
 #include"Camera.h"
 #include"MyLib/Physics/Physics.h"
 #include"Player.h"
+#include"Object/WarpGate.h"
 #include"SpherePlanet.h"
 #include"Enemy/Takobo.h"
 #include"Enemy/Gorori.h"
@@ -97,6 +98,7 @@ GameManager::GameManager() :
 	camera = std::make_shared<Camera>();
 	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
 	planet2 = std::make_shared<SpherePlanet>(Vec3(3000,0,1000));
+	warpGate = std::make_shared<WarpGate>(Vec3(0, -1000, 0));
 	takobo = { std::make_shared<Takobo>(Vec3(300,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,0,700)) };
 	gorori= { std::make_shared<Gorori>(Vec3(500,0,300)),std::make_shared<Gorori>(Vec3(500,0,-300)),std::make_shared<Gorori>(Vec3(700,0,0)) };
 	poworStone.push_back( std::make_shared<Item>(Vec3(0, -1000, 0)));
@@ -179,6 +181,7 @@ void GameManager::Init()
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
 	MyEngine::Physics::GetInstance().Entry(planet2);
+	MyEngine::Physics::GetInstance().Entry(warpGate);
 	for (auto& item : poworStone)MyEngine::Physics::GetInstance().Entry(item);
 	for (auto& item : takobo)
 	{
@@ -190,6 +193,8 @@ void GameManager::Init()
 		MyEngine::Physics::GetInstance().Entry(item);
 		item->SetTarget(player);
 	}
+
+	warpGate->SetWarpPos(Vec3(3000,500,100));
 }
 
 void GameManager::Update()
@@ -262,6 +267,7 @@ void GameManager::IntroDraw()
 	MV1DrawModel(skyDomeH);
 	planet->Draw();
 	player->Draw();
+	warpGate->Draw();
 
 	for (auto& item : poworStone)
 	{
@@ -472,6 +478,7 @@ void GameManager::GamePlayingDraw()
 	MV1DrawModel(skyDomeH);
 	planet->Draw();
 	player->Draw();
+	warpGate->Draw();
 	for (auto& item : poworStone)
 	{
 		item->Draw();

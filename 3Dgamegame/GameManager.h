@@ -6,6 +6,7 @@ class Planet;
 class Takobo;
 class Gorori;
 class Item;
+class WarpGate;
 
 class GameManager
 {
@@ -50,6 +51,7 @@ private:
 	std::shared_ptr<Player> player;
 	std::shared_ptr<Planet> planet;
 	std::shared_ptr<Planet> planet2;
+	std::shared_ptr<WarpGate> warpGate;
 	std::vector<std::shared_ptr<Takobo>> takobo;
 	std::vector<std::shared_ptr<Gorori>> gorori;
 	std::vector<std::shared_ptr<Item>> poworStone;

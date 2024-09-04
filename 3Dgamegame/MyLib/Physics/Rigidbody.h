@@ -18,7 +18,7 @@ namespace MyEngine
 		const Vec3& GetPrevVelocity()const { return m_prevVelocity; }
 		const Vec3& GetDir() const { return m_dir; }
 
-		void SetPos(const Vec3& pos) { m_pos = pos; }
+		void SetPos(Vec3 pos);
 		void SetNextPos(const Vec3& nextPos) { m_nextPos = nextPos; }
 		void SetVelocity(const Vec3& velocity);
 		void SetPrevVelocity(const Vec3& velocity) { m_prevVelocity = velocity; }
