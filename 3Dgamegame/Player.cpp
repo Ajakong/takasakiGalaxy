@@ -54,7 +54,8 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_spinAngle(0),
 	m_animBlendRate(0),
 	m_currentAnimNo(0),
-	m_prevAnimNo(0)
+	m_prevAnimNo(0),
+	m_isJumpFlag(false)
 {
 	m_rigid.SetPos(Vec3(0, 0, 0));
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
@@ -152,6 +153,7 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	if (colider->GetTag() == ObjectTag::Stage)
 	{
 		m_playerUpdate = &Player::NeutralUpdate;
+		m_isJumpFlag = false;
 	}
 	if (colider->GetTag() == ObjectTag::Takobo)
 	{
@@ -276,7 +278,8 @@ void Player::NeutralUpdate()
 	//プレイヤーの最大移動速度は0.01f/frame
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
-		move += m_upVec.GetNormalized() * 50;
+		m_isJumpFlag = true;
+		move += m_upVec.GetNormalized() * 10;
 		m_playerUpdate = &Player::JumpingUpdate;
 	}
 	if (Pad::IsTrigger(PAD_INPUT_2))//XBoxの
