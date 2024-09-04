@@ -10,7 +10,7 @@ namespace
 
 }
 
-SpherePlanet::SpherePlanet(Vec3 pos):Planet(),
+SpherePlanet::SpherePlanet(Vec3 pos) :Planet(),
 m_enemyCount(3)
 {
 	gravityPower = 3;
@@ -52,29 +52,40 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//ê¨ï™Ç≤Ç∆Ç…åvé
 	{
 		return objVelocity;
 	}
+
 	////òfêØÇÃíÜêSÇ©ÇÁyï˚å¸Ç…êLÇŒÇµÇΩê¸Çé≤Ç…ÇµÅAÉIÉuÉWÉFÉNÉgÇÃà íuÇå©Çƒé≤Ç∆òfêØÇÃíÜêSÇ©ÇÁÉIÉuÉWÉFÉNÉgÇ…å¸Ç©Ç§ÉxÉNÉgÉãÇÃäpìxï™ÇæÇØÉIÉuÉWÉFÉNÉgÇÃÉxÉçÉVÉeÉBÇÃyï˚å¸Ç…âeãøÇ≥ÇπÇÈÇ∆Ç¢Ç§çlÇ¶ï˚ÅAXÇ…êiÇ›ÇΩÇ¢èÍçáé≤ÇÃXÇäÓèÄÇ…,ZÇ…êiÇ›ÇΩÇ¢èÍçáé≤ÇÃZÇäÓèÄ
 	////YÇÕñ@ê¸ÇÃäpìxÇ…âÒì]Ç≥ÇπÇÈ
 	Vec3 ansVelocity;
-	Vec3 objPos=obj->PlanetOnlyGetRigid().GetPos();
-	Vec3 toObj= m_rigid.GetPos()-objPos;
-	toObj=toObj.GetNormalized();
+	Vec3 objPos = obj->PlanetOnlyGetRigid().GetPos();
+	Vec3 toObj = m_rigid.GetPos() - objPos;
+	toObj = toObj.GetNormalized();
+	if (obj->GetTag() == ObjectTag::Gorori)
+	{
+		float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
+		float angleZ = DX_PI_F / 2 + atan2(toObj.y, toObj.z);
+		ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };
+		ansVelocity += toObj * objVelocity.y;//ÉvÉåÉCÉÑÅ[ÇÃÉWÉÉÉìÉvï™ÇÃÉxÉNÉgÉãÇÃâ¡éZ
 
-	//float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
-	//float angleZ= DX_PI_F / 2 + atan2(toObj.y, toObj.z);
-	//ansVelocity = { objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ) };
-	//ansVelocity += toObj*objVelocity.y;//ÉvÉåÉCÉÑÅ[ÇÃÉWÉÉÉìÉvï™ÇÃÉxÉNÉgÉãÇÃâ¡éZ
+		ansVelocity += toObj * kGravityPower;
+		obj->SetReverceGravityVec(toObj.GetNormalized());
 
-	//ansVelocity += toObj * kGravityPower;
-	//obj->SetReverceGravityVec(toObj.GetNormalized());
+		/*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
+		ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
+		ansVelocity = ANSVECTOR;*/
+		//ansVelocity -= toObj;
+		return ansVelocity;
+	}
 
-	///*VECTOR ANSVECTOR = VGet(objVelocity.x * cos(angleX), objVelocity.x * sin(angleX) + objVelocity.z * sin(angleZ), objVelocity.z * cos(angleZ));
-	//ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
-	//ansVelocity = ANSVECTOR;*/
-	////ansVelocity -= toObj;
-	//return ansVelocity;
-	
+	if (obj->GetTag() == ObjectTag::Player)
+	{
+		//èdóÕÇÃÇ›
+		toObj = toObj * gravityPower*0.5 + objVelocity;
+		return toObj;
+	}
+
+
 	//èdóÕÇÃÇ›
-	toObj = toObj * gravityPower+objVelocity;
+	toObj = toObj * gravityPower + objVelocity;
 	return toObj;
 }
 

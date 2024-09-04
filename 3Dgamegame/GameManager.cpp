@@ -7,6 +7,7 @@
 #include"Player.h"
 #include"SpherePlanet.h"
 #include"Enemy/Takobo.h"
+#include"Enemy/Gorori.h"
 #include"Object/Item.h"
 #include<cassert>
 #include"WorldTimer.h"
@@ -15,11 +16,42 @@
 namespace
 {
 	//UI
-	constexpr int kUiTexture_SrkX = 150;
-	constexpr int kUiTexture_SrkY = 170;
-	constexpr int kUiTexture_Width = 1050;
-	constexpr int kUiTexture_Height = 450;
-	constexpr float kUiTexture_Exrate = 0.2f;
+	//ミッション
+	constexpr int kUiText_SrkX = 150;
+	constexpr int kUiText_SrkY = 170;
+	constexpr int kUiText_Width = 1050;
+	constexpr int kUiText_Height = 450;
+	constexpr float kUiText_Exrate = 0.2f;
+
+	//HPバーの枠
+	constexpr int kUiHpbarFrame_PosX = 150;
+	constexpr int kUiHpbarFrame_PosY = 50;
+	constexpr int kUiHpbarFrame_SrkX = 2600;
+	constexpr int kUiHpbarFrame_SrkY = 2560;
+	constexpr int kUiHpbarFrame_Width = 1000;
+	constexpr int kUiHpbarFrame_Height = 240;
+	constexpr float kUiHpbarFrame_Exrate = 0.3f;
+
+	//HPバー
+	constexpr int kUiHpbar_PosX = 15;
+	constexpr int kUiHpbar_PosY = 25;
+	constexpr int kUiHpbar_Height = 23;
+	constexpr float kUiHpbar_mag = 5.35f;//HPに掛けたらいい感じになる倍率
+
+	//タイマーの枠
+	constexpr int kUiTimeCountFrame_PosX = 1400;
+	constexpr int kUiTimeCountFrame_PosY = 100;
+	constexpr int kUiTimeCountFrame_SrkX = 1280;
+	constexpr int kUiTimeCountFrame_SrkY = 130;
+	constexpr int kUiTimeCountFrame_Width = 1040;
+	constexpr int kUiTimeCountFrame_Height = 410;
+	constexpr float kUiTimeCountFrame_Exrate = 0.3f;
+
+	//タイマー
+	constexpr int kUiTimeCount_PosX = 1350;
+	constexpr int kUiTimeCount_PosY = 90;
+
+
 }
 
 GameManager::GameManager() :
@@ -47,7 +79,9 @@ GameManager::GameManager() :
 	shrinkRT(MakeScreen(320, 240, true)),
 	depthRT(MakeScreen(640, 480)),
 	/*skyDomeH(MV1LoadModel("Model/Skydome/universe_skydome.mv1")),*/
-	m_isClearFlag(false)
+	m_isClearFlag(false),
+	fadeCount(100),
+	itemNum(0)
 {
 	assert(modelH != -1);
 	assert(roughH != -1);
@@ -64,16 +98,22 @@ GameManager::GameManager() :
 	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
 	planet2 = std::make_shared<SpherePlanet>(Vec3(3000,0,1000));
 	takobo = { std::make_shared<Takobo>(Vec3(300,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,0,700)) };
+	gorori= { std::make_shared<Gorori>(Vec3(500,0,300)),std::make_shared<Gorori>(Vec3(500,0,-300)),std::make_shared<Gorori>(Vec3(700,0,0)) };
 	poworStone.push_back( std::make_shared<Item>(Vec3(0, -1000, 0)));
+	poworStone.push_back(std::make_shared<Item>(Vec3(-1000, 0, 0)));
+	poworStone.push_back(std::make_shared<Item>(Vec3(1000, 0, 0)));
+	poworStone.push_back(std::make_shared<Item>(Vec3(0, 1000, 0)));
+	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, 1000)));
+	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, -1000)));
 
-	////使用するフォントを準備する
-	//if (AddFontResourceEx("Font/SF_font.ttf", FR_PRIVATE, NULL) > 0) {
-	//}
-	//else {
-	//	// フォント読込エラー処理
-	//	MessageBox(NULL, "フォント読込失敗", "", MB_OK);
-	//}
-	//fontHandle = CreateFontToHandle("廻想体 ネクスト UP B", 20, 2, DX_FONTTYPE_NORMAL);
+	//使用するフォントを準備する
+	if (AddFontResourceEx("Font/disital.TTF", FR_PRIVATE, NULL) > 0) {
+	}
+	else {
+		// フォント読込エラー処理
+		MessageBox(NULL, "フォント読込失敗", "", MB_OK);
+	}
+	fontHandle = CreateFontToHandle("Pocket Calculator", 60,7, DX_FONTTYPE_NORMAL);
 
 	m_managerUpdate = &GameManager::IntroUpdate;
 	m_managerDraw = &GameManager::IntroDraw;
@@ -86,6 +126,16 @@ GameManager::~GameManager()
 
 void GameManager::Init()
 {
+	/*MATERIALPARAM Material;
+
+	Material.Diffuse = GetColorF(1.0f, 1.0f, 1.0f, 1.0f);
+	Material.Ambient = GetColorF(0.0f, 0.0f, 0.0f, 0.5f);
+	Material.Specular = GetColorF(0.5f, 0.5f, 0.5f, 0.5f);
+	Material.Emissive = GetColorF(0.0f, 0.0f, 0.0f, 0.0f);
+	Material.Power = 20.0f;
+	SetMaterialParam(Material);
+	SetLightAmbColor(GetColorF(0.5f, 0.5f, 0.5f, 1.0f));*/
+	SetGlobalAmbientLight(GetColorF(1.0f, 0.0f, 0.0f, 0.0f));
 	player->SetMatrix();
 
 
@@ -123,14 +173,19 @@ void GameManager::Init()
 	userData->clickedV = 0.0f;
 
 	// 深度値記録バッファ用RT
-	SetCreateGraphChannelBitDepth(32);
-	SetCreateDrawValidGraphChannelNum(1);
+	DxLib::SetCreateGraphChannelBitDepth(32);
+	DxLib::SetCreateDrawValidGraphChannelNum(1);
 
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
 	MyEngine::Physics::GetInstance().Entry(planet2);
 	for (auto& item : poworStone)MyEngine::Physics::GetInstance().Entry(item);
 	for (auto& item : takobo)
+	{
+		MyEngine::Physics::GetInstance().Entry(item);
+		item->SetTarget(player);
+	}
+	for (auto& item : gorori)
 	{
 		MyEngine::Physics::GetInstance().Entry(item);
 		item->SetTarget(player);
@@ -153,6 +208,11 @@ void GameManager::IntroUpdate()
 	if (m_isFadeIntroFlag)
 	{
 		fadeCount++;
+	}
+	else
+	{
+		fadeCount-=3;
+		if (fadeCount < 0)fadeCount = 0;
 	}
 	MyEngine::Physics::GetInstance().Update();
 	Vec3 planetToPlayer = player->GetPos() - planet->PlanetOnlyGetRigid().GetPos();
@@ -202,18 +262,26 @@ void GameManager::IntroDraw()
 	MV1DrawModel(skyDomeH);
 	planet->Draw();
 	player->Draw();
+
 	for (auto& item : poworStone)
 	{
 		item->Draw();
 	}
 	for (auto& item : takobo)item->Draw();
+	for (auto& item : gorori)item->Draw();
 	camera->DebagDraw();
 	SetRenderTargetToShader(1, -1);		// RTの解除
 	SetRenderTargetToShader(2, -1);		// RTの解除
 
-	DrawFormatString(1400, 100, 0xff0000, "%d.%f", WorldTimer::GetTimer(), WorldTimer::GetFrame());
-
-	DrawRectRotaGraph(kUiTexture_SrkX + (100 * 7 - fadeCount * 7), kUiTexture_SrkY + (100 * 2.2f - fadeCount * 2.2f), kUiTexture_SrkX, kUiTexture_SrkY, kUiTexture_Width, kUiTexture_Height, kUiTexture_Exrate * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 0, textureUIHandle, true);
+	//タイマー
+	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle, 1,1);
+	
+	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
+	//HPバー
+	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height,0.3f, 0, textureUIHandle, true);
+	DrawBox(15, 25,static_cast<int>(15 + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
+	//ミッション
+	DrawRectRotaGraph(kUiText_SrkX + (100 * 7 - fadeCount * 7), static_cast<int>(kUiText_SrkY + (100 * 2.2f - fadeCount * 2.2f)), kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 0, textureUIHandle, true);
 }
 
 void GameManager::GamePlayingUpdate()
@@ -264,17 +332,29 @@ void GameManager::GamePlayingUpdate()
 	player->Update();
 
 	for (auto& item : takobo)item->Update();
+	for (auto& item : gorori)item->Update();
 
 	userData->dissolveY = player->GetRegenerationRange();
 
 	MyEngine::Physics::GetInstance().Update();
 	for (int i = 0; i < takobo.size(); i++)
 	{
+		takobo[i]->DeleteManage();
 		if (takobo[i]->WatchHp() < 0)
 		{
 			MyEngine::Physics::GetInstance().Exit(takobo[i]);
 
 			takobo.erase(takobo.begin() + i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
+			i--;
+		}
+	}
+	for (int i = 0; i < gorori.size(); i++)
+	{
+		if (gorori[i]->WatchHp() < 0)
+		{
+			MyEngine::Physics::GetInstance().Exit(gorori[i]);
+
+			gorori.erase(gorori.begin() + i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
 			i--;
 		}
 	}
@@ -286,8 +366,6 @@ void GameManager::GamePlayingUpdate()
 
 			poworStone.erase(poworStone.begin() + i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
 			i--;
-			m_isClearFlag = true;
-			MyEngine::Physics::GetInstance().Clear();
 		}
 	}
 
@@ -377,13 +455,17 @@ void GameManager::GamePlayingUpdate()
 		m_isClearFlag = true;
 		MyEngine::Physics::GetInstance().Clear();
 	}
+	if (poworStone.size() == 0)
+	{
+		m_isClearFlag = true;
+	}
 
 	WorldTimer::Update();
 }
 
 void GameManager::GamePlayingDraw()
 {
-	DrawRectRotaGraph(kUiTexture_SrkX, kUiTexture_SrkY, kUiTexture_SrkX, kUiTexture_SrkY, kUiTexture_Width, kUiTexture_Height, kUiTexture_Exrate, 0, textureUIHandle, true);
+	DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
 
 	MV1SetPosition(skyDomeH, player->GetPos().VGet());
 
@@ -395,9 +477,21 @@ void GameManager::GamePlayingDraw()
 		item->Draw();
 	}
 	for (auto& item : takobo)item->Draw();
+	for (auto& item : gorori)item->Draw();
 	camera->DebagDraw();
 	SetRenderTargetToShader(1, -1);		// RTの解除
 	SetRenderTargetToShader(2, -1);		// RTの解除
 
-	DrawFormatString(1400, 100, 0xff0000, "%d.%f", WorldTimer::GetTimer(), WorldTimer::GetFrame());
+	//タイマー
+	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle,1,1);
+	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
+
+	//ミッション
+	DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
+
+	//HPバー
+	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
+	DrawBox(kUiHpbar_PosX, kUiHpbar_PosY, static_cast<int>(kUiHpbar_PosX + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY +kUiHpbar_Height, 0x00ffff, true);
+
+	
 }

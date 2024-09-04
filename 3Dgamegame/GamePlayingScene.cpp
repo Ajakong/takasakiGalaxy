@@ -9,6 +9,7 @@
 #include"Pad.h"
 #include"ClearScene.h"
 #include"WorldTimer.h"
+#include"MyLib/Physics/Physics.h"
 
 #include"GameManager.h"
 
@@ -107,6 +108,7 @@ void GamePlayingScene::ChangeScene(std::shared_ptr<Scene> nextScene)
 {
 	
 	m_manager.ChangeScene(nextScene);
+	MyEngine::Physics::GetInstance().Clear();
 	WorldTimer::Reset();
 }
 

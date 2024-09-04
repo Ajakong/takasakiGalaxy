@@ -60,6 +60,7 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = m_radius;
+	m_pointLightHandle = CreatePointLightHandle(m_rigid.GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
 }
 
 Player::~Player()
@@ -75,10 +76,9 @@ void Player::Init()
 
 void Player::Update()
 {
-	m_rigid.SetVelocity(Vec3(0, 0, 0));
+	
 	(this->*m_playerUpdate)();
 
-	Pad::Update();
 	//(this->*m_cameraUpdate)();
 	//m_camera->SetUpVec(GetCameraUpVector());
 	//m_camera->Update(m_rigid.GetPos()+Vec3(GetCameraUpVector())*300);
@@ -97,6 +97,8 @@ void Player::Update()
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.front());
 		item->radius = m_radius;
 	}
+
+	SetLightPositionHandle(m_pointLightHandle, m_rigid.GetPos().VGet());
 }
 
 void Player::SetMatrix()
@@ -121,7 +123,7 @@ void Player::SetMatrix()
 
 void Player::Draw()
 {
-	DrawBox(100, 20, 100 + m_Hp*10, 70, 0x00ff00,true );
+	
 	if (m_visibleCount % 5 == 0)
 	{
 		//MV1DrawModel(m_modelHandle);
@@ -147,14 +149,23 @@ void Player::SetCameraAngle(float cameraAngle)
 
 void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
+	if (colider->GetTag() == ObjectTag::Stage)
+	{
+		m_playerUpdate = &Player::NeutralUpdate;
+	}
 	if (colider->GetTag() == ObjectTag::Takobo)
 	{
 		m_Hp -= 10;
 	}
+	if (colider->GetTag() == ObjectTag::Gorori)
+	{
+		m_Hp -= 10;
+		m_rigid.AddVelocity(Vec3(m_rigid.GetPos()-colider->GetRigidbody().GetPos()).GetNormalized()*10);
+	}
 	if (colider->GetTag() == ObjectTag::Item)
 	{
 		m_itemCount++;
-		m_rigid.AddVelocity(colider->GetKnockBackVelocity() * 5);
+		
 	}
 	if (colider->GetTag() == ObjectTag::EnemyAttack)
 	{
@@ -265,11 +276,12 @@ void Player::NeutralUpdate()
 	//プレイヤーの最大移動速度は0.01f/frame
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
-		m_playerUpdate = &Player::SpiningUpdate;
+		move += m_upVec.GetNormalized() * 50;
+		m_playerUpdate = &Player::JumpingUpdate;
 	}
 	if (Pad::IsTrigger(PAD_INPUT_2))//XBoxの
 	{
-		
+		m_playerUpdate = &Player::SpiningUpdate;
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
@@ -290,6 +302,7 @@ void Player::WalkingUpdate()
 
 void Player::JumpingUpdate()
 {
+	m_rigid.SetVelocity(m_rigid.GetPrevVelocity());
 }
 
 void Player::SpiningUpdate()

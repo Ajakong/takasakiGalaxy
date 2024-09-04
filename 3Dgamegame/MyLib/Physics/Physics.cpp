@@ -94,11 +94,14 @@ void Physics::Update()
 
 	for (const auto& info : m_onCollideInfo)
 	{
+		if (static_cast<int>(info.send->m_tag) > 8|| static_cast<int>(info.send->m_tag)<0)continue;//応急処置済み:Exitしても履歴に残っているが参照できずに例外がスローされる
+		if (static_cast<int>(info.own->m_tag) > 8 || static_cast<int>(info.own->m_tag) < 0)continue;//:上に同じ
 		OnCollideInfo(info.own, info.send, info.kind);
 	}
 
 	for (const auto& item : m_collidables)
 	{
+		item->m_rigid.SetPrevVelocity(item->m_rigid.GetVelocity());
 		item->m_rigid.SetVelocity(Vec3(0, 0, 0));
 	}
 }

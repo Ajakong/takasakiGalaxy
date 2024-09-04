@@ -15,7 +15,6 @@ namespace
 GameOverScene::GameOverScene(SceneManager& mgr) :
 	Scene(mgr),
 	m_fadeSoundFrame(200),
-	m_modelHandle(MV1LoadModel(kModekHandlePath)),
 	m_handleVelo(0,0,0)
 {
 	m_frame = 60;

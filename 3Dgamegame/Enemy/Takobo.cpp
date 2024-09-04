@@ -80,6 +80,18 @@ void Takobo::Update()
 
 	}
 
+	
+}
+
+void Takobo::SetMatrix()
+{
+	MATRIX moving = MGetTranslate(m_rigid.GetPos().VGet());
+
+	MV1SetMatrix(m_handle, moving);
+}
+
+void Takobo::DeleteManage()
+{
 	auto result = remove_if(m_sphere.begin(), m_sphere.end(), [this](const auto& sphere)
 		{
 			bool isOut = sphere->IsDelete() == true;
@@ -91,13 +103,6 @@ void Takobo::Update()
 	return isOut;
 		});
 	m_sphere.erase(result, m_sphere.end());
-}
-
-void Takobo::SetMatrix()
-{
-	MATRIX moving = MGetTranslate(m_rigid.GetPos().VGet());
-
-	MV1SetMatrix(m_handle, moving);
 }
 
 void Takobo::Draw()
@@ -124,7 +129,7 @@ void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
 
 Vec3 Takobo::GetMyPos()
 {
-	return  VGet(m_rigid.GetPos().x, m_rigid.GetPos().y + kFootToCenter, m_rigid.GetPos().z);;
+	return  VGet(m_rigid.GetPos().x, m_rigid.GetPos().y + kFootToCenter, m_rigid.GetPos().z);
 }
 
 void Takobo::SetTarget(std::shared_ptr<Collidable> target)
