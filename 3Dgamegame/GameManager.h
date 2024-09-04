@@ -4,6 +4,7 @@ class Camera;
 class Player;
 class Planet;
 class Takobo;
+class Gorori;
 class Item;
 
 class GameManager
@@ -50,6 +51,7 @@ private:
 	std::shared_ptr<Planet> planet;
 	std::shared_ptr<Planet> planet2;
 	std::vector<std::shared_ptr<Takobo>> takobo;
+	std::vector<std::shared_ptr<Gorori>> gorori;
 	std::vector<std::shared_ptr<Item>> poworStone;
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
@@ -60,6 +62,7 @@ private:
 	int textureUIHandle;
 	int fontHandle;
 	int sphMapH ;
+	int itemNum;
 	
 	int roughH;
 	

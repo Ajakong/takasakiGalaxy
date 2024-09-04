@@ -150,6 +150,7 @@
     <ClCompile Include="Enemy\EnemyManager.cpp" />
     <ClCompile Include="Enemy\EnemyMover.cpp" />
     <ClCompile Include="Enemy\EnemySphere.cpp" />
+    <ClCompile Include="Enemy\Gorori.cpp" />
     <ClCompile Include="Enemy\Takobo.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Enemy\EnemyManager.h" />
     <ClInclude Include="Enemy\EnemyMover.h" />
     <ClInclude Include="Enemy\EnemySphere.h" />
+    <ClInclude Include="Enemy\Gorori.h" />
     <ClInclude Include="Enemy\Takobo.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />

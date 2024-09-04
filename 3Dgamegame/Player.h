@@ -98,6 +98,7 @@ private:
 	/// 行動のフレームを管理する
 	/// </summary>
 	int actionFrame = 0;
+	int m_pointLightHandle = -1;
 
 	float m_regeneRange;
 	float m_angle;
@@ -112,8 +113,7 @@ private:
 	Vec3 m_frontVec;
 	Vec3 m_sideVec;
 	Vec3 m_upVec;
-	
-	
+
 	int m_currentAnimNo;//現在のアニメーション
 	int m_prevAnimNo;//変更前のアニメーション
 	float m_animBlendRate;//アニメーションの合成割合

@@ -30,6 +30,8 @@ public:
 	using cameraState_t = void(Camera::*)(Vec3 LookPoint);
 	cameraState_t m_setCameraPos;
 private:
+	int m_lightHandle = -1;
+
 	Quaternion m_myQ;
 	Vec3	m_pos;			// ポジション.
 	Vec3 m_cameraPoint;//カメラが移動してほしい位置

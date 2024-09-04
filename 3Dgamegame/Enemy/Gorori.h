@@ -1,26 +1,20 @@
 #pragma once
 #include "Enemy.h"
-#include"EnemySphere.h"
-
-
 
 /// <summary>
-/// 左右に移動し、一定間隔で射撃してくる敵e
-/// 踏みつけられるとつぶれる
+/// プレイヤーを視認後その方向に走り続ける敵
 /// </summary>
-class Takobo : public Enemy
+class Gorori : public Enemy
 {
 public:
-
 	/// <param name="m_modelhandle">エネミーのモデル</param>
-	/// <param name="obj">影響を与えるオブジェ</param>
-	Takobo(Vec3 pos);
-	~Takobo();
+		/// <param name="obj">影響を与えるオブジェ</param>
+	Gorori(Vec3 pos);
+	~Gorori();
 
 	void Init();
 	void Update();
 	void SetMatrix();
-	void DeleteManage();
 	void Draw();
 
 	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);
@@ -33,20 +27,19 @@ public:
 
 	void SetTarget(std::shared_ptr<Collidable> target);
 
-	std::list<std::shared_ptr<EnemySphere>> GetAttackObj() { return m_sphere; }
-
 	//メンバ関数ポインタ
-	using enemyState_t = void(Takobo::*)();
+	using enemyState_t = void(Gorori::*)();
 	enemyState_t m_enemyUpdate;
 private:
 	/// <summary>
-	/// 通常(クールダウン)状態
+	/// 徘徊状態
 	/// </summary>
 	void IdleUpdate();
 	/// <summary>
-	/// 球体を生成して攻撃
+	/// 攻撃中
 	/// </summary>
-	void AttackSphereUpdate();
+	void AttackUpdate();
+
 
 	Vec3 GetAttackDir() const;
 private:
@@ -59,6 +52,7 @@ private:
 	int m_modelHandle = 0;
 
 	int m_createFrameCount = 0;
+	int m_attackCount = 0;
 
 	float m_centerToEnemyAngle;
 
@@ -76,7 +70,5 @@ private:
 	int m_anim_move = 0;
 	int m_anim_jump = 0;
 	int m_anim_attack = 0;
-
-	std::list<std::shared_ptr<EnemySphere>> m_sphere;
 };
 

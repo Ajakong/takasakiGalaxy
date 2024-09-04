@@ -34,6 +34,13 @@ Camera::Camera():
 	m_playerToCameraVec = { 0.f,100.f,-200.f };
 	m_postLookPointPos = { 0,0,0 };
 	m_fowardVec = { 0.f,0.f,0.1f };
+
+	m_lightHandle = CreateSpotLightHandle(m_pos.VGet(),GetCameraFrontVector() ,DX_PI_F / 2.0f,
+		DX_PI_F / 4.0f,
+		2000.0f,
+		0.0f,
+		0.002f,
+		0.0f);
 }
 
 Camera::~Camera()
@@ -43,6 +50,8 @@ Camera::~Camera()
 
 void Camera::Update(Vec3 LookPoint)
 {
+	SetLightPositionHandle(m_lightHandle, m_pos.VGet());
+	SetLightDirection(GetCameraFrontVector());
 	Vec3 velocity;
 	velocity.x = (m_cameraPoint.x - m_pos.x) / 10.f;
 	velocity.y = (m_cameraPoint.y - m_pos.y) / 10.f;
@@ -53,7 +62,6 @@ void Camera::Update(Vec3 LookPoint)
 	
 	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
 	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(LookPoint+m_upVec.GetNormalized()*100.0f).VGet(), m_upVec.VGet());
-	Pad::Update();
 	m_postLookPointPos = LookPoint;
 
 }
