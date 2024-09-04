@@ -11,7 +11,7 @@ namespace
 }
 
 SpherePlanet::SpherePlanet(Vec3 pos):Planet(),
-m_enemyCount(0)
+m_enemyCount(3)
 {
 	gravityPower = 3;
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//ここで入れたのは重力の影響範囲
@@ -46,11 +46,16 @@ void SpherePlanet::Draw()
 
 Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//成分ごとに計算し、補正後のベクトルを返す
 {
+	Vec3 objVelocity = obj->PlanetOnlyGetRigid().GetVelocity();
+
+	if (obj->GetTag() == ObjectTag::EnemyAttack)
+	{
+		return objVelocity;
+	}
 	////惑星の中心からy方向に伸ばした線を軸にし、オブジェクトの位置を見て軸と惑星の中心からオブジェクトに向かうベクトルの角度分だけオブジェクトのベロシティのy方向に影響させるという考え方、Xに進みたい場合軸のXを基準に,Zに進みたい場合軸のZを基準
 	////Yは法線の角度に回転させる
 	Vec3 ansVelocity;
 	Vec3 objPos=obj->PlanetOnlyGetRigid().GetPos();
-	Vec3 objVelocity = obj->PlanetOnlyGetRigid().GetVelocity();
 	Vec3 toObj= m_rigid.GetPos()-objPos;
 	toObj=toObj.GetNormalized();
 
@@ -82,10 +87,10 @@ Vec3 SpherePlanet::GetNormVec(Vec3 pos)
 
 void SpherePlanet::OnTriggerEnter(std::shared_ptr<Collidable> colider)
 {
-	if (colider->GetTag() == ObjectTag::Takobo)
+	/*if (colider->GetTag() == ObjectTag::Takobo)
 	{
 		m_enemyCount++;
-	}
+	}*/
 }
 
 void SpherePlanet::OnTriggerExit(std::shared_ptr<Collidable> colider)

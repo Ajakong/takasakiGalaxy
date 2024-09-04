@@ -4,6 +4,7 @@ class Camera;
 class Player;
 class Planet;
 class Takobo;
+class Item;
 
 class GameManager
 {
@@ -16,6 +17,19 @@ public:
 
 	bool GetGameOver() { return m_isGameOverFlag; }
 	bool GetClear() { return m_isClearFlag; }
+
+	using managerState_t = void(GameManager::*)();
+	managerState_t m_managerUpdate;
+
+	using managerState_t = void(GameManager::*)();
+	managerState_t m_managerDraw;
+private:
+	void IntroUpdate();
+	void IntroDraw();
+
+	void GamePlayingUpdate();
+	void GamePlayingDraw();
+
 private:
 
 	struct UserData
@@ -36,12 +50,15 @@ private:
 	std::shared_ptr<Planet> planet;
 	std::shared_ptr<Planet> planet2;
 	std::vector<std::shared_ptr<Takobo>> takobo;
-
+	std::vector<std::shared_ptr<Item>> poworStone;
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
 
+	bool m_isFadeIntroFlag = false;
+	int skyDomeH;
 	int modelH ;
-	
+	int textureUIHandle;
+	int fontHandle;
 	int sphMapH ;
 	
 	int roughH;
@@ -75,5 +92,7 @@ private:
 
 	
 	int depthRT;
+
+	int fadeCount;
 };
 

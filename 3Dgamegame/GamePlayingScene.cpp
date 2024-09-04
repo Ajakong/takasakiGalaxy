@@ -44,7 +44,7 @@ void GamePlayingScene::Update()
 {
 
 	(this->*m_updateFunc)();
-	WorldTimer::Update();
+	
 
 	Pad::Update();
 }

@@ -1,5 +1,6 @@
 #include "Takobo.h"
 #include"../MyLib/Physics/ColliderSphere.h"
+#include"../MyLib/Physics/Physics.h"
 
 namespace
 {
@@ -8,7 +9,7 @@ namespace
 	/// <summary>
 		/// 最大HP
 		/// </summary>
-	constexpr int kHp = 80;
+	constexpr int kHp = 20;
 
 	constexpr int kStartPosX = 200;
 	constexpr int kStartPosY = 50;
@@ -30,7 +31,7 @@ namespace
 	/// <summary>
 	/// 再攻撃までのクールタイム
 	/// </summary>
-	constexpr int kAttackCoolDownTime = 60;
+	constexpr int kAttackCoolDownTime = 300;
 
 	/// <summary>
 	/// ステージモデルの縦横サイズ/2
@@ -46,10 +47,10 @@ Vec3 ToVec(Vec3 a, Vec3 b);
 Vec3 norm(Vec3 a);
 float lerp(float start, float end, float t);
 
-Takobo::Takobo(Vec3 pos) :Enemy(MV1LoadModel("../Model/Enemy/bodyeater.mv1"), Priority::Low, ObjectTag::Takobo),
-	m_Hp(kHp),
-	m_attackCoolDownCount(0),
-	m_centerToEnemyAngle(0)
+Takobo::Takobo(Vec3 pos) :Enemy(-1, Priority::Low, ObjectTag::Takobo),
+m_Hp(kHp),
+m_attackCoolDownCount(0),
+m_centerToEnemyAngle(0)
 {
 	m_enemyUpdate = &Takobo::IdleUpdate;
 	m_rigid.SetPos(pos);
@@ -61,6 +62,7 @@ Takobo::Takobo(Vec3 pos) :Enemy(MV1LoadModel("../Model/Enemy/bodyeater.mv1"), Pr
 
 Takobo::~Takobo()
 {
+
 }
 
 void Takobo::Init()
@@ -78,11 +80,17 @@ void Takobo::Update()
 
 	}
 
-	m_sphere.remove_if([this](const auto& sphere)
+	auto result = remove_if(m_sphere.begin(), m_sphere.end(), [this](const auto& sphere)
 		{
 			bool isOut = sphere->IsDelete() == true;
+	if (isOut == true)
+	{
+		m_sphereNum--;
+		MyEngine::Physics::GetInstance().Exit(sphere);
+	}
 	return isOut;
 		});
+	m_sphere.erase(result, m_sphere.end());
 }
 
 void Takobo::SetMatrix()
@@ -97,6 +105,13 @@ void Takobo::Draw()
 
 	DrawSphere3D(m_rigid.GetPos().VGet(), kCollisionRadius, 10, 0xff0000, 0xff0000, false);
 	MV1DrawModel(m_handle);
+
+	for (auto& sphere : m_sphere)
+	{
+		if (m_sphere.size() == 0)return;
+		sphere->Draw();
+
+	}
 }
 
 void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
@@ -112,6 +127,11 @@ Vec3 Takobo::GetMyPos()
 	return  VGet(m_rigid.GetPos().x, m_rigid.GetPos().y + kFootToCenter, m_rigid.GetPos().z);;
 }
 
+void Takobo::SetTarget(std::shared_ptr<Collidable> target)
+{
+	m_target = target;
+}
+
 void Takobo::IdleUpdate()
 {
 	m_vec.x = 1;
@@ -121,30 +141,50 @@ void Takobo::IdleUpdate()
 	}
 
 	m_rigid.SetVelocity(VGet(m_vec.x, 0, 0));
-}
 
-void Takobo::AttackSphereUpdate()
-{
-	m_createFrameCount++;
+	m_attackCoolDownCount++;
 
-
-	if (m_createFrameCount > kSphereCreateFrame)
+	if (m_attackCoolDownCount > kAttackCoolDownTime)
 	{
-		m_sphereNum++;
-		if (m_sphereNum <= 5)
+		int attackState = GetRand(1);
+		switch (attackState)
 		{
-			m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
+		case 0:
+			m_attackCoolDownCount = 0;
+			m_enemyUpdate = &Takobo::AttackSphereUpdate;
 
-			m_createFrameCount = 0;
-			m_sphere.push_back(std::make_shared<EnemySphere>(Priority::Low, ObjectTag::Takobo,shared_from_this(), GetMyPos(), m_attackDir, 1,0xff0000));
+			/*m_attackCoolDownCount = 0;
+			m_enemyUpdate = &Enemy::AttackBombUpdate;*/
+			break;
+		default:
+			m_attackCoolDownCount =250;
+			break;
 		}
 	}
 }
 
+void Takobo::AttackSphereUpdate()
+{
+	m_rigid.SetVelocity(VGet(0, 0, 0));
+
+
+	m_sphereNum++;
+	if (m_sphereNum <= 5)
+	{
+		m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
+
+		m_createFrameCount = 0;
+		m_sphere.push_back(std::make_shared<EnemySphere>(Priority::Low, ObjectTag::EnemyAttack, shared_from_this(), GetMyPos(), m_attackDir, 1, 0xff0000));
+		MyEngine::Physics::GetInstance().Entry(m_sphere.back());
+	}
+
+	m_enemyUpdate = &Takobo::IdleUpdate;
+}
+
 Vec3 Takobo::GetAttackDir() const
 {
-	Vec3 toVec = ToVec(m_rigid.GetPos(), VGet(0,0,0));
-	Vec3 vec = norm(ToVec(m_rigid.GetPos(), VGet(0, 0, 0)));
+	Vec3 toVec = ToVec(m_rigid.GetPos(),m_target->GetRigidbody().GetPos());
+	Vec3 vec = norm(ToVec(m_rigid.GetPos(), m_target->GetRigidbody().GetPos()));
 	vec = VGet(vec.x * abs(toVec.x), vec.y * abs(toVec.y), vec.z * abs(toVec.z));
 	return vec;
 }

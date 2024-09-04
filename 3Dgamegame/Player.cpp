@@ -3,6 +3,11 @@
 #include"MyLib/Physics/ColliderSphere.h"
 #include"Camera.h"
 
+/// <summary>
+/// やること:足の当たり判定を生成・踏みつけに使う
+/// スピン専用の当たり判定を生成・体より半径が大きい当たり判定にし、スピン中にだけ出現
+/// </summary>
+
 namespace
 {
 	constexpr int kNetralRadius = 20;//通常時の当たり半径
@@ -29,6 +34,11 @@ namespace
 	constexpr int kAvoidFrame = 60;
 
 	constexpr int kJumpPower = 50;
+}
+
+float GetAngle(Vec3 a ,Vec3 b)
+{
+	return acos(Dot(a.GetNormalized(), b.GetNormalized())) * 180 / DX_PI_F;
 }
 
 
@@ -94,10 +104,10 @@ void Player::SetMatrix()
 	//カメラのいる角度から
 	//コントローラーによる移動方向を決定する
 	MATRIX mtx;
-	MATRIX scale = MGetScale(VGet(0.1f, 0.1f, 0.1f));
+	MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
 	
 
-	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F / 2);
+	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F);
 	mtx = MMult(scale, moveDir);
 
 	MATRIX moving = MGetTranslate(m_rigid.GetPos().VGet());
@@ -105,17 +115,20 @@ void Player::SetMatrix()
 	mtx = MMult(mtx, moving);
 
 	MV1SetMatrix(m_modelHandle, mtx);
+
+
 }
 
 void Player::Draw()
 {
+	DrawBox(100, 20, 100 + m_Hp*10, 70, 0x00ff00,true );
 	if (m_visibleCount % 5 == 0)
 	{
-		MV1DrawModel(m_modelHandle);
+		//MV1DrawModel(m_modelHandle);
 	}
-
-#if _DEBUG
 	DrawSphere3D(m_rigid.GetPos().VGet(), m_radius, 10, 0x000000, 0x00ffff, false);
+#if _DEBUG
+	
 	
 	//printfDx("%d", HitCount);
 #endif
@@ -127,17 +140,26 @@ void Player::SetCameraToPlayer(Vec3 cameraToPlayer)
 	m_cameraToPlayer = cameraToPlayer;
 }
 
-void Player::OnCollideEnter(const Collidable& colider)
-{
-	if (colider.GetTag() == ObjectTag::Takobo)
-	{
-		m_Hp -= 10;
-	}
-}
-
 void Player::SetCameraAngle(float cameraAngle)
 {
 	m_cameraAngle = cameraAngle;
+}
+
+void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
+{
+	if (colider->GetTag() == ObjectTag::Takobo)
+	{
+		m_Hp -= 10;
+	}
+	if (colider->GetTag() == ObjectTag::Item)
+	{
+		m_itemCount++;
+		m_rigid.AddVelocity(colider->GetKnockBackVelocity() * 5);
+	}
+	if (colider->GetTag() == ObjectTag::EnemyAttack)
+	{
+		m_Hp -= 20;
+	}
 }
 
 Vec3 Player::GetCameraToPlayer() const
@@ -223,8 +245,8 @@ void Player::NeutralUpdate()
 	float rate = len / kAnalogInputMax;
 	Vec3 front=GetCameraFrontVector();
 	Vec3 right = GetCameraRightVector();
-	move=front* analogY;//入力が大きいほど利教が大きい,0の時は0
-	move+=right* analogX;
+	move=m_frontVec* analogY;//入力が大きいほど利教が大きい,0の時は0
+	move+=m_sideVec* analogX;
 	
 
 	//アナログスティック無効な範囲を除外する
@@ -243,11 +265,11 @@ void Player::NeutralUpdate()
 	//プレイヤーの最大移動速度は0.01f/frame
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
-		
+		m_playerUpdate = &Player::SpiningUpdate;
 	}
 	if (Pad::IsTrigger(PAD_INPUT_2))//XBoxの
 	{
-		m_playerUpdate=&Player::SpiningUpdate;
+		
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/

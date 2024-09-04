@@ -22,13 +22,18 @@ public:
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 	Vec3 GetMoveDir() const{ return m_moveDir; }
 	float GetRegenerationRange() { return m_regeneRange; }
-	virtual void OnCollideEnter(const Collidable& colider);
 	int WatchHp()const { return m_Hp; }
 
 	void SetCameraAngle(float cameraAngle);
-
+	void SetSideVec(Vec3 right) { m_sideVec = right; }
+	void SetFrontVec(Vec3 front) { m_frontVec = front; }
+	void SetUpVec(Vec3 up) { m_upVec = up; }
 	int GetPlayerModelhandle() { return m_modelHandle; }
 
+	int& SetReverse() { return m_reverseFlag; }
+
+
+	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);
 	//メンバ関数ポインタ
 	using playerState_t = void(Player::*)();
 	playerState_t m_playerUpdate;
@@ -87,6 +92,8 @@ private:
 
 	int rotRad = 0;
 
+	int m_itemCount=0;
+
 	/// <summary>
 	/// 行動のフレームを管理する
 	/// </summary>
@@ -101,11 +108,18 @@ private:
 	Vec3 m_cameraPos;
 	//std::shared_ptr<Camera> m_camera;
 	Vec3 m_moveDir;
+
+	Vec3 m_frontVec;
+	Vec3 m_sideVec;
+	Vec3 m_upVec;
+	
+	
 	int m_currentAnimNo;//現在のアニメーション
 	int m_prevAnimNo;//変更前のアニメーション
 	float m_animBlendRate;//アニメーションの合成割合
 	//0.0f:prevが再生
 	//1.0:currentが再生
+	int m_reverseFlag=0;
 
 	//アニメーション変数
 	int m_anim_nutral = 0;

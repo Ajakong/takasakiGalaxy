@@ -6,5 +6,7 @@ enum class ObjectTag
 	Player,
 	Enemy,
 	Takobo,
-	Object
+	EnemyAttack,
+	WarpGate,
+	Item
 };

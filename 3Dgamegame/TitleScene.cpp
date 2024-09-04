@@ -97,6 +97,7 @@ void TitleScene::ChangeScene(std::shared_ptr<Scene> next)
 
 void TitleScene::FadeDraw()
 {
+	DrawFormatString(0, 0, 0xffffff, "TitleScene");
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / kFadeFrameMax));
 	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
@@ -109,6 +110,6 @@ void TitleScene::NormalDraw()
 
 	DrawRotaGraph(800, 450, 1, 0, m_titleHandle, true);
 
-	//DrawString(10, 100, "TitleScene", 0xffffff);
+	
 	DrawFormatString(730, 650, 0xffffff, "Push Z to Start");
 }
