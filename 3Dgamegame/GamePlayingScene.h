@@ -50,8 +50,6 @@ private:
     UpdateFunc_t m_updateFunc = nullptr;
     DrawFunc_t m_drawFunc = nullptr;
 
-
-
     // çXêVä÷êî
     void FadeInUpdate();
     void NormalUpdate();

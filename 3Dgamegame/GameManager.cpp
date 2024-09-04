@@ -383,7 +383,7 @@ void GameManager::GamePlayingUpdate()
 		//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
 		//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
 		camera->SetUpVec(planet->GetNormVec(player->GetPos()));
-		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - front * (300 + 300 * player->GetJumpFlag())));
+		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - front * (300 + 200 * player->GetJumpFlag())));
 	}
 
 

@@ -4,9 +4,11 @@
 #include "SceneManager.h"
 #include "ClearScene.h"
 #include "TitleScene.h"
+#include"WorldTimer.h"
 
 #include"Game.h"
 #include"Pad.h"
+
 
 
 ClearScene::ClearScene(SceneManager& mgr) :
@@ -69,8 +71,15 @@ void ClearScene::FadeOutUpdate()
 	}
 }
 
+void ClearScene::ChangeScene(std::shared_ptr<Scene> nextScene)
+{
+	WorldTimer::Reset();
+}
+
 void ClearScene::FadeDraw()
 {
+	DrawFormatString(200, Game::kScreenHeight / 2, 0xffffff,"%d.%d",WorldTimer::GetMinute(),WorldTimer::GetTimer());
+
 	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "Clear");
 	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "タイトルへ");
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / 60.0f));
@@ -81,6 +90,8 @@ void ClearScene::FadeDraw()
 
 void ClearScene::NormalDraw()
 {
+	DrawFormatString(200, Game::kScreenHeight / 2, 0xffffff, "%d.%d", WorldTimer::GetMinute(), WorldTimer::GetTimer());
+
 	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "Clear");
 	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "タイトルへ");
 	auto& app = Application::GetInstance();
@@ -88,5 +99,5 @@ void ClearScene::NormalDraw()
 	int idx = m_btnFrame / 10 % 3;
 	constexpr int kButtonSize = 16;
 	constexpr float kBtnScale = 3.0f;
-
+	
 }

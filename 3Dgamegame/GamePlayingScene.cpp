@@ -69,8 +69,6 @@ void GamePlayingScene::Draw()
 	else if (m_isClear)
 	{
 		ChangeScene(std::make_shared<ClearScene>(m_manager));
-
-		WorldTimer::Reset();
 	}
 }
 

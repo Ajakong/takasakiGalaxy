@@ -27,6 +27,8 @@ private:
     void NormalUpdate();
     void FadeOutUpdate();
 
+    void ChangeScene(std::shared_ptr<Scene> nextScene);
+
     // •`‰æó‘Ô‚ğ•\‚·ŠÖ”
     void FadeDraw();
     void NormalDraw();
