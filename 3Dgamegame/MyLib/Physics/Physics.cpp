@@ -96,6 +96,23 @@ void Physics::Update()
 	{
 		OnCollideInfo(info.own, info.send, info.kind);
 	}
+
+	for (const auto& item : m_collidables)
+	{
+		item->m_rigid.SetVelocity(Vec3(0, 0, 0));
+	}
+}
+
+void MyEngine::Physics::Clear()
+{
+	m_collidables.clear();
+	m_stageCollidables.clear();
+
+	m_onCollideInfo.clear();
+	m_newCollideInfo.clear();
+	m_preCollideInfo.clear();
+	m_newTirrigerInfo.clear();
+	m_preTirrigerInfo.clear();
 }
 
 /// <summary>

@@ -42,6 +42,8 @@ namespace MyEngine
 
 		void Update();
 
+		void Clear();
+
 	private:
 		void MoveNextPos() const;
 

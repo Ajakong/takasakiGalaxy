@@ -78,7 +78,6 @@ bool Application::Init()
         return false;
     }
 
-
     SetDrawScreen(DX_SCREEN_BACK);
     return true;
 }
