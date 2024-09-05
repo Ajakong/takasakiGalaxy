@@ -17,7 +17,7 @@ public:
 	void Draw();
 
 
-	Vec3 GetPos() const { return  m_rigid.GetPos(); }
+	Vec3 GetPos() const { return  m_rigid->GetPos(); }
 	int GetHp() { return m_Hp; }
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 	Vec3 GetMoveDir() const{ return m_moveDir; }

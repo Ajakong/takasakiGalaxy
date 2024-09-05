@@ -57,11 +57,11 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_prevAnimNo(0),
 	m_isJumpFlag(false)
 {
-	m_rigid.SetPos(Vec3(0, 0, 0));
+	m_rigid->SetPos(Vec3(0, 0, 0));
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = m_radius;
-	m_pointLightHandle = CreatePointLightHandle(m_rigid.GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
+	m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
 }
 
 Player::~Player()
@@ -82,7 +82,7 @@ void Player::Update()
 
 	//(this->*m_cameraUpdate)();
 	//m_camera->SetUpVec(GetCameraUpVector());
-	//m_camera->Update(m_rigid.GetPos()+Vec3(GetCameraUpVector())*300);
+	//m_camera->Update(m_rigid->GetPos()+Vec3(GetCameraUpVector())*300);
 
 	if (m_visibleCount > 200)
 	{
@@ -99,7 +99,7 @@ void Player::Update()
 		item->radius = m_radius;
 	}
 
-	SetLightPositionHandle(m_pointLightHandle, m_rigid.GetPos().VGet());
+	SetLightPositionHandle(m_pointLightHandle, m_rigid->GetPos().VGet());
 }
 
 void Player::SetMatrix()
@@ -113,7 +113,7 @@ void Player::SetMatrix()
 	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F);
 	mtx = MMult(scale, moveDir);
 
-	MATRIX moving = MGetTranslate(m_rigid.GetPos().VGet());
+	MATRIX moving = MGetTranslate(m_rigid->GetPos().VGet());
 
 	mtx = MMult(mtx, moving);
 
@@ -129,7 +129,7 @@ void Player::Draw()
 	{
 		//MV1DrawModel(m_modelHandle);
 	}
-	DrawSphere3D(m_rigid.GetPos().VGet(), m_radius, 10, 0x000000, 0x00ffff, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, 0x000000, 0x00ffff, false);
 #if _DEBUG
 	
 	
@@ -162,7 +162,7 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	if (colider->GetTag() == ObjectTag::Gorori)
 	{
 		m_Hp -= 10;
-		m_rigid.AddVelocity(Vec3(m_rigid.GetPos()-colider->GetRigidbody().GetPos()).GetNormalized()*10);
+		m_rigid->AddVelocity(Vec3(m_rigid->GetPos()-colider->GetRigidbody()->GetPos()).GetNormalized()*10);
 	}
 	if (colider->GetTag() == ObjectTag::Item)
 	{
@@ -288,7 +288,7 @@ void Player::NeutralUpdate()
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
-	m_rigid.SetVelocity(move);
+	m_rigid->SetVelocity(move);
 
 	//プレイヤーの最大移動速度は0.01f/frame
 	//if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
@@ -305,7 +305,7 @@ void Player::WalkingUpdate()
 
 void Player::JumpingUpdate()
 {
-	m_rigid.SetVelocity(m_rigid.GetPrevVelocity());
+	m_rigid->SetVelocity(m_rigid->GetPrevVelocity());
 }
 
 void Player::SpiningUpdate()

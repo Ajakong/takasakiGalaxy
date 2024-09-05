@@ -8,7 +8,7 @@ Collidable::Collidable(Priority priority, ObjectTag tag) :
 	m_priority(priority),
 	m_tag(tag)
 {
-	
+	m_rigid = std::make_shared<Rigidbody>();
 }
 
 MyEngine::Collidable::Collidable(Collidable* col) :
@@ -19,6 +19,7 @@ MyEngine::Collidable::Collidable(Collidable* col) :
 	m_tag(col->m_tag),
 	m_priority(col->m_priority)
 {
+	m_rigid = std::make_shared<Rigidbody>();
 }
 
 Collidable::~Collidable()

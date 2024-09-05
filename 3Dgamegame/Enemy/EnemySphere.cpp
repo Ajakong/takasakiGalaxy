@@ -18,7 +18,7 @@ m_enemy(std::dynamic_pointer_cast<Enemy>(enemy)),
 m_radius(kSphereRadius),
 m_velocity(velocity)
 {
-	m_rigid.SetPos(pos);
+	m_rigid->SetPos(pos);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = m_radius;
@@ -46,7 +46,7 @@ void EnemySphere::Update()
 
 void EnemySphere::Draw()
 {
-	DrawSphere3D(m_rigid.GetPos().VGet(), kSphereRadius, 10, 0xffff00, m_color, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), kSphereRadius, 10, 0xffff00, m_color, false);
 }
 
 void EnemySphere::Hit()
@@ -57,7 +57,7 @@ void EnemySphere::Hit()
 
 void EnemySphere::StraightUpdate()
 {
-	m_rigid.SetVelocity(VGet(m_velocity.x * 20, m_velocity.y * 20, m_velocity.z * 20));
+	m_rigid->SetVelocity(VGet(m_velocity.x * 20, m_velocity.y * 20, m_velocity.z * 20));
 }
 
 void EnemySphere::DeleteJudge()

@@ -49,8 +49,8 @@ namespace MyEngine
 
 		void CheckCollide();
 
-		bool IsCollide(const Rigidbody& rigidA, const Rigidbody& rigidB, const std::shared_ptr<ColliderBase>& colliderA, const std::shared_ptr<ColliderBase>& colliderB) const;
-		void FixNextPos(const Rigidbody& primaryRigid, Rigidbody& secondaryRigid, const std::shared_ptr<ColliderBase>& primaryCollider, const std::shared_ptr<ColliderBase>& secondaryCollider);
+		bool IsCollide(const std::shared_ptr<Rigidbody> rigidA, const std::shared_ptr<Rigidbody> rigidB, const std::shared_ptr<ColliderBase>& colliderA, const std::shared_ptr<ColliderBase>& colliderB) const;
+		void FixNextPos(const std::shared_ptr<Rigidbody> primaryRigid, std::shared_ptr<Rigidbody> secondaryRigid, const std::shared_ptr<ColliderBase>& primaryCollider, const std::shared_ptr<ColliderBase>& secondaryCollider);
 		void AddNewCollideInfo(Collidable* objA, Collidable* objB, SendCollideInfo& info);
 		void CheckSendOnCollideInfo(SendCollideInfo& preSendInfo, SendCollideInfo& newSendInfo, bool isTrigger);
 		void AddOnCollideInfo(Collidable* own, Collidable* send, OnCollideInfoKind kind);

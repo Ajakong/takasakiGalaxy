@@ -224,7 +224,7 @@ void GameManager::IntroUpdate()
 		if (fadeCount < 0)fadeCount = 0;
 	}
 	MyEngine::Physics::GetInstance().Update();
-	Vec3 planetToPlayer = player->GetPos() - planet->PlanetOnlyGetRigid().GetPos();
+	Vec3 planetToPlayer = player->GetPos() - planet->PlanetOnlyGetRigid()->GetPos();
 	Vec3 sideVec = GetCameraRightVector();
 	Vec3 front = Cross(planetToPlayer, sideVec).GetNormalized() * -1;
 	player->SetSideVec(sideVec);
@@ -379,7 +379,7 @@ void GameManager::GamePlayingUpdate()
 		}
 	}
 
-	Vec3 planetToPlayer = player->GetPos() - planet->PlanetOnlyGetRigid().GetPos();
+	Vec3 planetToPlayer = player->GetPos() - planet->PlanetOnlyGetRigid()->GetPos();
 	Vec3 sideVec = GetCameraRightVector();
 	Vec3 front = Cross(planetToPlayer, sideVec).GetNormalized() * -1;
 	player->SetSideVec(sideVec);
