@@ -67,7 +67,7 @@ void ClearScene::FadeOutUpdate()
 	m_frame++;
 	if (60 <= m_frame)
 	{
-		m_manager.ChangeScene(std::make_shared<TitleScene>(m_manager));
+		m_manager.ResetScene(std::make_shared<TitleScene>(m_manager));
 	}
 }
 
