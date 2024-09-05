@@ -86,7 +86,8 @@ GameManager::GameManager() :
 	/*skyDomeH(MV1LoadModel("Model/Skydome/universe_skydome.mv1")),*/
 	m_isClearFlag(false),
 	fadeCount(100),
-	itemNum(0)
+	itemNum(0),
+	m_materialXAngle(0)
 {
 	assert(modelH != -1);
 	assert(roughH != -1);
@@ -293,6 +294,24 @@ void GameManager::IntroDraw()
 	DrawBox(15, 25, static_cast<int>(15 + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
 	//UI:ƒ~ƒbƒVƒ‡ƒ“
 	DrawRectRotaGraph(kUiText_SrkX + (100 * 7 - fadeCount * 7), static_cast<int>(kUiText_SrkY + (100 * 2.2f - fadeCount * 2.2f)), kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 0, textureUIHandle, true);
+	//UI:3DmaterialX
+	Vec3 zero = { 0,0,0 };
+	Vec3 offSetVec = GetCameraRightVector();
+	offSetVec -= GetCameraUpVector();
+	offSetVec *= 9.f / 5.f / 2.f;
+	Quaternion myQ;
+	m_materialXAngle += 0.05f;
+	Vec3 front = GetCameraFrontVector();
+	Vec3 UIPos = ((Vec3(GetCameraPosition()) + Vec3(GetCameraFrontVector()) * 110) + Vec3(GetCameraLeftVector()) * 102 + Vec3(GetCameraUpVector()) * 37);
+	for (int i = 0; i < 3; i++)
+	{
+		myQ.SetQuaternion(offSetVec);
+		float angle = DX_PI_F * 2 / 3 * i + m_materialXAngle;
+		myQ.SetMove(angle, front);
+		Vec3 offSet = myQ.Move(offSetVec, zero);
+		DrawSphere3D((UIPos + offSet).VGet(), 1 * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 6, 0xff00ff, 0xff00ff, false);
+	}
+	DrawSphere3D(UIPos.VGet(), 2.5 * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 6, 0x00ff00, 0x00ff00, false);
 }
 
 void GameManager::GamePlayingUpdate()
@@ -522,4 +541,22 @@ void GameManager::GamePlayingDraw()
 	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
 	DrawBox(kUiHpbar_PosX, kUiHpbar_PosY, static_cast<int>(kUiHpbar_PosX + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
 
+	//UI:3DmaterialX
+	Vec3 zero = { 0,0,0 };
+	Vec3 offSetVec = GetCameraRightVector();
+	offSetVec -= GetCameraUpVector();
+	offSetVec *= 9.f/5.f/2.f;
+	Quaternion myQ;
+	m_materialXAngle += 0.05f;
+	Vec3 front = GetCameraFrontVector();
+	Vec3 UIPos = ((Vec3(GetCameraPosition()) + Vec3(GetCameraFrontVector()) * 110) + Vec3(GetCameraLeftVector()) * 102+Vec3(GetCameraUpVector())*37);
+	for (int i = 0; i < 3; i++)
+	{
+		myQ.SetQuaternion(offSetVec);
+		float angle =DX_PI_F * 2 / 3 * i + m_materialXAngle;
+		myQ.SetMove(angle, front);
+		Vec3 offSet = myQ.Move(offSetVec, zero);
+		DrawSphere3D(( UIPos+ offSet).VGet(), 1, 6, 0xff00ff, 0xff00ff, false);
+	}
+	DrawSphere3D(UIPos.VGet(), 2.5, 6, 0x00ff00, 0x00ff00, false);
 }

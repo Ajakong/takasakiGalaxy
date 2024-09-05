@@ -96,6 +96,8 @@ private:
 	int blurRT;
 	int shrinkRT;
 
+	float m_materialXAngle;
+
 	
 	int depthRT;
 

@@ -128,7 +128,7 @@ void Application::Run()
             while (16667 > GetNowHiPerformanceCount() - time) {};
         }
     }
-    //Terminate();
+    Terminate();
     std::vector<VECTOR> num;
 
 }
