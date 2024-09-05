@@ -17,6 +17,5 @@ public:
 private:
 	float angle=0;
 	bool m_deleteFlag = false;
-	int m_emitterHandle;
 };
 

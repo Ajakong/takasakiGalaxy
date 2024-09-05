@@ -145,7 +145,7 @@ void Gorori::IdleUpdate()
 void Gorori::AttackUpdate()
 {
 
-	m_rigid->SetVelocity(m_attackDir * 20);
+	m_rigid->SetVelocity(m_attackDir * 10);
 	m_attackCount++;
 	if (m_attackCount > 1300)
 	{

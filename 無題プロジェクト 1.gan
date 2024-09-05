@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2024-09-04" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3247" locale="ja_JP">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2024-09-01" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3247" locale="ja_JP">
     <description/>
     <view zooming-state="default:2" id="gantt-chart">
         <field id="tpd3" name="名前" width="200" order="0"/>
@@ -15,7 +15,7 @@
         <day-types>
             <day-type id="0"/>
             <day-type id="1"/>
-            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <default-week id="1" name="default" sun="0" mon="0" tue="0" wed="0" thu="0" fri="0" sat="0"/>
             <only-show-weekends value="false"/>
             <overriden-day-types/>
             <days/>
@@ -34,18 +34,23 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="3" name="タスク" meeting="false" start="2024-09-04" duration="3" complete="0" expand="true">
+        <task id="3" name="タスク" meeting="false" start="2024-09-04" duration="5" complete="28" expand="true">
             <task id="6" name="時間計測" meeting="false" start="2024-09-04" duration="1" complete="0" expand="true"/>
-            <task id="7" name="UI" meeting="false" start="2024-09-04" duration="1" complete="0" expand="true">
-                <task id="9" name="HP" meeting="false" start="2024-09-04" duration="1" complete="0" expand="true"/>
-                <task id="8" name="時間" color="#8cb6ce" meeting="false" start="2024-09-04" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
-                <task id="10" name="クリア条件" color="#8cb6ce" meeting="false" start="2024-09-04" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
+            <task id="7" name="UI" meeting="false" start="2024-09-04" duration="1" complete="100" expand="true">
+                <task id="9" name="HP" meeting="false" start="2024-09-04" duration="1" complete="100" expand="true"/>
+                <task id="8" name="時間" color="#8cb6ce" meeting="false" start="2024-09-04" duration="1" complete="100" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
+                <task id="10" name="クリア条件" color="#8cb6ce" meeting="false" start="2024-09-04" duration="1" complete="100" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
             </task>
             <task id="11" name="タイトル画面" color="#8cb6ce" meeting="false" start="2024-09-05" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
-            <task id="13" name="アイテム配置" color="#8cb6ce" meeting="false" start="2024-09-05" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
-            <task id="12" name="クリア画面" color="#8cb6ce" meeting="false" start="2024-09-05" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
+            <task id="13" name="アイテム配置" color="#8cb6ce" meeting="false" start="2024-09-05" duration="1" complete="100" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
+            <task id="12" name="リザルト画面(ゲームオーバーとクリア)" color="#8cb6ce" meeting="false" start="2024-09-05" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
             <task id="14" name="効果音・音楽" color="#8cb6ce" meeting="false" start="2024-09-06" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
-            <task id="15" name="演出" color="#8cb6ce" meeting="false" start="2024-09-06" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
+            <task id="15" name="演出" color="#8cb6ce" meeting="false" start="2024-09-08" duration="1" complete="0" thirdDate="2024-09-04" thirdDate-constraint="0" expand="true"/>
+            <task id="16" name="レベルデザイン" color="#8cb6ce" meeting="false" start="2024-09-05" duration="1" complete="0" thirdDate="2024-09-02" thirdDate-constraint="0" expand="true"/>
+            <task id="17" name="タイトルにロゴ" color="#8cb6ce" meeting="false" start="2024-09-06" duration="1" complete="0" thirdDate="2024-09-01" thirdDate-constraint="0" expand="true"/>
+            <task id="18" name="ミッションのUIに物体Xの画像を残数" color="#8cb6ce" meeting="false" start="2024-09-06" duration="1" complete="0" thirdDate="2024-09-01" thirdDate-constraint="0" expand="true"/>
+            <task id="19" name="ミッションUIの拡大時にあと何個" meeting="false" start="2024-09-06" duration="1" complete="0" expand="true"/>
+            <task id="20" name="タイトル、ゲームオーバーのフォントの統一" meeting="false" start="2024-09-07" duration="1" complete="0" expand="true"/>
         </task>
     </tasks>
     <resources/>

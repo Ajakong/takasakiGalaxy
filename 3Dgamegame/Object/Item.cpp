@@ -2,21 +2,20 @@
 #include"../MyLib/Physics/ColliderSphere.h"
 #include"../MyLib/Physics/Physics.h"
 #include"../Quaternion.h"
-#include<EffekseerForDXLib.h>
 
-Item::Item(Vec3 pos):Collidable(Priority::Static,ObjectTag::Item),
-	m_emitterHandle(-1)
+
+Item::Item(Vec3 pos):Collidable(Priority::Static,ObjectTag::Item)
 {
 	m_rigid->SetPos(pos);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = 25;
-	m_emitterHandle = LoadEffekseerEffect("Effect/warpEffect.efkefc");
+	
 }
 
 Item::~Item()
 {
-	StopEffekseer3DEffect(m_emitterHandle);
+	
 }
 
 void Item::Init()
@@ -25,7 +24,7 @@ void Item::Init()
 
 void Item::Update()
 {
-	SetPosPlayingEffekseer3DEffect(m_emitterHandle, m_rigid->GetPos().x, m_rigid->GetPos().y, m_rigid->GetPos().z);
+	
 }
 
 void Item::Draw()

@@ -65,6 +65,7 @@ private:
 	int fontHandle;
 	int sphMapH ;
 	int itemNum;
+	int m_warpEffectHandle;
 	
 	int roughH;
 	

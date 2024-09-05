@@ -71,7 +71,7 @@ GameManager::GameManager() :
 	dissolveH(LoadGraph("Image/dissolve.png")),
 	postEffectH(LoadPixelShader("PostEffect.pso")),*/
 	textureUIHandle(LoadGraph("image/Elements_pro.png")),
-
+	//(LoadEffekseerEffect("Effect/warpEffect.efk")),
 	// 通常のRT
 	RT(MakeScreen(640, 480, true)),
 	RT2(MakeScreen(640, 480, true)),
@@ -114,6 +114,8 @@ GameManager::GameManager() :
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 1500, 2000)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 3000)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 1000)));
+
+	
 	//使用するフォントを準備する
 	if (AddFontResourceEx("Font/disital.TTF", FR_PRIVATE, NULL) > 0) {
 	}
@@ -131,6 +133,7 @@ GameManager::~GameManager()
 {
 	DeleteGraph(textureUIHandle);
 	DeleteFontToHandle(fontHandle);
+	DeleteEffekseerEffect(m_warpEffectHandle);
 }
 
 void GameManager::Init()
@@ -199,6 +202,7 @@ void GameManager::Init()
 		MyEngine::Physics::GetInstance().Entry(item);
 		item->SetTarget(player);
 	}
+	
 }
 
 void GameManager::Update()
@@ -379,6 +383,7 @@ void GameManager::GamePlayingUpdate()
 		}
 	}
 
+	
 	Vec3 planetToPlayer = player->GetPos() - player->GetNowPlanetPos();
 	Vec3 sideVec = GetCameraRightVector();
 	Vec3 front = Cross(planetToPlayer, sideVec).GetNormalized() * -1;
@@ -471,7 +476,7 @@ void GameManager::GamePlayingUpdate()
 	}
 	if (poworStone.size() <= 3&& warpGate.size() == 0)
 	{
-		warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300)));
+		warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300), m_warpEffectHandle));
 		warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 	}
@@ -516,6 +521,5 @@ void GameManager::GamePlayingDraw()
 	//UI:HPバー
 	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
 	DrawBox(kUiHpbar_PosX, kUiHpbar_PosY, static_cast<int>(kUiHpbar_PosX + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
-
 
 }
