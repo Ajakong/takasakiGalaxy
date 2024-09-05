@@ -109,6 +109,10 @@ void GameOverScene::FadeOutUpdate()
 	}
 }
 
+void GameOverScene::ChangeScene(std::shared_ptr<Scene> nextScene)
+{
+}
+
 void GameOverScene::FadeDraw()
 {
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / 60.0f));

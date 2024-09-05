@@ -8,8 +8,8 @@ namespace
 	constexpr float kCameraDist = 96;
 	constexpr float kCameraHeight = 32;
 
-	constexpr float kCameraNear = 1.0f;
-	constexpr float kCameraFar = 5000.0f;
+	constexpr float kCameraNear = 100.0f;
+	constexpr float kCameraFar = 6000.0f;
 
 	//constexpr VECTOR kFirstPos=VGet(300, 300, -200);
 
@@ -58,7 +58,6 @@ void Camera::Update(Vec3 LookPoint)
 	velocity.z = (m_cameraPoint.z - m_pos.z) / 10.f;
 	m_pos += velocity;//イージング
 	//m_pos = m_cameraPoint;
-	DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
 	
 	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
 	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(LookPoint+m_upVec.GetNormalized()*100.0f).VGet(), m_upVec.VGet());

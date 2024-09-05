@@ -3,13 +3,17 @@
 class WarpGate : public MyEngine::Collidable
 {
 public:
-	WarpGate();
+	WarpGate(Vec3 pos);
 	~WarpGate();
+
+	void SetWarpPos(Vec3 warpPos) { m_warpPos=warpPos; }
 
 	void Init();
 	void Update();
 	void Draw();
+	
+	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);
 private:
-
+	Vec3 m_warpPos;
 };
 

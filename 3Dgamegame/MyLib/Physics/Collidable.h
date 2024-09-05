@@ -27,7 +27,7 @@ namespace MyEngine
 		};
 	public:
 		Collidable(Priority priority, ObjectTag tag);
-		Collidable(Collidable* col);
+		Collidable(std::shared_ptr<Collidable> col);
 		virtual ~Collidable();
 
 		// 衝突したとき
@@ -45,21 +45,21 @@ namespace MyEngine
 		// 当たり判定を無視（スルー）するタグの追加/削除
 		void AddThroughTag(ObjectTag tag);
 		void RemoveThroughTag(ObjectTag tag);
-		Rigidbody PlanetOnlyGetRigid() { return m_rigid; };
+		std::shared_ptr<Rigidbody> PlanetOnlyGetRigid() { return m_rigid; };
 		void SetReverceGravityVec(Vec3 gravityReverce) { m_upVec = gravityReverce; }
 
 		// 当たり判定を無視（スルー）する対象かどうか
 		bool IsThroughTarget(std::shared_ptr<Collidable>) const;
 
-		Vec3 GetKnockBackVelocity() { return (m_rigid.GetVelocity())*-1; }
+		Vec3 GetKnockBackVelocity() { return (m_rigid->GetVelocity())*-1; }
 
-		Rigidbody GetRigidbody() const { return m_rigid; }
+		std::shared_ptr<Rigidbody> GetRigidbody() const { return m_rigid; }
 	protected:
 		std::shared_ptr<ColliderBase> AddCollider(const ColliderBase::Kind& kind);
 
 	protected:
 		// 物理データ
-		Rigidbody m_rigid;
+		std::shared_ptr<Rigidbody> m_rigid;
 		// 当たり判定データ
 		std::list<std::shared_ptr<ColliderBase>> m_colliders;
 		Vec3 m_upVec;

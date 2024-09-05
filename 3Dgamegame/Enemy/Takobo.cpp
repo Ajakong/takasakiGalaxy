@@ -53,11 +53,11 @@ m_attackCoolDownCount(0),
 m_centerToEnemyAngle(0)
 {
 	m_enemyUpdate = &Takobo::IdleUpdate;
-	m_rigid.SetPos(pos);
+	m_rigid->SetPos(pos);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = kCollisionRadius;
-	m_moveShaftPos = m_rigid.GetPos();
+	m_moveShaftPos = m_rigid->GetPos();
 }
 
 Takobo::~Takobo()
@@ -85,7 +85,7 @@ void Takobo::Update()
 
 void Takobo::SetMatrix()
 {
-	MATRIX moving = MGetTranslate(m_rigid.GetPos().VGet());
+	MATRIX moving = MGetTranslate(m_rigid->GetPos().VGet());
 
 	MV1SetMatrix(m_handle, moving);
 }
@@ -108,7 +108,7 @@ void Takobo::DeleteManage()
 void Takobo::Draw()
 {
 
-	DrawSphere3D(m_rigid.GetPos().VGet(), kCollisionRadius, 10, 0xff0000, 0xff0000, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10, 0xff0000, 0xff0000, false);
 	MV1DrawModel(m_handle);
 
 	for (auto& sphere : m_sphere)
@@ -129,7 +129,7 @@ void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
 
 Vec3 Takobo::GetMyPos()
 {
-	return  VGet(m_rigid.GetPos().x, m_rigid.GetPos().y + kFootToCenter, m_rigid.GetPos().z);
+	return  VGet(m_rigid->GetPos().x, m_rigid->GetPos().y + kFootToCenter, m_rigid->GetPos().z);
 }
 
 void Takobo::SetTarget(std::shared_ptr<Collidable> target)
@@ -140,12 +140,12 @@ void Takobo::SetTarget(std::shared_ptr<Collidable> target)
 void Takobo::IdleUpdate()
 {
 	m_vec.x = 1;
-	if (abs(m_rigid.GetPos().x - m_moveShaftPos.x) > 5)
+	if (abs(m_rigid->GetPos().x - m_moveShaftPos.x) > 5)
 	{
 		m_vec.x *= -1;
 	}
 
-	m_rigid.SetVelocity(VGet(m_vec.x, 0, 0));
+	m_rigid->SetVelocity(VGet(m_vec.x, 0, 0));
 
 	m_attackCoolDownCount++;
 
@@ -170,7 +170,7 @@ void Takobo::IdleUpdate()
 
 void Takobo::AttackSphereUpdate()
 {
-	m_rigid.SetVelocity(VGet(0, 0, 0));
+	m_rigid->SetVelocity(VGet(0, 0, 0));
 
 
 	m_sphereNum++;
@@ -188,8 +188,8 @@ void Takobo::AttackSphereUpdate()
 
 Vec3 Takobo::GetAttackDir() const
 {
-	Vec3 toVec = ToVec(m_rigid.GetPos(),m_target->GetRigidbody().GetPos());
-	Vec3 vec = norm(ToVec(m_rigid.GetPos(), m_target->GetRigidbody().GetPos()));
+	Vec3 toVec = ToVec(m_rigid->GetPos(),m_target->GetRigidbody()->GetPos());
+	Vec3 vec = norm(ToVec(m_rigid->GetPos(), m_target->GetRigidbody()->GetPos()));
 	vec = VGet(vec.x * abs(toVec.x), vec.y * abs(toVec.y), vec.z * abs(toVec.z));
 	return vec;
 }
