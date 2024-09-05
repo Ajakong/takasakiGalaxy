@@ -258,8 +258,8 @@ void Player::NeutralUpdate()
 	float rate = len / kAnalogInputMax;
 	Vec3 front=GetCameraFrontVector();
 	Vec3 right = GetCameraRightVector();
-	move=m_frontVec* analogY;//入力が大きいほど利教が大きい,0の時は0
-	move+=m_sideVec* analogX;
+	move=m_frontVec* static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
+	move+=m_sideVec* static_cast<float>(analogX);
 	
 
 	//アナログスティック無効な範囲を除外する

@@ -18,6 +18,12 @@ void Rigidbody::Init(const Vec3& pos)
 	m_dir = Vec3();
 }
 
+void MyEngine::Rigidbody::ChangePosition(Vec3 pos)
+{
+	m_pos = pos;
+	m_nextPos=pos;
+}
+
 void MyEngine::Rigidbody::SetPos(Vec3 pos)
 {
 	m_pos = pos;

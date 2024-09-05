@@ -52,6 +52,10 @@ namespace
 	constexpr int kUiTimeCount_PosX = 1350;
 	constexpr int kUiTimeCount_PosY = 90;
 
+	constexpr float kCameraDistanceFront = 300.f;
+	constexpr float kCameraDistanceAddFrontInJump = 200.f;
+	constexpr float kCameraDistanceUp = 100.f;
+
 
 }
 
@@ -99,7 +103,7 @@ GameManager::GameManager() :
 	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
 	planet2 = std::make_shared<SpherePlanet>(Vec3(3000,0,1000));
 	warpGate = std::make_shared<WarpGate>(Vec3(0, -1000, 0));
-	takobo = { std::make_shared<Takobo>(Vec3(300,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,0,700)) };
+	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,100)) };
 	gorori= { std::make_shared<Gorori>(Vec3(500,0,300)),std::make_shared<Gorori>(Vec3(500,0,-300)),std::make_shared<Gorori>(Vec3(700,0,0)) };
 	poworStone.push_back( std::make_shared<Item>(Vec3(0, -1000, 0)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(-1000, 0, 0)));
@@ -231,7 +235,7 @@ void GameManager::IntroUpdate()
 		//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
 		//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
 		camera->SetUpVec(planet->GetNormVec(player->GetPos()));
-		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - front * (300+300*player->GetJumpFlag())));
+		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump *player->GetJumpFlag())));
 	}
 
 	camera->Update(player->GetPos());
@@ -389,7 +393,7 @@ void GameManager::GamePlayingUpdate()
 		//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
 		//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
 		camera->SetUpVec(planet->GetNormVec(player->GetPos()));
-		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - front * (300 + 200 * player->GetJumpFlag())));
+		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
 	}
 
 

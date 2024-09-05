@@ -31,6 +31,6 @@ void WarpGate::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
 	if (colider->GetTag() == ObjectTag::Player)
 	{
-		colider->GetRigidbody().SetPos(m_warpPos);
+		colider->GetRigidbody().ChangePosition(m_warpPos);
 	}
 }
