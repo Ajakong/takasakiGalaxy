@@ -19,5 +19,6 @@ protected:
 	int modelH;
 	float gravityPower;
 	bool clearFlag=false;
+	int m_pointLightHandle;
 };
 

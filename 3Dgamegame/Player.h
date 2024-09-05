@@ -21,6 +21,8 @@ public:
 	int GetHp() { return m_Hp; }
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 	Vec3 GetMoveDir() const{ return m_moveDir; }
+	Vec3 GetNowPlanetPos() { return m_nowPlanetPos; }
+	Vec3 GetNormVec() { return Vec3(m_rigid->GetPos() - m_nowPlanetPos).GetNormalized(); }
 	float GetRegenerationRange() { return m_regeneRange; }
 	int WatchHp()const { return m_Hp; }
 
@@ -28,6 +30,7 @@ public:
 	void SetSideVec(Vec3 right) { m_sideVec = right; }
 	void SetFrontVec(Vec3 front) { m_frontVec = front; }
 	void SetUpVec(Vec3 up) { m_upVec = up; }
+	void IsWarp() { m_isJumpFlag = true;}
 	int GetPlayerModelhandle() { return m_modelHandle; }
 
 	int& SetReverse() { return m_reverseFlag; }
@@ -41,6 +44,9 @@ public:
 
 	using cameraState_t = void(Player::*)();
 	cameraState_t m_cameraUpdate;
+
+	void JumpingUpdate();
+
 
 private:
 	//アニメーションの進行
@@ -60,7 +66,6 @@ private:
 	/// </summary>
 	void NeutralUpdate();
 	void WalkingUpdate();
-	void JumpingUpdate();
 	void SpiningUpdate();
 	/// <summary>
 	/// 衝突関数
@@ -110,6 +115,7 @@ private:
 	Vec3 m_cameraPos;
 	//std::shared_ptr<Camera> m_camera;
 	Vec3 m_moveDir;
+	Vec3 m_nowPlanetPos;
 
 	Vec3 m_frontVec;
 	Vec3 m_sideVec;

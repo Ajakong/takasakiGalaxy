@@ -191,7 +191,7 @@ void MyEngine::Physics::CheckCollide()
 {
 	bool isCheck = true;
 	int checkCount = 0;
-	std::unordered_map<Collidable*, std::list<Collidable*>> newCollideInfo;
+	std::unordered_map<std::shared_ptr<Collidable>, std::list<std::shared_ptr<Collidable>>> newCollideInfo;
 	while (isCheck)
 	{
 		isCheck = false;
@@ -216,11 +216,11 @@ void MyEngine::Physics::CheckCollide()
 
 						if (isTrigger)
 						{
-							AddNewCollideInfo(objA.get(), objB.get(), m_newTirrigerInfo);
+							AddNewCollideInfo(objA, objB, m_newTirrigerInfo);
 						}
 						else
 						{
-							AddNewCollideInfo(objA.get(), objB.get(), m_newCollideInfo);
+							AddNewCollideInfo(objA, objB, m_newCollideInfo);
 						}
 
 
@@ -314,7 +314,7 @@ void MyEngine::Physics::FixNextPos(const std::shared_ptr<Rigidbody> primaryRigid
 	secondaryRigid->SetNextPos(fixedPos);
 }
 
-void MyEngine::Physics::AddNewCollideInfo(Collidable* objA, Collidable* objB, SendCollideInfo& info)
+void MyEngine::Physics::AddNewCollideInfo(std::shared_ptr<Collidable> objA, std::shared_ptr<Collidable> objB, SendCollideInfo& info)
 {
 	// AÇ™êeÇ∆ÇµÇƒéÊìæÇµÇƒÇ¢ÇÈÇ©
 	bool isParentA = info.find(objA) != info.end();
@@ -323,8 +323,8 @@ void MyEngine::Physics::AddNewCollideInfo(Collidable* objA, Collidable* objB, Se
 	// AÇ™BÇ«ÇøÇÁÇ©Ç™éÊìæÇµÇƒÇ¢ÇÈèÍçá
 	if (isParentA || isParentB)
 	{
-		Collidable* parent = objA;
-		Collidable* child = objB;
+		std::shared_ptr<Collidable> parent = objA;
+		std::shared_ptr<Collidable> child = objB;
 		if (isParentB)
 		{
 			parent = objB;
@@ -429,7 +429,7 @@ void MyEngine::Physics::CheckSendOnCollideInfo(SendCollideInfo& preSendInfo, Sen
 	}
 }
 
-void MyEngine::Physics::AddOnCollideInfo(Collidable* own, Collidable* send, OnCollideInfoKind kind)
+void MyEngine::Physics::AddOnCollideInfo(std::shared_ptr<Collidable> own, std::shared_ptr<Collidable> send, OnCollideInfoKind kind)
 {
 	OnCollideInfoData info;
 	info.own = own;
@@ -438,9 +438,9 @@ void MyEngine::Physics::AddOnCollideInfo(Collidable* own, Collidable* send, OnCo
 	m_onCollideInfo.emplace_back(info);
 }
 
-void MyEngine::Physics::OnCollideInfo(Collidable* own, Collidable* send, OnCollideInfoKind kind)
+void MyEngine::Physics::OnCollideInfo(std::shared_ptr<Collidable> own, std::shared_ptr<Collidable> send, OnCollideInfoKind kind)
 {
-	auto item=std::make_shared<Collidable>(send);
+	auto item=send;
 	if (kind == OnCollideInfoKind::CollideEnter)
 	{
 		own->OnCollideEnter(item);

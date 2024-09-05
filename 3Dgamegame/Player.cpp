@@ -55,7 +55,8 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_animBlendRate(0),
 	m_currentAnimNo(0),
 	m_prevAnimNo(0),
-	m_isJumpFlag(false)
+	m_isJumpFlag(false),
+	m_nowPlanetPos(Vec3(Vec3(0, -500, 0)))
 {
 	m_rigid->SetPos(Vec3(0, 0, 0));
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
@@ -152,6 +153,7 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
 	if (colider->GetTag() == ObjectTag::Stage)
 	{
+		m_nowPlanetPos = colider->GetRigidbody()->GetPos();
 		m_playerUpdate = &Player::NeutralUpdate;
 		m_isJumpFlag = false;
 	}

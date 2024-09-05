@@ -3,7 +3,7 @@
 class SpherePlanet : public Planet
 {
 public:
-	SpherePlanet(Vec3 pos);
+	SpherePlanet(Vec3 pos,int color);
 	virtual ~SpherePlanet();
 
 	virtual void Init();
@@ -16,5 +16,6 @@ public:
 	virtual void OnTriggerExit(std::shared_ptr<Collidable> colider);
 private:
 	int m_enemyCount;
+	int m_color;
 };
 

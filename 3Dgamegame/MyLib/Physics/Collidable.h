@@ -27,7 +27,7 @@ namespace MyEngine
 		};
 	public:
 		Collidable(Priority priority, ObjectTag tag);
-		Collidable(Collidable* col);
+		Collidable(std::shared_ptr<Collidable> col);
 		virtual ~Collidable();
 
 		// Õ“Ë‚µ‚½‚Æ‚«

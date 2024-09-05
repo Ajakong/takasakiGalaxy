@@ -11,7 +11,7 @@ Collidable::Collidable(Priority priority, ObjectTag tag) :
 	m_rigid = std::make_shared<Rigidbody>();
 }
 
-MyEngine::Collidable::Collidable(Collidable* col) :
+MyEngine::Collidable::Collidable(std::shared_ptr<Collidable> col) :
 	m_rigid(col->m_rigid),
 	m_colliders(col->m_colliders),
 	m_upVec(col->m_upVec),

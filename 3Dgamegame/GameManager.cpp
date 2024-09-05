@@ -71,7 +71,7 @@ GameManager::GameManager() :
 	dissolveH(LoadGraph("Image/dissolve.png")),
 	postEffectH(LoadPixelShader("PostEffect.pso")),*/
 	textureUIHandle(LoadGraph("image/Elements-02.png")),
-	
+
 	// 通常のRT
 	RT(MakeScreen(640, 480, true)),
 	RT2(MakeScreen(640, 480, true)),
@@ -100,12 +100,12 @@ GameManager::GameManager() :
 	assert(postEffectH != -1);
 	player = std::make_shared<Player>(modelH);
 	camera = std::make_shared<Camera>();
-	planet = std::make_shared<SpherePlanet>(Vec3(0,-500,0));
-	planet2 = std::make_shared<SpherePlanet>(Vec3(3000,0,1000));
-	warpGate = std::make_shared<WarpGate>(Vec3(0, -1000, 0));
+	planet = std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33);
+	planet2 = std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x0000ff);
+
 	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,100)) };
-	gorori= { std::make_shared<Gorori>(Vec3(500,0,300)),std::make_shared<Gorori>(Vec3(500,0,-300)),std::make_shared<Gorori>(Vec3(700,0,0)) };
-	poworStone.push_back( std::make_shared<Item>(Vec3(0, -1000, 0)));
+	gorori = { std::make_shared<Gorori>(Vec3(500,0,300)),std::make_shared<Gorori>(Vec3(500,0,-300)),std::make_shared<Gorori>(Vec3(700,0,0)) };
+	poworStone.push_back(std::make_shared<Item>(Vec3(0, -1000, 0)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(-1000, 0, 0)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(1000, 0, 0)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, 1000, 0)));
@@ -119,7 +119,7 @@ GameManager::GameManager() :
 		// フォント読込エラー処理
 		MessageBox(NULL, "フォント読込失敗", "", MB_OK);
 	}
-	fontHandle = CreateFontToHandle("Pocket Calculator", 60,7, DX_FONTTYPE_NORMAL);
+	fontHandle = CreateFontToHandle("Pocket Calculator", 60, 7, DX_FONTTYPE_NORMAL);
 
 	m_managerUpdate = &GameManager::IntroUpdate;
 	m_managerDraw = &GameManager::IntroDraw;
@@ -141,7 +141,7 @@ void GameManager::Init()
 	Material.Power = 20.0f;
 	SetMaterialParam(Material);
 	SetLightAmbColor(GetColorF(0.5f, 0.5f, 0.5f, 1.0f));*/
-	SetGlobalAmbientLight(GetColorF(1.0f, 0.0f, 0.0f, 0.0f));
+	SetGlobalAmbientLight(GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
 	player->SetMatrix();
 
 
@@ -185,7 +185,7 @@ void GameManager::Init()
 	MyEngine::Physics::GetInstance().Entry(player);
 	MyEngine::Physics::GetInstance().Entry(planet);
 	MyEngine::Physics::GetInstance().Entry(planet2);
-	MyEngine::Physics::GetInstance().Entry(warpGate);
+
 	for (auto& item : poworStone)MyEngine::Physics::GetInstance().Entry(item);
 	for (auto& item : takobo)
 	{
@@ -198,7 +198,6 @@ void GameManager::Init()
 		item->SetTarget(player);
 	}
 
-	warpGate->SetWarpPos(Vec3(3000,500,100));
 }
 
 void GameManager::Update()
@@ -213,30 +212,30 @@ void GameManager::Draw()
 
 void GameManager::IntroUpdate()
 {
-	
+
 	if (m_isFadeIntroFlag)
 	{
 		fadeCount++;
 	}
 	else
 	{
-		fadeCount-=3;
+		fadeCount -= 3;
 		if (fadeCount < 0)fadeCount = 0;
 	}
 	MyEngine::Physics::GetInstance().Update();
-	Vec3 planetToPlayer = player->GetPos() - planet->PlanetOnlyGetRigid()->GetPos();
+	Vec3 planetToPlayer = player->GetPos() - player->GetNowPlanetPos();
 	Vec3 sideVec = GetCameraRightVector();
 	Vec3 front = Cross(planetToPlayer, sideVec).GetNormalized() * -1;
 	player->SetSideVec(sideVec);
 	player->SetFrontVec(front);
 	player->SetUpVec(planetToPlayer);
 
-	{
-		//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
-		//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
-		camera->SetUpVec(planet->GetNormVec(player->GetPos()));
-		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump *player->GetJumpFlag())));
-	}
+
+	//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
+	//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
+	camera->SetUpVec(player->GetNormVec());
+	camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
+
 
 	camera->Update(player->GetPos());
 
@@ -263,16 +262,19 @@ void GameManager::IntroUpdate()
 
 void GameManager::IntroDraw()
 {
-	
-	
+
+
 
 	MV1SetPosition(skyDomeH, player->GetPos().VGet());
 
 	MV1DrawModel(skyDomeH);
 	planet->Draw();
+	planet2->Draw();
 	player->Draw();
-	warpGate->Draw();
-
+	for (auto& item : warpGate)
+	{
+		item->Draw();
+	}
 	for (auto& item : poworStone)
 	{
 		item->Draw();
@@ -284,12 +286,12 @@ void GameManager::IntroDraw()
 	SetRenderTargetToShader(2, -1);		// RTの解除
 
 	//タイマー
-	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle, 1,1);
-	
+	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle, 1, 1);
+
 	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
 	//HPバー
-	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height,0.3f, 0, textureUIHandle, true);
-	DrawBox(15, 25,static_cast<int>(15 + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
+	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
+	DrawBox(15, 25, static_cast<int>(15 + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
 	//ミッション
 	DrawRectRotaGraph(kUiText_SrkX + (100 * 7 - fadeCount * 7), static_cast<int>(kUiText_SrkY + (100 * 2.2f - fadeCount * 2.2f)), kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 0, textureUIHandle, true);
 }
@@ -379,7 +381,7 @@ void GameManager::GamePlayingUpdate()
 		}
 	}
 
-	Vec3 planetToPlayer = player->GetPos() - planet->PlanetOnlyGetRigid()->GetPos();
+	Vec3 planetToPlayer = player->GetPos() - player->GetNowPlanetPos();
 	Vec3 sideVec = GetCameraRightVector();
 	Vec3 front = Cross(planetToPlayer, sideVec).GetNormalized() * -1;
 	player->SetSideVec(sideVec);
@@ -389,12 +391,12 @@ void GameManager::GamePlayingUpdate()
 	float a = acos(Dot(planetToPlayer.GetNormalized(), playerToCamera.GetNormalized())) * 180 / DX_PI_F;
 
 	if ( a> 68)*/
-	{
-		//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
-		//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
-		camera->SetUpVec(planet->GetNormVec(player->GetPos()));
-		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
-	}
+
+	//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
+	//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
+	camera->SetUpVec(player->GetNormVec());
+	camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
+
 
 
 	camera->Update(player->GetPos());
@@ -460,14 +462,17 @@ void GameManager::GamePlayingUpdate()
 	{
 		m_isGameOverFlag = true;
 	}
-	if (planet->GetClearFlag())
+	/*if (planet->GetClearFlag())
 	{
 		m_isClearFlag = true;
 		MyEngine::Physics::GetInstance().Clear();
-	}
+	}*/
 	if (poworStone.size() == 0)
 	{
-		m_isClearFlag = true;
+		if (warpGate.size() >= 1)return;
+		warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300)));
+		warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
+		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 	}
 
 	WorldTimer::Update();
@@ -481,8 +486,13 @@ void GameManager::GamePlayingDraw()
 
 	MV1DrawModel(skyDomeH);
 	planet->Draw();
+	planet2->Draw();
 	player->Draw();
-	warpGate->Draw();
+	for (auto& item : warpGate)
+	{
+
+		item->Draw();
+	}
 	for (auto& item : poworStone)
 	{
 		item->Draw();
@@ -494,7 +504,7 @@ void GameManager::GamePlayingDraw()
 	SetRenderTargetToShader(2, -1);		// RTの解除
 
 	//タイマー
-	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle,1,1);
+	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle, 1, 1);
 	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
 
 	//ミッション
@@ -502,7 +512,7 @@ void GameManager::GamePlayingDraw()
 
 	//HPバー
 	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
-	DrawBox(kUiHpbar_PosX, kUiHpbar_PosY, static_cast<int>(kUiHpbar_PosX + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY +kUiHpbar_Height, 0x00ffff, true);
+	DrawBox(kUiHpbar_PosX, kUiHpbar_PosY, static_cast<int>(kUiHpbar_PosX + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
 
-	
+
 }
