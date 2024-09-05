@@ -39,4 +39,5 @@ void WorldTimer::Reset()
 {
 	m_frame = 0;
 	m_timeCount = 0;
+	m_minute = 0;
 }

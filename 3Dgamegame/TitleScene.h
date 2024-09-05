@@ -3,11 +3,21 @@
 #include <string>
 #include <vector>
 #include <map>
+#include"MyLib/Vec3.h"
 
 class SceneMain;
 
+
 class TitleScene : public Scene
 {
+
+    struct Sphere
+    {
+        Vec3 pos;
+        Vec3 axis;
+        int color;
+    };
+
 public:
     TitleScene(SceneManager& manager);
     ~TitleScene();
@@ -29,11 +39,12 @@ private:
 
     bool m_back = false;
 
+    std::vector<Sphere> m_spherePos;
 
     int m_stageBgm = 0;
 
     int m_backBlack = 0;
-
+    float m_angle=0;
 
     float m_fps = 0.0f;
 

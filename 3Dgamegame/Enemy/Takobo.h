@@ -32,8 +32,10 @@ public:
 	float GetIdleSpeed() { return m_idleSpeed; }
 
 	void SetTarget(std::shared_ptr<Collidable> target);
+	void SetNormVec(Vec3 norm) { m_normVec = norm; }
 
 	std::list<std::shared_ptr<EnemySphere>> GetAttackObj() { return m_sphere; }
+	
 
 	//メンバ関数ポインタ
 	using enemyState_t = void(Takobo::*)();
@@ -70,6 +72,8 @@ private:
 	Vec3 m_vec;
 	Vec3 m_attackDir;
 	Vec3 m_moveShaftPos;
+	Vec3 m_normVec;
+	Vec3 m_nowPlanetPos;
 	std::shared_ptr<Collidable> m_target;
 	//アニメーション変数
 	int m_anim_nutral = 0;

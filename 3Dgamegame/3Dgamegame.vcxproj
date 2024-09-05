@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoxPlanet.cpp" />
     <ClCompile Include="ColliderHelper.cpp" />
     <ClCompile Include="EnemyAccessor.cpp" />
     <ClCompile Include="Enemy\Enemy.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="WorldTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxPlanet.h" />
     <ClInclude Include="ColliderHelper.h" />
     <ClInclude Include="Enemy\Enemy.h" />
     <ClInclude Include="Enemy\EnemyAccessor.h" />

@@ -5,7 +5,7 @@ namespace
 {
 	constexpr float kGroundRadius = 500;
 	constexpr float  kGravityRange = 1500;
-	constexpr float  kGravityPower = 3;
+	constexpr float  kGravityPower = 30;
 
 
 }
@@ -76,19 +76,19 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒvŽ
 		ANSVECTOR = VAdd(ANSVECTOR, objVelocity.y * toObj);
 		ansVelocity = ANSVECTOR;*/
 		//ansVelocity -= toObj;
-		return ansVelocity+ toObj * gravityPower*40;
+		return ansVelocity+ toObj * gravityPower*40*((kGravityRange+(obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length() -(obj->GetRigidbody()->GetPos()-m_rigid->GetPos()).Length())/ kGravityRange);
 	}
 
 	if (obj->GetTag() == ObjectTag::Player)
 	{
 		//d—Í‚Ì‚Ý
-		toObj = toObj * gravityPower*0.1f + objVelocity;
+		toObj = toObj * gravityPower*0.1* ((kGravityRange+ (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length() - (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length()) / kGravityRange) + objVelocity;
 		return toObj;
 	}
 
 
 	//d—Í‚Ì‚Ý
-	toObj = toObj * gravityPower + objVelocity;
+	toObj = toObj * gravityPower * ((kGravityRange +(obj->GetRigidbody()->GetPos()-m_rigid->GetPos()).Length()- (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length()) / kGravityRange) + objVelocity;
 	return toObj;
 }
 

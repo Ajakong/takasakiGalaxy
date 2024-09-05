@@ -192,6 +192,9 @@
     <ClCompile Include="Enemy\Gorori.cpp">
       <Filter>ソース ファイル\Enemy\Gorori</Filter>
     </ClCompile>
+    <ClCompile Include="BoxPlanet.cpp">
+      <Filter>ソース ファイル\Planet\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -322,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="Enemy\Gorori.h">
       <Filter>ソース ファイル\Enemy\Gorori</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxPlanet.h">
+      <Filter>ソース ファイル\Planet\h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -50,7 +50,8 @@ float lerp(float start, float end, float t);
 Gorori::Gorori(Vec3 pos) :Enemy(-1, Priority::Static, ObjectTag::Gorori),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
-m_centerToEnemyAngle(0)
+m_centerToEnemyAngle(0),
+m_attackCount(0)
 {
 	m_enemyUpdate = &Gorori::IdleUpdate;
 	m_rigid->SetPos(pos);
@@ -58,6 +59,9 @@ m_centerToEnemyAngle(0)
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = kCollisionRadius;
 	m_moveShaftPos = m_rigid->GetPos();
+	AddThroughTag(ObjectTag::Gorori);
+	AddThroughTag(ObjectTag::Takobo);
+	AddThroughTag(ObjectTag::WarpGate);
 }
 
 Gorori::~Gorori()
@@ -83,7 +87,7 @@ void Gorori::SetMatrix()
 
 void Gorori::Draw()
 {
-	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10, 0xaaaa11, 0xff0000, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10, 0xaaaa11, 0xff0000, true);
 	MV1DrawModel(m_handle);
 }
 
@@ -145,6 +149,7 @@ void Gorori::AttackUpdate()
 	m_attackCount++;
 	if (m_attackCount > 1300)
 	{
+		m_attackCount = 0;
 		m_enemyUpdate = &Gorori::IdleUpdate;
 	}
 }

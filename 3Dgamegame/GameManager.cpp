@@ -70,7 +70,7 @@ GameManager::GameManager() :
 	outlineVsH(LoadVertexShader("OutlineVS.vso")),
 	dissolveH(LoadGraph("Image/dissolve.png")),
 	postEffectH(LoadPixelShader("PostEffect.pso")),*/
-	textureUIHandle(LoadGraph("image/Elements-02.png")),
+	textureUIHandle(LoadGraph("image/Elements_pro.png")),
 
 	// 通常のRT
 	RT(MakeScreen(640, 480, true)),
@@ -101,7 +101,7 @@ GameManager::GameManager() :
 	player = std::make_shared<Player>(modelH);
 	camera = std::make_shared<Camera>();
 	planet = std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33);
-	planet2 = std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x0000ff);
+	planet2 = std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff);
 
 	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,100)) };
 	gorori = { std::make_shared<Gorori>(Vec3(500,0,300)),std::make_shared<Gorori>(Vec3(500,0,-300)),std::make_shared<Gorori>(Vec3(700,0,0)) };
@@ -111,7 +111,9 @@ GameManager::GameManager() :
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, 1000, 0)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, 1000)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, -1000)));
-
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 1500, 2000)));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 3000)));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 1000)));
 	//使用するフォントを準備する
 	if (AddFontResourceEx("Font/disital.TTF", FR_PRIVATE, NULL) > 0) {
 	}
@@ -128,6 +130,7 @@ GameManager::GameManager() :
 GameManager::~GameManager()
 {
 	DeleteGraph(textureUIHandle);
+	DeleteFontToHandle(fontHandle);
 }
 
 void GameManager::Init()
@@ -143,7 +146,6 @@ void GameManager::Init()
 	SetLightAmbColor(GetColorF(0.5f, 0.5f, 0.5f, 1.0f));*/
 	SetGlobalAmbientLight(GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
 	player->SetMatrix();
-
 
 	// メッシュの数を取ってくる
 	auto meshNum = MV1GetMeshNum(modelH);
@@ -197,7 +199,6 @@ void GameManager::Init()
 		MyEngine::Physics::GetInstance().Entry(item);
 		item->SetTarget(player);
 	}
-
 }
 
 void GameManager::Update()
@@ -212,7 +213,6 @@ void GameManager::Draw()
 
 void GameManager::IntroUpdate()
 {
-
 	if (m_isFadeIntroFlag)
 	{
 		fadeCount++;
@@ -230,12 +230,10 @@ void GameManager::IntroUpdate()
 	player->SetFrontVec(front);
 	player->SetUpVec(planetToPlayer);
 
-
 	//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
 	//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
 	camera->SetUpVec(player->GetNormVec());
 	camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
-
 
 	camera->Update(player->GetPos());
 
@@ -262,9 +260,6 @@ void GameManager::IntroUpdate()
 
 void GameManager::IntroDraw()
 {
-
-
-
 	MV1SetPosition(skyDomeH, player->GetPos().VGet());
 
 	MV1DrawModel(skyDomeH);
@@ -285,14 +280,14 @@ void GameManager::IntroDraw()
 	SetRenderTargetToShader(1, -1);		// RTの解除
 	SetRenderTargetToShader(2, -1);		// RTの解除
 
-	//タイマー
+	//UI:タイマー
 	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle, 1, 1);
 
 	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
-	//HPバー
+	//UI:HPバー
 	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
 	DrawBox(15, 25, static_cast<int>(15 + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
-	//ミッション
+	//UI:ミッション
 	DrawRectRotaGraph(kUiText_SrkX + (100 * 7 - fadeCount * 7), static_cast<int>(kUiText_SrkY + (100 * 2.2f - fadeCount * 2.2f)), kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 0, textureUIHandle, true);
 }
 
@@ -343,7 +338,10 @@ void GameManager::GamePlayingUpdate()
 	}
 	player->Update();
 
-	for (auto& item : takobo)item->Update();
+	for (auto& item : takobo)
+	{
+		item->Update();
+	}
 	for (auto& item : gorori)item->Update();
 
 	userData->dissolveY = player->GetRegenerationRange();
@@ -469,11 +467,16 @@ void GameManager::GamePlayingUpdate()
 	}*/
 	if (poworStone.size() == 0)
 	{
-		if (warpGate.size() >= 1)return;
+		m_isClearFlag = true;
+	}
+	if (poworStone.size() <= 3&& warpGate.size() == 0)
+	{
 		warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300)));
 		warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 	}
+
+	
 
 	WorldTimer::Update();
 }
@@ -503,14 +506,14 @@ void GameManager::GamePlayingDraw()
 	SetRenderTargetToShader(1, -1);		// RTの解除
 	SetRenderTargetToShader(2, -1);		// RTの解除
 
-	//タイマー
+	//UI:タイマー
 	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle, 1, 1);
 	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
 
-	//ミッション
+	//UI:ミッション
 	DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
 
-	//HPバー
+	//UI:HPバー
 	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
 	DrawBox(kUiHpbar_PosX, kUiHpbar_PosY, static_cast<int>(kUiHpbar_PosX + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
 

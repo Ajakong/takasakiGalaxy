@@ -62,7 +62,7 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = m_radius;
-	m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
+	//m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
 }
 
 Player::~Player()
@@ -100,7 +100,7 @@ void Player::Update()
 		item->radius = m_radius;
 	}
 
-	SetLightPositionHandle(m_pointLightHandle, m_rigid->GetPos().VGet());
+	//SetLightPositionHandle(m_pointLightHandle, m_rigid->GetPos().VGet());
 }
 
 void Player::SetMatrix()
