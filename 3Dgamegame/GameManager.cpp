@@ -13,6 +13,8 @@
 #include<cassert>
 #include"WorldTimer.h"
 #include"Pad.h"
+#include"SoundManager.h"
+#include"GraphManager.h"
 
 namespace
 {
@@ -26,12 +28,22 @@ namespace
 
 	//HPバーの枠
 	constexpr int kUiHpbarFrame_PosX = 150;
-	constexpr int kUiHpbarFrame_PosY = 50;
+	constexpr int kUiHpbarFrame_PosY = 35;
 	constexpr int kUiHpbarFrame_SrkX = 2600;
 	constexpr int kUiHpbarFrame_SrkY = 2560;
 	constexpr int kUiHpbarFrame_Width = 1000;
-	constexpr int kUiHpbarFrame_Height = 240;
+	constexpr int kUiHpbarFrame_Height = 144;
 	constexpr float kUiHpbarFrame_Exrate = 0.3f;
+
+	//ChargeRemainTimeのバー
+	constexpr int kUiCRT_PosX = 20;
+	constexpr int kUiCRT_PosY = 70;
+	constexpr int kUiCRT_SrkX = 2655;
+	constexpr int kUiCRT_SrkY = 2720;
+	constexpr int kUiCRT_Width = 30;
+	constexpr int kUiCRT_DisX = 9;
+	constexpr int kUiCRT_Height = 80;
+	constexpr float kUiCRT_Exrate = 0.3f;
 
 	//HPバー
 	constexpr int kUiHpbar_PosX = 15;
@@ -56,7 +68,7 @@ namespace
 	constexpr float kCameraDistanceAddFrontInJump = 200.f;
 	constexpr float kCameraDistanceUp = 100.f;
 
-
+	const char* kGraphPath = "image/Elements_pro.png";
 }
 
 GameManager::GameManager() :
@@ -70,7 +82,7 @@ GameManager::GameManager() :
 	outlineVsH(LoadVertexShader("OutlineVS.vso")),
 	dissolveH(LoadGraph("Image/dissolve.png")),
 	postEffectH(LoadPixelShader("PostEffect.pso")),*/
-	textureUIHandle(LoadGraph("image/Elements_pro.png")),
+	textureUIHandle(GraphManager::GetInstance().GetGraphData("image/Elements_pro.png")),
 	//(LoadEffekseerEffect("Effect/warpEffect.efk")),
 	// 通常のRT
 	RT(MakeScreen(640, 480, true)),
@@ -101,11 +113,11 @@ GameManager::GameManager() :
 	assert(postEffectH != -1);
 	player = std::make_shared<Player>(modelH);
 	camera = std::make_shared<Camera>();
-	planet = std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33);
-	planet2 = std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff);
-
-	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,100)) };
-	gorori = { std::make_shared<Gorori>(Vec3(500,0,300)),std::make_shared<Gorori>(Vec3(500,0,-300)),std::make_shared<Gorori>(Vec3(700,0,0)) };
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33));
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff));
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400));
+	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,500)) };
+	gorori = { std::make_shared<Gorori>(Vec3(6500,500,2300)),std::make_shared<Gorori>(Vec3(6500,500,1700)),std::make_shared<Gorori>(Vec3(6700,0,2000)) };
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, -1000, 0)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(-1000, 0, 0)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(1000, 0, 0)));
@@ -115,7 +127,8 @@ GameManager::GameManager() :
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 1500, 2000)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 3000)));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 1000)));
-
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, -1000, 2000)));
+	poworStone.push_back(std::make_shared<Item>(Vec3(-3000, 1500, -3000)));
 	
 	//使用するフォントを準備する
 	if (AddFontResourceEx("Font/disital.TTF", FR_PRIVATE, NULL) > 0) {
@@ -132,7 +145,6 @@ GameManager::GameManager() :
 
 GameManager::~GameManager()
 {
-	DeleteGraph(textureUIHandle);
 	DeleteFontToHandle(fontHandle);
 	DeleteEffekseerEffect(m_warpEffectHandle);
 }
@@ -189,8 +201,7 @@ void GameManager::Init()
 	DxLib::SetCreateDrawValidGraphChannelNum(1);
 
 	MyEngine::Physics::GetInstance().Entry(player);
-	MyEngine::Physics::GetInstance().Entry(planet);
-	MyEngine::Physics::GetInstance().Entry(planet2);
+	for(auto& item : planet)MyEngine::Physics::GetInstance().Entry(item);
 
 	for (auto& item : poworStone)MyEngine::Physics::GetInstance().Entry(item);
 	for (auto& item : takobo)
@@ -260,7 +271,6 @@ void GameManager::IntroUpdate()
 		m_managerUpdate = &GameManager::GamePlayingUpdate;
 		m_managerDraw = &GameManager::GamePlayingDraw;
 	}
-
 }
 
 void GameManager::IntroDraw()
@@ -268,8 +278,7 @@ void GameManager::IntroDraw()
 	MV1SetPosition(skyDomeH, player->GetPos().VGet());
 
 	MV1DrawModel(skyDomeH);
-	planet->Draw();
-	planet2->Draw();
+	for(auto& item :planet )item->Draw();
 	player->Draw();
 	for (auto& item : warpGate)
 	{
@@ -290,8 +299,13 @@ void GameManager::IntroDraw()
 
 	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
 	//UI:HPバー
-	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
+	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, kUiHpbarFrame_Exrate, 0, textureUIHandle, true);
 	DrawBox(15, 25, static_cast<int>(15 + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
+	//CRTバー
+	for (int i = 0; i < player->GetSearchRemainTime(); i++)
+	{
+		DrawRectRotaGraph(kUiCRT_PosX + i * kUiCRT_DisX, kUiCRT_PosY, kUiCRT_SrkX, kUiCRT_SrkY, kUiCRT_Width, kUiCRT_Height, kUiHpbarFrame_Exrate, 0, textureUIHandle, true);
+	}
 	//UI:ミッション
 	DrawRectRotaGraph(kUiText_SrkX + (100 * 7 - fadeCount * 7), static_cast<int>(kUiText_SrkY + (100 * 2.2f - fadeCount * 2.2f)), kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 0, textureUIHandle, true);
 	//UI:3DmaterialX
@@ -352,8 +366,7 @@ void GameManager::GamePlayingUpdate()
 
 	 /*camera->SetUpVec(planet->GetNormVec(player->GetPos()));
 	 camera->Update(player->GetPos());*/
-	planet->Update();
-	planet2->Update();
+	for(auto& item : planet)item->Update();
 	//player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
 	for (auto& item : poworStone)
 	{
@@ -418,8 +431,6 @@ void GameManager::GamePlayingUpdate()
 	//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
 	camera->SetUpVec(player->GetNormVec());
 	camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
-
-
 
 	camera->Update(player->GetPos());
 	//camera->SetCameraPos(player->GetPos());
@@ -493,14 +504,18 @@ void GameManager::GamePlayingUpdate()
 	{
 		m_isClearFlag = true;
 	}
-	if (poworStone.size() <= 3&& warpGate.size() == 0)
+	if (poworStone.size() <= 5&& warpGate.size() == 0)
 	{
 		warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300), m_warpEffectHandle));
 		warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 	}
-
-	
+	if (poworStone.size() <= 1 && warpGate.size() == 1)
+	{
+		warpGate.push_back(std::make_shared<WarpGate>(Vec3(6800, -500, 2300), m_warpEffectHandle));
+		warpGate.back()->SetWarpPos(Vec3(-3000, 1000, -3000));
+		MyEngine::Physics::GetInstance().Entry(warpGate.back());
+	}
 
 	WorldTimer::Update();
 }
@@ -512,18 +527,26 @@ void GameManager::GamePlayingDraw()
 	MV1SetPosition(skyDomeH, player->GetPos().VGet());
 
 	MV1DrawModel(skyDomeH);
-	planet->Draw();
-	planet2->Draw();
+	for(auto& item : planet)item->Draw();
 	player->Draw();
 	for (auto& item : warpGate)
 	{
-
 		item->Draw();
+	}
+	if (player->IsSearch())
+	{
+		SetDrawBlendMode(DX_BLENDMODE_MUL, 255);
+		// ちょっと暗い矩形を描画
+		DrawBox(0, 0, 1600, 900,
+			0x444488, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		SetUseZBufferFlag(false);
 	}
 	for (auto& item : poworStone)
 	{
 		item->Draw();
 	}
+	SetUseZBufferFlag(true);
 	for (auto& item : takobo)item->Draw();
 	for (auto& item : gorori)item->Draw();
 	camera->DebagDraw();
@@ -540,7 +563,13 @@ void GameManager::GamePlayingDraw()
 	//UI:HPバー
 	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
 	DrawBox(kUiHpbar_PosX, kUiHpbar_PosY, static_cast<int>(kUiHpbar_PosX + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
-
+	
+	//CRTバー
+	for (int i = 0; i < player->GetSearchRemainTime();i++)
+	{
+		DrawRectRotaGraph(kUiCRT_PosX+i* kUiCRT_DisX, kUiCRT_PosY, kUiCRT_SrkX, kUiCRT_SrkY, kUiCRT_Width, kUiCRT_Height, kUiHpbarFrame_Exrate, 0, textureUIHandle, true);
+	}
+	
 	//UI:3DmaterialX
 	Vec3 zero = { 0,0,0 };
 	Vec3 offSetVec = GetCameraRightVector();

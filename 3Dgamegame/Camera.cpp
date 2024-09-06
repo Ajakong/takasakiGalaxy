@@ -9,7 +9,7 @@ namespace
 	constexpr float kCameraHeight = 32;
 
 	constexpr float kCameraNear = 100.0f;
-	constexpr float kCameraFar = 6000.0f;
+	constexpr float kCameraFar =3000.0f;
 
 	//constexpr VECTOR kFirstPos=VGet(300, 300, -200);
 

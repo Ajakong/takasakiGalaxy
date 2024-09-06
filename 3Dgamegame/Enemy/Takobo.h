@@ -68,6 +68,7 @@ private:
 
 	int m_sphereNum = 0;
 	int m_bombNum = 0;
+	int m_shotSEHandle;
 
 	Vec3 m_vec;
 	Vec3 m_attackDir;

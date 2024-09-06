@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include"MyLib/Vec3.h"
+#include"SoundManager.h"
 
 class SceneMain;
 
@@ -30,9 +31,12 @@ public:
 private:
 
     int m_titleHandle = 0;
+    int m_titleBGMHandle;
+    int m_gameStartSEHandle;
     int m_modelHandle[10] = { 0 };
     int m_model_dance = 0;
     int m_attach_move[10] = { 0 };
+    int m_gamePlayingBgmHandle;
 
     int m_btnFrame = 0;
     int m_frame = 0;

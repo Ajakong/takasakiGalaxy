@@ -50,6 +50,7 @@ private:
 	float m_radius = 0;
 
 	int m_modelHandle = 0;
+	int m_attackSEHandle;
 
 	int m_createFrameCount = 0;
 	int m_attackCount = 0;

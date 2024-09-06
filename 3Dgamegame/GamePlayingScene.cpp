@@ -10,6 +10,7 @@
 #include"ClearScene.h"
 #include"WorldTimer.h"
 #include"MyLib/Physics/Physics.h"
+#include"SoundManager.h"
 
 #include"GameManager.h"
 
@@ -46,7 +47,12 @@ void GamePlayingScene::Update()
 
 	(this->*m_updateFunc)();
 	
-	if (m_isGameOver)PushScene(std::make_shared<GameOverScene>(m_manager));
+	if (m_isGameOver)
+	{
+		auto gameover = std::make_shared<GameOverScene>(m_manager);
+		gameover->SetMaterialXNum(m_gameManager->GetMaterialXCount());
+		PushScene(gameover);
+	}
 	else if (m_isClear)PushScene(std::make_shared<ClearScene>(m_manager));
 
 	Pad::Update();
@@ -57,7 +63,11 @@ void GamePlayingScene::Draw()
 
 	(this->*m_drawFunc)();
 
-	if (m_isTitle) ChangeScene(std::make_shared<TitleScene>(m_manager));
+	if (m_isTitle)
+	{
+		StopSoundMem(SoundManager::GetInstance().GetSoundData("Sound/GamePlaying.mp3"));
+		ChangeScene(std::make_shared<TitleScene>(m_manager));
+	}
 	else if (m_isContinue)ChangeScene(std::make_shared<GamePlayingScene>(m_manager));
 }
 

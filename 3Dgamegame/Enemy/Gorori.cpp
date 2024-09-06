@@ -1,6 +1,7 @@
 #include "Gorori.h"
 #include"../MyLib/Physics/ColliderSphere.h"
 #include"../MyLib/Physics/Physics.h"
+#include"../SoundManager.h"
 
 namespace
 {
@@ -38,7 +39,7 @@ namespace
 	/// </summary>
 	constexpr int kStageSizeHalf = 200;
 
-
+	const char* attackSEpath = "";
 
 }
 
@@ -51,7 +52,8 @@ Gorori::Gorori(Vec3 pos) :Enemy(-1, Priority::Static, ObjectTag::Gorori),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
 m_centerToEnemyAngle(0),
-m_attackCount(0)
+m_attackCount(0),
+m_attackSEHandle(SoundManager::GetInstance().GetSoundData(attackSEpath))
 {
 	m_enemyUpdate = &Gorori::IdleUpdate;
 	m_rigid->SetPos(pos);
@@ -62,6 +64,7 @@ m_attackCount(0)
 	AddThroughTag(ObjectTag::Gorori);
 	AddThroughTag(ObjectTag::Takobo);
 	AddThroughTag(ObjectTag::WarpGate);
+	AddThroughTag(ObjectTag::EnemyAttack);
 }
 
 Gorori::~Gorori()
@@ -129,6 +132,7 @@ void Gorori::IdleUpdate()
 			switch (attackState)
 			{
 			case 0:
+				PlaySoundMem(m_attackSEHandle, DX_PLAYTYPE_LOOP);
 				m_attackCoolDownCount = 0;
 				m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
 				m_enemyUpdate = &Gorori::AttackUpdate;
@@ -144,11 +148,12 @@ void Gorori::IdleUpdate()
 
 void Gorori::AttackUpdate()
 {
-	m_rigid->SetVelocity(m_attackDir * 10);
+	m_rigid->SetVelocity(m_attackDir * 20);
 	m_attackCount++;
 	if (m_attackCount > 1300)
 	{
 		m_attackCount = 0;
+		StopSoundMem(m_attackSEHandle);
 		m_enemyUpdate = &Gorori::IdleUpdate;
 	}
 }

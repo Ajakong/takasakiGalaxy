@@ -1,6 +1,7 @@
 #include "Takobo.h"
 #include"../MyLib/Physics/ColliderSphere.h"
 #include"../MyLib/Physics/Physics.h"
+#include"../SoundManager.h"
 
 namespace
 {
@@ -38,7 +39,7 @@ namespace
 	/// </summary>
 	constexpr int kStageSizeHalf = 200;
 
-
+	const char* kShotSEhandlePath = "Sound/Shot.mp3";
 
 }
 
@@ -50,7 +51,8 @@ float lerp(float start, float end, float t);
 Takobo::Takobo(Vec3 pos) :Enemy(-1, Priority::Low, ObjectTag::Takobo),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
-m_centerToEnemyAngle(0)
+m_centerToEnemyAngle(0),
+m_shotSEHandle(SoundManager::GetInstance().GetSoundData(kShotSEhandlePath))
 {
 	m_enemyUpdate = &Takobo::IdleUpdate;
 	m_rigid->SetPos(pos);
@@ -61,6 +63,7 @@ m_centerToEnemyAngle(0)
 	AddThroughTag(ObjectTag::Takobo);
 	AddThroughTag(ObjectTag::Gorori);
 	AddThroughTag(ObjectTag::WarpGate);
+	AddThroughTag(ObjectTag::EnemyAttack);
 }
 
 Takobo::~Takobo()
@@ -164,6 +167,7 @@ void Takobo::IdleUpdate()
 		{
 			Vec3 norm = (m_rigid->GetPos() - m_nowPlanetPos).GetNormalized();
 			Vec3 toTarget = ToVec(norm, m_target->GetRigidbody()->GetPos());
+			if (toTarget.Length() > 500)break;
 			float a = acos(Dot(norm, toTarget.GetNormalized())) * 180 / DX_PI_F;
 
 			if (a < 120)
@@ -189,6 +193,7 @@ void Takobo::AttackSphereUpdate()
 	m_sphereNum++;
 
 	m_createFrameCount = 0;
+	PlaySoundMem(m_shotSEHandle,DX_PLAYTYPE_BACK);
 	m_sphere.push_back(std::make_shared<EnemySphere>(Priority::Low, ObjectTag::EnemyAttack, shared_from_this(), GetMyPos(), m_attackDir, 1, 0xff0000));
 	MyEngine::Physics::GetInstance().Entry(m_sphere.back());
 

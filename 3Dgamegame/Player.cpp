@@ -2,6 +2,7 @@
 #include"Pad.h"
 #include"MyLib/Physics/ColliderSphere.h"
 #include"Camera.h"
+#include"SoundManager.h"
 
 /// <summary>
 /// ‚â‚é‚±‚Æ:‘«‚Ì“–‚½‚è”»’è‚ð¶¬E“¥‚Ý‚Â‚¯‚ÉŽg‚¤
@@ -34,6 +35,12 @@ namespace
 	constexpr int kAvoidFrame = 60;
 
 	constexpr int kJumpPower = 50;
+
+	constexpr int kSearchRemainTimeMax = 28;
+	constexpr int kChargeRemainCoolTime = 10;
+
+	const char* kGororiHitSEPath = "Sound/GororiHitSE.mp3";
+	const char* kGetItemSEPath = "Sound/GetItemSE.mp3";
 }
 
 float GetAngle(Vec3 a ,Vec3 b)
@@ -56,7 +63,12 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_currentAnimNo(0),
 	m_prevAnimNo(0),
 	m_isJumpFlag(false),
-	m_nowPlanetPos(Vec3(Vec3(0, -500, 0)))
+	m_nowPlanetPos(Vec3(Vec3(0, -500, 0))),
+	m_searchRemainTime(0),
+	m_chargeRemainTime(0),
+	m_hitSEHandle(SoundManager::GetInstance().GetSoundData(kGororiHitSEPath)),
+	m_color(0x00ffff),
+	m_getItemHandle(SoundManager::GetInstance().GetSoundData(kGetItemSEPath))
 {
 	m_rigid->SetPos(Vec3(0, 0, 0));
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
@@ -78,9 +90,25 @@ void Player::Init()
 
 void Player::Update()
 {
-	
+	m_isSearchFlag = false;
 	(this->*m_playerUpdate)();
-
+	m_chargeRemainTime++;
+	if ((Pad::IsPress(PAD_INPUT_Z)))
+	{
+		m_searchRemainTime--;
+		if (m_searchRemainTime < 0)m_searchRemainTime = 0;
+		if (m_searchRemainTime <= 1)return;
+		m_isSearchFlag = true;
+	}
+	else
+	{
+		if (m_chargeRemainTime < kChargeRemainCoolTime)return;
+		if (m_searchRemainTime <= kSearchRemainTimeMax)
+		{
+			m_chargeRemainTime = 0;
+			m_searchRemainTime++;
+		}
+	}
 	//(this->*m_cameraUpdate)();
 	//m_camera->SetUpVec(GetCameraUpVector());
 	//m_camera->Update(m_rigid->GetPos()+Vec3(GetCameraUpVector())*300);
@@ -99,6 +127,7 @@ void Player::Update()
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.front());
 		item->radius = m_radius;
 	}
+	
 
 	//SetLightPositionHandle(m_pointLightHandle, m_rigid->GetPos().VGet());
 }
@@ -119,8 +148,6 @@ void Player::SetMatrix()
 	mtx = MMult(mtx, moving);
 
 	MV1SetMatrix(m_modelHandle, mtx);
-
-
 }
 
 void Player::Draw()
@@ -130,13 +157,12 @@ void Player::Draw()
 	{
 		//MV1DrawModel(m_modelHandle);
 	}
-	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, 0x000000, 0x00ffff, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, 0x000000,m_color , false);
 #if _DEBUG
 	
 	
 	//printfDx("%d", HitCount);
 #endif
-
 }
 
 void Player::SetCameraToPlayer(Vec3 cameraToPlayer)
@@ -163,17 +189,23 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	}
 	if (colider->GetTag() == ObjectTag::Gorori)
 	{
+		PlaySoundMem(m_hitSEHandle,DX_PLAYTYPE_BACK);
 		m_Hp -= 10;
 		m_rigid->AddVelocity(Vec3(m_rigid->GetPos()-colider->GetRigidbody()->GetPos()).GetNormalized()*10);
 	}
 	if (colider->GetTag() == ObjectTag::Item)
 	{
+		PlaySoundMem(m_getItemHandle, DX_PLAYTYPE_BACK);
 		m_itemCount++;
 		
 	}
 	if (colider->GetTag() == ObjectTag::EnemyAttack)
 	{
 		m_Hp -= 20;
+	}
+	if (m_Hp <= 0)
+	{
+		m_color = 0xff0000;
 	}
 }
 

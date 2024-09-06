@@ -29,8 +29,9 @@ void WorldTimer::Update()
 	{
 		m_timeCount++;
 	}
-	if (m_timeCount % 60 == 0&&m_timeCount!=0)
+	if (m_timeCount % 60 == 0)
 	{
+		m_timeCount = 0;
 		m_minute++;
 	}
 }

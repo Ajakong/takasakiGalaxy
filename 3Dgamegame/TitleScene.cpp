@@ -10,18 +10,28 @@
 #include"Quaternion.h"
 
 
+
 namespace
 {
 	constexpr int kFadeFrameMax = 60;
 	constexpr int kStandByFrame = 120;
 
 	constexpr int kLightningFrameMax = 200;
+
+	const char* kTitleBGMPath = "Sound/Title.mp3";
+	const char* kGameStartSEPath = "Sound/StartGame2.mp3";
+	const char* kGameBGMPath = "Sound/GamePlaying.mp3";
+	
 }
 
 TitleScene::TitleScene(SceneManager& manager) :
 	Scene(manager),
-	m_angle(0.05f)
+	m_angle(0.05f),
+	m_titleHandle(LoadGraph("Image/galaxy_titleLogo_pro.png")),
+	m_titleBGMHandle(SoundManager::GetInstance().GetSoundData(kTitleBGMPath)),
+	m_gameStartSEHandle(SoundManager::GetInstance().GetSoundData(kGameStartSEPath))
 {
+	PlaySoundMem(m_titleBGMHandle,DX_PLAYTYPE_LOOP);
 	Sphere sphere1;
 	sphere1.pos = Vec3(0, 200, 100);
 	sphere1.axis = Vec3(1, 0, 0);
@@ -65,7 +75,8 @@ TitleScene::TitleScene(SceneManager& manager) :
 
 TitleScene::~TitleScene()
 {
-	
+	StopSoundMem(m_titleBGMHandle);
+	DeleteGraph(m_titleHandle);
 }
 
 void TitleScene::Load()
@@ -84,14 +95,6 @@ void TitleScene::Draw()
 {
 
 	(this->*m_drawFunc)();
-
-	
-	
-	if (m_isGamePlaying)
-	{
-		ChangeScene(std::make_shared<GamePlayingScene>(m_manager));
-	}
-
 }
 
 void TitleScene::FadeInUpdate()
@@ -112,7 +115,7 @@ void TitleScene::NormalUpdate()
 
 	if (Pad::IsTrigger(PAD_INPUT_1))
 	{
-		m_isGamePlaying = true;
+		PlaySoundMem(m_gameStartSEHandle,DX_PLAYTYPE_BACK);
 		m_updateFunc = &TitleScene::FadeOutUpdate;
 		m_drawFunc = &TitleScene::FadeDraw;
 	}
@@ -126,14 +129,16 @@ void TitleScene::FadeOutUpdate()
 
 	m_fps = GetFPS();
 	m_frame++;
-	if (m_frame >= 60) {
+	if (m_frame >= 120) {
 		m_isGamePlaying = true;
 	}
+	
 }
 
 void TitleScene::ChangeScene(std::shared_ptr<Scene> next)
 {
 	StopSoundMem(m_stageBgm);
+	PlaySoundMem(SoundManager::GetInstance().GetSoundData(kGameBGMPath),DX_PLAYTYPE_LOOP);
 	m_manager.ChangeScene(next);
 
 }
@@ -150,14 +155,22 @@ void TitleScene::FadeDraw()
 		DrawSphere3D(item.pos.VGet(), 20, 60, item.color, item.color, true);
 	}
 	DrawFormatString(0, 0, 0xffffff, "TitleScene");
+	DrawGraph(130, 0, m_titleHandle, true);
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / kFadeFrameMax));
+	
 	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	
+	if (m_isGamePlaying)
+	{
+		ChangeScene(std::make_shared<GamePlayingScene>(m_manager));
+	}
 }
 
 void TitleScene::NormalDraw()
 {
+	
 	for (auto& item : m_spherePos)
 	{
 		Vec3 zero = Vec3(0, 0, 0);
@@ -170,5 +183,6 @@ void TitleScene::NormalDraw()
 
 	DrawFormatString(0, 0, 0xffffff, "TitleScene");
 
-	DrawFormatString(730, 650, 0xffffff, "Push Z to Start");
+	DrawFormatString(730, 650, 0xffffff, "Push A to Start");
+	DrawGraph(130, 0, m_titleHandle, true);
 }
