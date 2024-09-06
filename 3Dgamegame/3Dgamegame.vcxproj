@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoxPlanet.cpp" />
     <ClCompile Include="ColliderHelper.cpp" />
     <ClCompile Include="EnemyAccessor.cpp" />
     <ClCompile Include="Enemy\Enemy.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Enemy\Gorori.cpp" />
     <ClCompile Include="Enemy\Takobo.cpp" />
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="GraphManager.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
     <ClCompile Include="MyLib\Geometry.cpp" />
     <ClCompile Include="MyLib\Physics\Collidable.cpp" />
@@ -179,6 +181,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SpherePlanet.cpp" />
     <ClCompile Include="System\AFile.cpp" />
     <ClCompile Include="System\Model.cpp" />
@@ -187,6 +190,7 @@
     <ClCompile Include="WorldTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxPlanet.h" />
     <ClInclude Include="ColliderHelper.h" />
     <ClInclude Include="Enemy\Enemy.h" />
     <ClInclude Include="Enemy\EnemyAccessor.h" />
@@ -197,6 +201,7 @@
     <ClInclude Include="Enemy\Gorori.h" />
     <ClInclude Include="Enemy\Takobo.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="GraphManager.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
     <ClInclude Include="MyLib\Geometry.h" />
     <ClInclude Include="MyLib\ObjectTag.h" />
@@ -224,6 +229,7 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpherePlanet.h" />
     <ClInclude Include="System\AFile.h" />
     <ClInclude Include="System\Model.h" />

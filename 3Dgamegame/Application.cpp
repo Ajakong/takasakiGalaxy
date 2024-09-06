@@ -7,6 +7,7 @@
 #include<vector>
 #include"Game.h"
 #include <DxLib.h>
+#include <EffekseerForDXLib.h>
 #include <cassert>
 
 #include"WorldTimer.h"
@@ -34,6 +35,7 @@ Application::Application()
 
 void Application::Terminate()
 {
+    Effkseer_End();
     DxLib_End();
 }
 
@@ -71,6 +73,10 @@ bool Application::Init()
     SetWriteZBuffer3D(true);
     SetUseBackCulling(true);
 
+    Effekseer_Init(8000);
+    Effekseer_InitDistortion();
+    Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+
 
     SetWindowText("Astro Seeker");
     if (DxLib_Init() == -1)
@@ -87,7 +93,7 @@ void Application::Run()
     {// スコープを強制的に作っている
 
         SceneManager sceneManager;
-        sceneManager.ChangeScene(std::make_shared<GamePlayingScene>(sceneManager));
+        sceneManager.ChangeScene(std::make_shared<TitleScene>(sceneManager));
 
 
         m_screenHandle = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
@@ -107,9 +113,12 @@ void Application::Run()
                 ChangeWindowMode(true);
             }
 
+            Effekseer_Sync3DSetting();
 
             sceneManager.Update();
+            UpdateEffekseer3D();
             sceneManager.Draw();
+            DrawEffekseer3D();
 
 
             
@@ -119,7 +128,7 @@ void Application::Run()
             while (16667 > GetNowHiPerformanceCount() - time) {};
         }
     }
-    //Terminate();
+    Terminate();
     std::vector<VECTOR> num;
 
 }

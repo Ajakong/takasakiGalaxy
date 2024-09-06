@@ -56,7 +56,7 @@ private:
     void FadeOutUpdate();
 
     void ChangeScene(std::shared_ptr<Scene> nextScene);
-
+    void PushScene(std::shared_ptr<Scene> nextScene);
     // ï`âÊä÷êî
     void FadeDraw();
     void NormalDraw();

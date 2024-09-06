@@ -196,7 +196,10 @@ void MyEngine::Physics::CheckCollide()
 	{
 		isCheck = false;
 		++checkCount;
-
+		if (checkCount == 999)
+		{
+			int a = 0;
+		}
 		for (const auto& objA : m_collidables)
 		{
 			for (const auto& objB : m_collidables)
@@ -208,8 +211,6 @@ void MyEngine::Physics::CheckCollide()
 				{
 					for (const auto& colB : objB->m_colliders)
 					{
-
-
 						if (!IsCollide(objA->m_rigid, objB->m_rigid, colA, colB)) continue;
 
 						bool isTrigger = colA->isTrigger || colB->isTrigger;

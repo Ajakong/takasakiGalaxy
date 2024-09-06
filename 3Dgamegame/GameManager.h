@@ -16,7 +16,7 @@ public:
 	void Init();
 	void Update();
 	void Draw();
-
+	int GetMaterialXCount() { return 11 - poworStone.size(); };
 	bool GetGameOver() { return m_isGameOverFlag; }
 	bool GetClear() { return m_isClearFlag; }
 
@@ -31,6 +31,8 @@ private:
 
 	void GamePlayingUpdate();
 	void GamePlayingDraw();
+
+	
 
 private:
 
@@ -49,8 +51,7 @@ private:
 
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<Player> player;
-	std::shared_ptr<Planet> planet;
-	std::shared_ptr<Planet> planet2;
+	std::vector<std::shared_ptr<Planet>> planet;
 	std::vector<std::shared_ptr<WarpGate>> warpGate;
 	std::vector<std::shared_ptr<Takobo>> takobo;
 	std::vector<std::shared_ptr<Gorori>> gorori;
@@ -65,6 +66,7 @@ private:
 	int fontHandle;
 	int sphMapH ;
 	int itemNum;
+	int m_warpEffectHandle;
 	
 	int roughH;
 	
@@ -94,6 +96,8 @@ private:
 	// ‚Ú‚©‚µ—pRT
 	int blurRT;
 	int shrinkRT;
+
+	float m_materialXAngle;
 
 	
 	int depthRT;

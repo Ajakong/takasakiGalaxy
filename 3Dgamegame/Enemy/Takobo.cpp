@@ -1,6 +1,7 @@
 #include "Takobo.h"
 #include"../MyLib/Physics/ColliderSphere.h"
 #include"../MyLib/Physics/Physics.h"
+#include"../SoundManager.h"
 
 namespace
 {
@@ -38,7 +39,7 @@ namespace
 	/// </summary>
 	constexpr int kStageSizeHalf = 200;
 
-
+	const char* kShotSEhandlePath = "Sound/Shot.mp3";
 
 }
 
@@ -50,7 +51,8 @@ float lerp(float start, float end, float t);
 Takobo::Takobo(Vec3 pos) :Enemy(-1, Priority::Low, ObjectTag::Takobo),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
-m_centerToEnemyAngle(0)
+m_centerToEnemyAngle(0),
+m_shotSEHandle(SoundManager::GetInstance().GetSoundData(kShotSEhandlePath))
 {
 	m_enemyUpdate = &Takobo::IdleUpdate;
 	m_rigid->SetPos(pos);
@@ -58,6 +60,10 @@ m_centerToEnemyAngle(0)
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = kCollisionRadius;
 	m_moveShaftPos = m_rigid->GetPos();
+	AddThroughTag(ObjectTag::Takobo);
+	AddThroughTag(ObjectTag::Gorori);
+	AddThroughTag(ObjectTag::WarpGate);
+	AddThroughTag(ObjectTag::EnemyAttack);
 }
 
 Takobo::~Takobo()
@@ -77,10 +83,9 @@ void Takobo::Update()
 	{
 		if (m_sphere.size() == 0)return;
 		sphere->Update();
-
 	}
 
-	
+
 }
 
 void Takobo::SetMatrix()
@@ -121,6 +126,10 @@ void Takobo::Draw()
 
 void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
+	if (colider->GetTag() == ObjectTag::Stage)
+	{
+		m_nowPlanetPos = colider->GetRigidbody()->GetPos();
+	}
 	if (colider->GetTag() == ObjectTag::Player)
 	{
 		m_Hp -= 20;
@@ -155,14 +164,23 @@ void Takobo::IdleUpdate()
 		switch (attackState)
 		{
 		case 0:
-			m_attackCoolDownCount = 0;
-			m_enemyUpdate = &Takobo::AttackSphereUpdate;
+		{
+			Vec3 norm = (m_rigid->GetPos() - m_nowPlanetPos).GetNormalized();
+			Vec3 toTarget = ToVec(norm, m_target->GetRigidbody()->GetPos());
+			if (toTarget.Length() > 500)break;
+			float a = acos(Dot(norm, toTarget.GetNormalized())) * 180 / DX_PI_F;
 
-			/*m_attackCoolDownCount = 0;
-			m_enemyUpdate = &Enemy::AttackBombUpdate;*/
+			if (a < 120)
+			{
+				m_attackCoolDownCount = 0;
+				m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
+				m_enemyUpdate = &Takobo::AttackSphereUpdate;
+			}
+
 			break;
+		}
 		default:
-			m_attackCoolDownCount =250;
+			m_attackCoolDownCount = 250;
 			break;
 		}
 	}
@@ -172,23 +190,19 @@ void Takobo::AttackSphereUpdate()
 {
 	m_rigid->SetVelocity(VGet(0, 0, 0));
 
-
 	m_sphereNum++;
-	if (m_sphereNum <= 5)
-	{
-		m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
 
-		m_createFrameCount = 0;
-		m_sphere.push_back(std::make_shared<EnemySphere>(Priority::Low, ObjectTag::EnemyAttack, shared_from_this(), GetMyPos(), m_attackDir, 1, 0xff0000));
-		MyEngine::Physics::GetInstance().Entry(m_sphere.back());
-	}
+	m_createFrameCount = 0;
+	PlaySoundMem(m_shotSEHandle,DX_PLAYTYPE_BACK);
+	m_sphere.push_back(std::make_shared<EnemySphere>(Priority::Low, ObjectTag::EnemyAttack, shared_from_this(), GetMyPos(), m_attackDir, 1, 0xff0000));
+	MyEngine::Physics::GetInstance().Entry(m_sphere.back());
 
 	m_enemyUpdate = &Takobo::IdleUpdate;
 }
 
 Vec3 Takobo::GetAttackDir() const
 {
-	Vec3 toVec = ToVec(m_rigid->GetPos(),m_target->GetRigidbody()->GetPos());
+	Vec3 toVec = ToVec(m_rigid->GetPos(), m_target->GetRigidbody()->GetPos());
 	Vec3 vec = norm(ToVec(m_rigid->GetPos(), m_target->GetRigidbody()->GetPos()));
 	vec = VGet(vec.x * abs(toVec.x), vec.y * abs(toVec.y), vec.z * abs(toVec.z));
 	return vec;

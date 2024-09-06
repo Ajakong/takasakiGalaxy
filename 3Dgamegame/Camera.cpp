@@ -9,7 +9,7 @@ namespace
 	constexpr float kCameraHeight = 32;
 
 	constexpr float kCameraNear = 100.0f;
-	constexpr float kCameraFar = 6000.0f;
+	constexpr float kCameraFar =3000.0f;
 
 	//constexpr VECTOR kFirstPos=VGet(300, 300, -200);
 
@@ -51,11 +51,11 @@ Camera::~Camera()
 void Camera::Update(Vec3 LookPoint)
 {
 	SetLightPositionHandle(m_lightHandle, m_pos.VGet());
-	SetLightDirection(GetCameraFrontVector());
+	SetLightDirectionHandle(m_lightHandle,GetCameraFrontVector());
 	Vec3 velocity;
-	velocity.x = (m_cameraPoint.x - m_pos.x) / 10.f;
-	velocity.y = (m_cameraPoint.y - m_pos.y) / 10.f;
-	velocity.z = (m_cameraPoint.z - m_pos.z) / 10.f;
+	velocity.x = (m_cameraPoint.x - m_pos.x) / 15.f;
+	velocity.y = (m_cameraPoint.y - m_pos.y) / 15.f;
+	velocity.z = (m_cameraPoint.z - m_pos.z) / 15.f;
 	m_pos += velocity;//イージング
 	//m_pos = m_cameraPoint;
 	

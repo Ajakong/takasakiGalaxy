@@ -3,16 +3,19 @@
 #include"../MyLib/Physics/Physics.h"
 #include"../Quaternion.h"
 
+
 Item::Item(Vec3 pos):Collidable(Priority::Static,ObjectTag::Item)
 {
 	m_rigid->SetPos(pos);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = 25;
+	
 }
 
 Item::~Item()
 {
+	
 }
 
 void Item::Init()
@@ -21,6 +24,7 @@ void Item::Init()
 
 void Item::Update()
 {
+	
 }
 
 void Item::Draw()

@@ -51,6 +51,7 @@ public:
 
 	void SetMove(float _angle, Vec3 _axis)//‰ñ“]²‚ÆŠp‘¬“x‚Ìİ’è
 	{
+		_axis.Normalize();
 		Qu.w = cos(_angle / 2.0f);//À•”
 		Qu.x = _axis.x * sin(_angle / 2.0f);
 		Qu.y = _axis.y * sin(_angle / 2.0f);

@@ -32,8 +32,10 @@ public:
 	void SetUpVec(Vec3 up) { m_upVec = up; }
 	void IsWarp() { m_isJumpFlag = true;}
 	int GetPlayerModelhandle() { return m_modelHandle; }
+	bool IsSearch() { return m_isSearchFlag; }
 
 	int& SetReverse() { return m_reverseFlag; }
+	int GetSearchRemainTime() { return m_searchRemainTime; }
 
 	bool GetJumpFlag() { return m_isJumpFlag; }
 
@@ -105,6 +107,9 @@ private:
 	/// </summary>
 	int actionFrame = 0;
 	int m_pointLightHandle = -1;
+	int m_hitSEHandle;
+	int m_getItemHandle;
+	int m_color;
 
 	float m_regeneRange;
 	float m_angle;
@@ -138,6 +143,9 @@ private:
 	int m_attach_jump = 0;
 	int m_attach_nutral = 0;
 
+	int m_searchRemainTime;
+	int m_chargeRemainTime;
+
 	float m_playAnimTime = 0.0f;
 	float m_animTime_move = 0.0f;
 
@@ -146,6 +154,8 @@ private:
 
 	bool m_isVisibleFlag = false;
 	bool m_isJumpFlag = false;
+	bool m_isSearchFlag = false;
+
 	int m_visibleCount = 0;
 
 	int HitCount = 0;

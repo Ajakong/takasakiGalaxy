@@ -1,6 +1,7 @@
 #include "Gorori.h"
 #include"../MyLib/Physics/ColliderSphere.h"
 #include"../MyLib/Physics/Physics.h"
+#include"../SoundManager.h"
 
 namespace
 {
@@ -38,7 +39,7 @@ namespace
 	/// </summary>
 	constexpr int kStageSizeHalf = 200;
 
-
+	const char* attackSEpath = "";
 
 }
 
@@ -50,7 +51,9 @@ float lerp(float start, float end, float t);
 Gorori::Gorori(Vec3 pos) :Enemy(-1, Priority::Static, ObjectTag::Gorori),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
-m_centerToEnemyAngle(0)
+m_centerToEnemyAngle(0),
+m_attackCount(0),
+m_attackSEHandle(SoundManager::GetInstance().GetSoundData(attackSEpath))
 {
 	m_enemyUpdate = &Gorori::IdleUpdate;
 	m_rigid->SetPos(pos);
@@ -58,6 +61,10 @@ m_centerToEnemyAngle(0)
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = kCollisionRadius;
 	m_moveShaftPos = m_rigid->GetPos();
+	AddThroughTag(ObjectTag::Gorori);
+	AddThroughTag(ObjectTag::Takobo);
+	AddThroughTag(ObjectTag::WarpGate);
+	AddThroughTag(ObjectTag::EnemyAttack);
 }
 
 Gorori::~Gorori()
@@ -83,7 +90,7 @@ void Gorori::SetMatrix()
 
 void Gorori::Draw()
 {
-	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10, 0xaaaa11, 0xff0000, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10, 0xaaaa11, 0xff0000, true);
 	MV1DrawModel(m_handle);
 }
 
@@ -125,6 +132,7 @@ void Gorori::IdleUpdate()
 			switch (attackState)
 			{
 			case 0:
+				PlaySoundMem(m_attackSEHandle, DX_PLAYTYPE_LOOP);
 				m_attackCoolDownCount = 0;
 				m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
 				m_enemyUpdate = &Gorori::AttackUpdate;
@@ -140,11 +148,12 @@ void Gorori::IdleUpdate()
 
 void Gorori::AttackUpdate()
 {
-
 	m_rigid->SetVelocity(m_attackDir * 20);
 	m_attackCount++;
 	if (m_attackCount > 1300)
 	{
+		m_attackCount = 0;
+		StopSoundMem(m_attackSEHandle);
 		m_enemyUpdate = &Gorori::IdleUpdate;
 	}
 }
