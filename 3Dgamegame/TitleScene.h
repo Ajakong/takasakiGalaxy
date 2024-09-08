@@ -37,9 +37,12 @@ private:
     int m_model_dance = 0;
     int m_attach_move[10] = { 0 };
     int m_gamePlayingBgmHandle;
+    int m_frameHandle = 0;
 
     int m_btnFrame = 0;
+    int m_fadeSpeed = 0;
     int m_frame = 0;
+    int m_soundVolume = 0;
 
     bool m_back = false;
 

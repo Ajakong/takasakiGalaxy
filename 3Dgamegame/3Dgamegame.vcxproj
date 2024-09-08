@@ -154,11 +154,13 @@
     <ClCompile Include="Enemy\Gorori.cpp" />
     <ClCompile Include="Enemy\Takobo.cpp" />
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="GraphManager.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
     <ClCompile Include="MyLib\Geometry.cpp" />
     <ClCompile Include="MyLib\Physics\Collidable.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderBase.cpp" />
+    <ClCompile Include="MyLib\Physics\ColliderBox.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderCapsule.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderSphere.cpp" />
     <ClCompile Include="MyLib\Physics\Physics.cpp" />
@@ -187,6 +189,7 @@
     <ClCompile Include="System\Model.cpp" />
     <ClCompile Include="System\ModelLoader.cpp" />
     <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="Ui.cpp" />
     <ClCompile Include="WorldTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -201,12 +204,14 @@
     <ClInclude Include="Enemy\Gorori.h" />
     <ClInclude Include="Enemy\Takobo.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="FontManager.h" />
     <ClInclude Include="GraphManager.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
     <ClInclude Include="MyLib\Geometry.h" />
     <ClInclude Include="MyLib\ObjectTag.h" />
     <ClInclude Include="MyLib\Physics\Collidable.h" />
     <ClInclude Include="MyLib\Physics\ColliderBase.h" />
+    <ClInclude Include="MyLib\Physics\ColliderBox.h" />
     <ClInclude Include="MyLib\Physics\ColliderCapsule.h" />
     <ClInclude Include="MyLib\Physics\ColliderSphere.h" />
     <ClInclude Include="MyLib\Physics\Physics.h" />
@@ -235,6 +240,7 @@
     <ClInclude Include="System\Model.h" />
     <ClInclude Include="System\ModelLoader.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="Ui.h" />
     <ClInclude Include="WorldTimer.h" />
   </ItemGroup>
   <ItemGroup>

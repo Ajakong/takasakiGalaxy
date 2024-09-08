@@ -6,7 +6,8 @@ using namespace MyEngine;
 
 Collidable::Collidable(Priority priority, ObjectTag tag) :
 	m_priority(priority),
-	m_tag(tag)
+	m_tag(tag),
+	m_isAntiGravity(false)
 {
 	m_rigid = std::make_shared<Rigidbody>();
 }

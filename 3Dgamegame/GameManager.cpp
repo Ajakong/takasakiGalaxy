@@ -2,6 +2,7 @@
 // EffekseerForDXLib.hをインクルードします。
 #include "EffekseerForDXLib.h"
 #include "GameManager.h"
+#include"Ui.h"
 #include"Camera.h"
 #include"MyLib/Physics/Physics.h"
 #include"Player.h"
@@ -15,6 +16,8 @@
 #include"Pad.h"
 #include"SoundManager.h"
 #include"GraphManager.h"
+#include"FontManager.h"
+#include"Game.h"
 
 namespace
 {
@@ -67,8 +70,6 @@ namespace
 	constexpr float kCameraDistanceFront = 300.f;
 	constexpr float kCameraDistanceAddFrontInJump = 200.f;
 	constexpr float kCameraDistanceUp = 100.f;
-
-	const char* kGraphPath = "image/Elements_pro.png";
 }
 
 GameManager::GameManager() :
@@ -82,7 +83,6 @@ GameManager::GameManager() :
 	outlineVsH(LoadVertexShader("OutlineVS.vso")),
 	dissolveH(LoadGraph("Image/dissolve.png")),
 	postEffectH(LoadPixelShader("PostEffect.pso")),*/
-	textureUIHandle(GraphManager::GetInstance().GetGraphData("image/Elements_pro.png")),
 	//(LoadEffekseerEffect("Effect/warpEffect.efk")),
 	// 通常のRT
 	RT(MakeScreen(640, 480, true)),
@@ -97,9 +97,7 @@ GameManager::GameManager() :
 	depthRT(MakeScreen(640, 480)),
 	/*skyDomeH(MV1LoadModel("Model/Skydome/universe_skydome.mv1")),*/
 	m_isClearFlag(false),
-	fadeCount(100),
-	itemNum(0),
-	m_materialXAngle(0)
+	itemNum(0)
 {
 	assert(modelH != -1);
 	assert(roughH != -1);
@@ -111,33 +109,27 @@ GameManager::GameManager() :
 	assert(outlineVsH != -1);
 	assert(dissolveH != -1);
 	assert(postEffectH != -1);
+	ui = std::make_shared<Ui>();
 	player = std::make_shared<Player>(modelH);
 	camera = std::make_shared<Camera>();
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33));
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff));
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400));
 	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,500)) };
-	gorori = { std::make_shared<Gorori>(Vec3(6500,500,2300)),std::make_shared<Gorori>(Vec3(6500,500,1700)),std::make_shared<Gorori>(Vec3(6700,0,2000)) };
-	poworStone.push_back(std::make_shared<Item>(Vec3(0, -1000, 0)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(-1000, 0, 0)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(1000, 0, 0)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(0, 1000, 0)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, 1000)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, -1000)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 1500, 2000)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 3000)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 1000)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(6000, -1000, 2000)));
-	poworStone.push_back(std::make_shared<Item>(Vec3(-3000, 1500, -3000)));
+	gorori = { std::make_shared<Gorori>(Vec3(7000,500,2300)),std::make_shared<Gorori>(Vec3(6500,500,1700)),std::make_shared<Gorori>(Vec3(5500,0,2000)) };
+	poworStone.push_back(std::make_shared<Item>(Vec3(0, -800, 0),true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(-300, 0, 0), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(300, 0, 0), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(-200, -800, 0),true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, 500), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, -500), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 800, 2000), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 2800), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 1200), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, -500, 2000), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(-3000, 1300, -3000), true));
 	
-	//使用するフォントを準備する
-	if (AddFontResourceEx("Font/disital.TTF", FR_PRIVATE, NULL) > 0) {
-	}
-	else {
-		// フォント読込エラー処理
-		MessageBox(NULL, "フォント読込失敗", "", MB_OK);
-	}
-	fontHandle = CreateFontToHandle("Pocket Calculator", 60, 7, DX_FONTTYPE_NORMAL);
+	fontHandle = FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator",60,7,DX_FONTTYPE_NORMAL);
 
 	m_managerUpdate = &GameManager::IntroUpdate;
 	m_managerDraw = &GameManager::IntroDraw;
@@ -145,14 +137,13 @@ GameManager::GameManager() :
 
 GameManager::~GameManager()
 {
-	DeleteFontToHandle(fontHandle);
+	
 	DeleteEffekseerEffect(m_warpEffectHandle);
 }
 
 void GameManager::Init()
 {
 	/*MATERIALPARAM Material;
-
 	Material.Diffuse = GetColorF(1.0f, 1.0f, 1.0f, 1.0f);
 	Material.Ambient = GetColorF(0.0f, 0.0f, 0.0f, 0.5f);
 	Material.Specular = GetColorF(0.5f, 0.5f, 0.5f, 0.5f);
@@ -161,6 +152,7 @@ void GameManager::Init()
 	SetMaterialParam(Material);
 	SetLightAmbColor(GetColorF(0.5f, 0.5f, 0.5f, 1.0f));*/
 	SetGlobalAmbientLight(GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
+	
 	player->SetMatrix();
 
 	// メッシュの数を取ってくる
@@ -229,15 +221,8 @@ void GameManager::Draw()
 
 void GameManager::IntroUpdate()
 {
-	if (m_isFadeIntroFlag)
-	{
-		fadeCount++;
-	}
-	else
-	{
-		fadeCount -= 3;
-		if (fadeCount < 0)fadeCount = 0;
-	}
+	ui->FadeUpdate();
+
 	MyEngine::Physics::GetInstance().Update();
 	Vec3 planetToPlayer = player->GetPos() - player->GetNowPlanetPos();
 	Vec3 sideVec = GetCameraRightVector();
@@ -265,8 +250,8 @@ void GameManager::IntroUpdate()
 	{
 		MV1SetMeshBackCulling(modelH, i, DX_CULLING_LEFT);
 	}
-	if (Pad::IsTrigger(PAD_INPUT_1))m_isFadeIntroFlag = true;
-	if (fadeCount > 100)
+	
+	if (ui->GetFadeCount() > 100)
 	{
 		m_managerUpdate = &GameManager::GamePlayingUpdate;
 		m_managerDraw = &GameManager::GamePlayingDraw;
@@ -294,38 +279,9 @@ void GameManager::IntroDraw()
 	SetRenderTargetToShader(1, -1);		// RTの解除
 	SetRenderTargetToShader(2, -1);		// RTの解除
 
-	//UI:タイマー
-	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle, 1, 1);
 
-	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
-	//UI:HPバー
-	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, kUiHpbarFrame_Exrate, 0, textureUIHandle, true);
-	DrawBox(15, 25, static_cast<int>(15 + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
-	//CRTバー
-	for (int i = 0; i < player->GetSearchRemainTime(); i++)
-	{
-		DrawRectRotaGraph(kUiCRT_PosX + i * kUiCRT_DisX, kUiCRT_PosY, kUiCRT_SrkX, kUiCRT_SrkY, kUiCRT_Width, kUiCRT_Height, kUiHpbarFrame_Exrate, 0, textureUIHandle, true);
-	}
-	//UI:ミッション
-	DrawRectRotaGraph(kUiText_SrkX + (100 * 7 - fadeCount * 7), static_cast<int>(kUiText_SrkY + (100 * 2.2f - fadeCount * 2.2f)), kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 0, textureUIHandle, true);
-	//UI:3DmaterialX
-	Vec3 zero = { 0,0,0 };
-	Vec3 offSetVec = GetCameraRightVector();
-	offSetVec -= GetCameraUpVector();
-	offSetVec *= 9.f / 5.f / 2.f;
-	Quaternion myQ;
-	m_materialXAngle += 0.05f;
-	Vec3 front = GetCameraFrontVector();
-	Vec3 UIPos = ((Vec3(GetCameraPosition()) + Vec3(GetCameraFrontVector()) * 110) + Vec3(GetCameraLeftVector()) * 102 + Vec3(GetCameraUpVector()) * 37);
-	for (int i = 0; i < 3; i++)
-	{
-		myQ.SetQuaternion(offSetVec);
-		float angle = DX_PI_F * 2 / 3 * i + m_materialXAngle;
-		myQ.SetMove(angle, front);
-		Vec3 offSet = myQ.Move(offSetVec, zero);
-		DrawSphere3D((UIPos + offSet).VGet(), 1 * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 6, 0xff00ff, 0xff00ff, false);
-	}
-	DrawSphere3D(UIPos.VGet(), 2.5 * 1 + 1.25f * ((100.f - fadeCount) / 100.f), 6, 0x00ff00, 0x00ff00, false);
+	ui->Draw(fontHandle, player->WatchHp(), player->GetSearchRemainTime());
+	
 }
 
 void GameManager::GamePlayingUpdate()
@@ -414,7 +370,6 @@ void GameManager::GamePlayingUpdate()
 			i--;
 		}
 	}
-
 	
 	Vec3 planetToPlayer = player->GetPos() - player->GetNowPlanetPos();
 	Vec3 sideVec = GetCameraRightVector();
@@ -430,8 +385,9 @@ void GameManager::GamePlayingUpdate()
 	//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
 	//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
 	camera->SetUpVec(player->GetNormVec());
+	
 	camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
-
+	
 	camera->Update(player->GetPos());
 	//camera->SetCameraPos(player->GetPos());
 
@@ -509,6 +465,7 @@ void GameManager::GamePlayingUpdate()
 		warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300), m_warpEffectHandle));
 		warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
+		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(1600, 0, 600), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
 	}
 	if (poworStone.size() <= 1 && warpGate.size() == 1)
 	{
@@ -553,39 +510,14 @@ void GameManager::GamePlayingDraw()
 	SetRenderTargetToShader(1, -1);		// RTの解除
 	SetRenderTargetToShader(2, -1);		// RTの解除
 
-	//UI:タイマー
-	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, textureUIHandle, 1, 1);
-	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
+	ui->Draw(fontHandle, player->WatchHp(), player->GetSearchRemainTime());
 
-	//UI:ミッション
-	DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
+	if (player->OnDamage())
+	{
+		int alpha = static_cast<int>(255 * (static_cast<float>(player->GetDamageFrame()) / 60.0f));
 
-	//UI:HPバー
-	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, 0.3f, 0, textureUIHandle, true);
-	DrawBox(kUiHpbar_PosX, kUiHpbar_PosY, static_cast<int>(kUiHpbar_PosX + player->WatchHp() * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);
-	
-	//CRTバー
-	for (int i = 0; i < player->GetSearchRemainTime();i++)
-	{
-		DrawRectRotaGraph(kUiCRT_PosX+i* kUiCRT_DisX, kUiCRT_PosY, kUiCRT_SrkX, kUiCRT_SrkY, kUiCRT_Width, kUiCRT_Height, kUiHpbarFrame_Exrate, 0, textureUIHandle, true);
+		SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
+		DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0xff4444, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
-	
-	//UI:3DmaterialX
-	Vec3 zero = { 0,0,0 };
-	Vec3 offSetVec = GetCameraRightVector();
-	offSetVec -= GetCameraUpVector();
-	offSetVec *= 9.f/5.f/2.f;
-	Quaternion myQ;
-	m_materialXAngle += 0.05f;
-	Vec3 front = GetCameraFrontVector();
-	Vec3 UIPos = ((Vec3(GetCameraPosition()) + Vec3(GetCameraFrontVector()) * 110) + Vec3(GetCameraLeftVector()) * 102+Vec3(GetCameraUpVector())*37);
-	for (int i = 0; i < 3; i++)
-	{
-		myQ.SetQuaternion(offSetVec);
-		float angle =DX_PI_F * 2 / 3 * i + m_materialXAngle;
-		myQ.SetMove(angle, front);
-		Vec3 offSet = myQ.Move(offSetVec, zero);
-		DrawSphere3D(( UIPos+ offSet).VGet(), 1, 6, 0xff00ff, 0xff00ff, false);
-	}
-	DrawSphere3D(UIPos.VGet(), 2.5, 6, 0x00ff00, 0x00ff00, false);
 }

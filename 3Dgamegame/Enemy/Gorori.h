@@ -44,6 +44,7 @@ private:
 	Vec3 GetAttackDir() const;
 private:
 	int m_Hp;
+	int m_color;
 
 	int m_attackCoolDownCount;
 

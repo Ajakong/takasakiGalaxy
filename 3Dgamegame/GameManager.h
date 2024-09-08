@@ -1,5 +1,6 @@
 #pragma once
 
+class Ui;
 class Camera;
 class Player;
 class Planet;
@@ -32,8 +33,6 @@ private:
 	void GamePlayingUpdate();
 	void GamePlayingDraw();
 
-	
-
 private:
 
 	struct UserData
@@ -49,6 +48,7 @@ private:
 	int cbuffH = CreateShaderConstantBuffer(sizeof(UserData));
 	UserData* userData = static_cast<UserData*>(GetBufferShaderConstantBuffer(cbuffH));
 
+	std::shared_ptr<Ui> ui;
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<Player> player;
 	std::vector<std::shared_ptr<Planet>> planet;
@@ -59,7 +59,7 @@ private:
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
 
-	bool m_isFadeIntroFlag = false;
+	
 	int skyDomeH;
 	int modelH ;
 	int textureUIHandle;
@@ -67,7 +67,7 @@ private:
 	int sphMapH ;
 	int itemNum;
 	int m_warpEffectHandle;
-	
+
 	int roughH;
 	
 	int metalH;
@@ -97,11 +97,9 @@ private:
 	int blurRT;
 	int shrinkRT;
 
-	float m_materialXAngle;
+	
 
 	
 	int depthRT;
-
-	int fadeCount;
 };
 

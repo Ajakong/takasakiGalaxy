@@ -32,15 +32,14 @@ namespace
 	/// <summary>
 	/// 再攻撃までのクールタイム
 	/// </summary>
-	constexpr int kAttackCoolDownTime = 100;
+	constexpr int kAttackCoolDownTime = 300;
 
 	/// <summary>
 	/// ステージモデルの縦横サイズ/2
 	/// </summary>
 	constexpr int kStageSizeHalf = 200;
 
-	const char* attackSEpath = "";
-
+	const char* name = "gorori";
 }
 
 /*プロトタイプ宣言*/
@@ -53,7 +52,7 @@ m_Hp(kHp),
 m_attackCoolDownCount(0),
 m_centerToEnemyAngle(0),
 m_attackCount(0),
-m_attackSEHandle(SoundManager::GetInstance().GetSoundData(attackSEpath))
+m_color(0xaaaa11)
 {
 	m_enemyUpdate = &Gorori::IdleUpdate;
 	m_rigid->SetPos(pos);
@@ -90,7 +89,7 @@ void Gorori::SetMatrix()
 
 void Gorori::Draw()
 {
-	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10, 0xaaaa11, 0xff0000, true);
+	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10,m_color, 0xff0000, true);
 	MV1DrawModel(m_handle);
 }
 
@@ -134,12 +133,12 @@ void Gorori::IdleUpdate()
 			case 0:
 				PlaySoundMem(m_attackSEHandle, DX_PLAYTYPE_LOOP);
 				m_attackCoolDownCount = 0;
-				m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
+				m_attackDir = GetAttackDir().GetNormalized();//オブジェクトに向かうベクトルを正規化したもの
 				m_enemyUpdate = &Gorori::AttackUpdate;
-
+				m_color = 0xff0000;
 				break;
 			default:
-				m_attackCoolDownCount = 250;
+				m_attackCoolDownCount =0;
 				break;
 			}
 		}
@@ -150,18 +149,18 @@ void Gorori::AttackUpdate()
 {
 	m_rigid->SetVelocity(m_attackDir * 20);
 	m_attackCount++;
-	if (m_attackCount > 1300)
+	if (m_attackCount > 1000)
 	{
 		m_attackCount = 0;
 		StopSoundMem(m_attackSEHandle);
+		m_color = 0xaaaa11;
 		m_enemyUpdate = &Gorori::IdleUpdate;
 	}
 }
 
 Vec3 Gorori::GetAttackDir() const
 {
-	Vec3 toVec = ToVec(m_rigid->GetPos(), m_target->GetRigidbody()->GetPos());
-	Vec3 vec = norm(ToVec(m_rigid->GetPos(), m_target->GetRigidbody()->GetPos()));
-	vec = VGet(vec.x * abs(toVec.x), vec.y * abs(toVec.y), vec.z * abs(toVec.z));
+	Vec3 vec = ToVec(m_rigid->GetPos(), m_target->GetRigidbody()->GetPos()).GetNormalized();
+	
 	return vec;
 }

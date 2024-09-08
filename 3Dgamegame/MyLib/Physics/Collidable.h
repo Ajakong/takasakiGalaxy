@@ -42,6 +42,7 @@ namespace MyEngine
 		ObjectTag GetTag() const { return m_tag; }
 		Priority GetPriority() const { return m_priority; }
 
+		bool IsAntiGravity() { return m_isAntiGravity; }
 		// 当たり判定を無視（スルー）するタグの追加/削除
 		void AddThroughTag(ObjectTag tag);
 		void RemoveThroughTag(ObjectTag tag);
@@ -57,6 +58,7 @@ namespace MyEngine
 	protected:
 		std::shared_ptr<ColliderBase> AddCollider(const ColliderBase::Kind& kind);
 
+		void SetAntiGravity(bool flag = true) { m_isAntiGravity=flag; }
 	protected:
 		// 物理データ
 		std::shared_ptr<Rigidbody> m_rigid;
@@ -71,6 +73,7 @@ namespace MyEngine
 
 		ObjectTag m_tag;
 		Priority m_priority;
+		bool m_isAntiGravity;
 	};
 }
 

@@ -16,9 +16,8 @@ public:
 	void SetMatrix();
 	void Draw();
 
-
 	Vec3 GetPos() const { return  m_rigid->GetPos(); }
-	int GetHp() { return m_Hp; }
+	float GetHp() { return m_Hp; }
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 	Vec3 GetMoveDir() const{ return m_moveDir; }
 	Vec3 GetNowPlanetPos() { return m_nowPlanetPos; }
@@ -33,7 +32,8 @@ public:
 	void IsWarp() { m_isJumpFlag = true;}
 	int GetPlayerModelhandle() { return m_modelHandle; }
 	bool IsSearch() { return m_isSearchFlag; }
-
+	bool OnDamage() { return m_isOnDamageFlag; }
+	int GetDamageFrame() { return m_damageFrame; }
 	int& SetReverse() { return m_reverseFlag; }
 	int GetSearchRemainTime() { return m_searchRemainTime; }
 
@@ -44,6 +44,7 @@ public:
 	using playerState_t = void(Player::*)();
 	playerState_t m_playerUpdate;
 
+	playerState_t m_prevUpdate;
 	using cameraState_t = void(Player::*)();
 	cameraState_t m_cameraUpdate;
 
@@ -70,9 +71,9 @@ private:
 	void WalkingUpdate();
 	void SpiningUpdate();
 	/// <summary>
-	/// 衝突関数
+	/// ダメージ時
 	/// </summary>
-	void HitUpdate();
+	void DamegeUpdate();
 	/// <summary>
 	/// 回避
 	/// </summary>
@@ -95,7 +96,7 @@ private:
 		float dummy2[2];
 	};
 
-	int m_Hp;
+	float m_Hp;
 	int m_modelHandle = 0;
 
 	int rotRad = 0;
@@ -108,8 +109,11 @@ private:
 	int actionFrame = 0;
 	int m_pointLightHandle = -1;
 	int m_hitSEHandle;
+	int m_searchSEHandle;
 	int m_getItemHandle;
 	int m_color;
+
+	bool m_isOnDamageFlag;
 
 	float m_regeneRange;
 	float m_angle;
@@ -132,6 +136,7 @@ private:
 	//0.0f:prevが再生
 	//1.0:currentが再生
 	int m_reverseFlag=0;
+	int m_damageFrame;
 
 	//アニメーション変数
 	int m_anim_nutral = 0;

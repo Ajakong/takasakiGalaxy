@@ -7,6 +7,8 @@ namespace
 	constexpr float  kGravityRange = 1500;
 	constexpr float  kGravityPower = 30;
 
+	const char* name = "planet";
+	const char* atom = "atomosphere";
 
 }
 
@@ -50,6 +52,10 @@ void SpherePlanet::Draw()
 Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//成分ごとに計算し、補正後のベクトルを返す
 {
 	Vec3 objVelocity = obj->PlanetOnlyGetRigid()->GetVelocity();
+	if (obj->IsAntiGravity())
+	{
+		return objVelocity;
+	}
 
 	if (obj->GetTag() == ObjectTag::EnemyAttack)
 	{

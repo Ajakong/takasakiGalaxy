@@ -2,6 +2,10 @@
 #include"../MyLib/Physics/ColliderSphere.h"
 #include"../Player.h"
 #include<EffekseerForDXLib.h>
+namespace
+{
+	const char* name = "warpGate";
+}
 
 WarpGate::WarpGate(Vec3 pos,int handle):Collidable(Priority::Static, ObjectTag::WarpGate),
 m_emitterHandle(-1)

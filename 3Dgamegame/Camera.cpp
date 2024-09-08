@@ -8,7 +8,7 @@ namespace
 	constexpr float kCameraDist = 96;
 	constexpr float kCameraHeight = 32;
 
-	constexpr float kCameraNear = 100.0f;
+	constexpr float kCameraNear = 10.0f;
 	constexpr float kCameraFar =3000.0f;
 
 	//constexpr VECTOR kFirstPos=VGet(300, 300, -200);
@@ -18,12 +18,15 @@ namespace
 	constexpr float kcameraRotateSpeed = 0.05f;
 
 	constexpr float kOneRapAngle = 360.f;
+	constexpr float kWatchThisTime = 120.f;
 }
 
 Camera::Camera():
 	m_pitchAngle(0),
-	m_setCameraPos(0)
+	m_watchCount(0),
+	m_isFirstPerson(0)
 {
+	m_cameraUpdate = &Camera::NeutralUpdate;
 	//奥行0.1～1000までをカメラの描画範囲とする
 	SetCameraNearFar(kCameraNear, kCameraFar);
 
@@ -50,48 +53,100 @@ Camera::~Camera()
 
 void Camera::Update(Vec3 LookPoint)
 {
-	SetLightPositionHandle(m_lightHandle, m_pos.VGet());
-	SetLightDirectionHandle(m_lightHandle,GetCameraFrontVector());
-	Vec3 velocity;
-	velocity.x = (m_cameraPoint.x - m_pos.x) / 15.f;
-	velocity.y = (m_cameraPoint.y - m_pos.y) / 15.f;
-	velocity.z = (m_cameraPoint.z - m_pos.z) / 15.f;
-	m_pos += velocity;//イージング
-	//m_pos = m_cameraPoint;
-	
-	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
-	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(LookPoint+m_upVec.GetNormalized()*100.0f).VGet(), m_upVec.VGet());
-	m_postLookPointPos = LookPoint;
-
+	(this->*m_cameraUpdate)(LookPoint);
 }
 
 void Camera::DebagDraw()
 {
-	
 }
 
 Vec3 Camera::cameraToPlayer(const Vec3& targetPos)
 {
-
 	Vec3 cameraToPlayer (sqrt((targetPos.x - m_pos.x) * (targetPos.x - m_pos.x)), 0.0f, sqrt((targetPos.z - m_pos.z) * (targetPos.z - m_pos.z)) );
 	return cameraToPlayer;
 }
 
 void Camera::SetCameraPos(Vec3 LookPoint)
 {
-	(this->*m_setCameraPos)(LookPoint);
+}
+
+void Camera::NeutralUpdate(Vec3 LookPoint)
+{
+	if (Pad::IsTrigger(PAD_INPUT_Y))//XBoxコントローラーのL
+	{
+		m_cameraUpdate = &Camera::SetCameraFirstPersonPos;
+	}
+	m_lookPoint = LookPoint;
+	SetLightPositionHandle(m_lightHandle, m_pos.VGet());
+	SetLightDirectionHandle(m_lightHandle, GetCameraFrontVector());
+	Vec3 velocity;
+	velocity.x = (m_cameraPoint.x - m_pos.x) / 15.f;
+	velocity.y = (m_cameraPoint.y - m_pos.y) / 15.f;
+	velocity.z = (m_cameraPoint.z - m_pos.z) / 15.f;
+	m_pos += velocity;//イージング
+	//m_pos = m_cameraPoint;
+
+	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
+	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(m_lookPoint + m_upVec.GetNormalized() * 100.0f).VGet(), m_upVec.VGet());
+	m_postLookPointPos = m_lookPoint;
+}
+
+void Camera::WatchThisUpdate(Vec3 LookPoint)
+{
+	m_watchCount++;
+
+	SetLightPositionHandle(m_lightHandle, m_pos.VGet());
+	SetLightDirectionHandle(m_lightHandle, GetCameraFrontVector());
+	Vec3 velocity;
+	velocity.x = (m_cameraPoint.x - m_pos.x) / 10.f;
+	velocity.y = (m_cameraPoint.y - m_pos.y) / 10.f;
+	velocity.z = (m_cameraPoint.z - m_pos.z) / 10.f;
+	m_pos += velocity;//イージング
+	//m_pos = m_cameraPoint;
+
+	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
+	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(m_lookPoint + m_upVec.GetNormalized() * 100.0f).VGet(), m_upVec.VGet());
+	m_postLookPointPos = m_lookPoint;
+	if (m_watchCount > kWatchThisTime)
+	{
+		m_watchCount = 0;
+		if(m_isFirstPerson)m_cameraUpdate = &Camera::SetCameraFirstPersonPos;
+		else { m_cameraUpdate = &Camera::NeutralUpdate; }
+	}
 }
 
 void Camera::SetCameraFirstPersonPos(Vec3 LookPoint)
 {
-	Vec3 target = LookPoint + m_fowardVec.GetNormalized();
-	DrawSphere3D(LookPoint.VGet(), 50, 8, 0xffffff, 0xffffff, true);
-	SetCameraPositionAndTargetAndUpVec(LookPoint.VGet(),target.VGet(), m_upVec.VGet());
+	if (Pad::IsTrigger(PAD_INPUT_Y))//XBoxコントローラーのL
+	{
+		m_cameraUpdate = &Camera::NeutralUpdate;
+	}
+	Vec3 target = LookPoint;
+	SetCameraPositionAndTargetAndUpVec((LookPoint+m_upVec*300).VGet(), target.VGet(), GetCameraUpVector());
 }
 
 void Camera::SetCameraThirdPersonPos(Vec3 LookPoint)
 {
 
-	DrawSphere3D(m_pos.VGet(), 50, 8, 0xffffff, 0xffffff, true);
 	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(), LookPoint.VGet(), m_upVec.VGet());
+}
+
+void Camera::WatchThis(Vec3 lookpoint, Vec3 cameraPos, Vec3 upVec)
+{
+	m_cameraUpdate = &Camera::WatchThisUpdate;
+	m_lookPoint = lookpoint;
+	m_cameraPoint = cameraPos;
+	m_upVec = upVec;
+	WatchThisUpdate(lookpoint);
+
+	//SetLightPositionHandle(m_lightHandle, m_pos.VGet());
+	//SetLightDirectionHandle(m_lightHandle, GetCameraFrontVector());
+	//Vec3 velocity;
+	//velocity.x = (cameraPos.x - m_pos.x) / 15.f;
+	//velocity.y = (cameraPos.y - m_pos.y) / 15.f;
+	//velocity.z = (cameraPos.z - m_pos.z) / 15.f;
+	//m_pos += velocity;//イージング
+	//
+	//SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(lookpoint + upVec.GetNormalized() * 100.0f).VGet(), upVec.VGet());
+	//m_postLookPointPos = lookpoint;
 }

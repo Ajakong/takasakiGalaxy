@@ -201,6 +201,15 @@
     <ClCompile Include="GraphManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Ui.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="FontManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLib\Physics\ColliderBox.cpp">
+      <Filter>ソース ファイル\MyLib\Physics\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -340,6 +349,15 @@
     </ClInclude>
     <ClInclude Include="GraphManager.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Ui.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FontManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLib\Physics\ColliderBox.h">
+      <Filter>ソース ファイル\MyLib\Physics\h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

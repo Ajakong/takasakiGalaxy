@@ -13,6 +13,7 @@ namespace
 {
 	constexpr int kNetralRadius = 20;//通常時の当たり半径
 
+	constexpr int kDamageFrameMax = 20;
 	//アニメーション番号
 	constexpr int kIdleAnimIndex = 1;
 	//constexpr int kIdleAnimIndex = 2;//待機テスト
@@ -39,8 +40,10 @@ namespace
 	constexpr int kSearchRemainTimeMax = 28;
 	constexpr int kChargeRemainCoolTime = 10;
 
-	const char* kGororiHitSEPath = "Sound/GororiHitSE.mp3";
-	const char* kGetItemSEPath = "Sound/GetItemSE.mp3";
+	const char* kGororiHitSEName = "GororiHitSE.mp3";
+	const char* kGetItemSEName = "GetItemSE.mp3";
+	const char* kGetSearchSEName = "Search.mp3";
+	const char* name = "Player";
 }
 
 float GetAngle(Vec3 a ,Vec3 b)
@@ -54,7 +57,9 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_anim_move(),
 	m_radius(kNetralRadius),
 	m_Hp(50),
+	m_damageFrame(0),
 	m_playerUpdate(&Player::StartUpdate),
+	m_prevUpdate(&Player::StartUpdate),
 	m_cameraUpdate(&Player::Planet1Update),
 	m_regeneRange(0),
 	m_angle(0),
@@ -66,9 +71,10 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_nowPlanetPos(Vec3(Vec3(0, -500, 0))),
 	m_searchRemainTime(0),
 	m_chargeRemainTime(0),
-	m_hitSEHandle(SoundManager::GetInstance().GetSoundData(kGororiHitSEPath)),
+	m_hitSEHandle(SoundManager::GetInstance().GetSoundData(kGororiHitSEName)),
 	m_color(0x00ffff),
-	m_getItemHandle(SoundManager::GetInstance().GetSoundData(kGetItemSEPath))
+	m_getItemHandle(SoundManager::GetInstance().GetSoundData(kGetItemSEName)),
+	m_searchSEHandle(SoundManager::GetInstance().GetSoundData(kGetSearchSEName))
 {
 	m_rigid->SetPos(Vec3(0, 0, 0));
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
@@ -84,8 +90,6 @@ Player::~Player()
 
 void Player::Init()
 {
-	
-
 }
 
 void Player::Update()
@@ -93,12 +97,13 @@ void Player::Update()
 	m_isSearchFlag = false;
 	(this->*m_playerUpdate)();
 	m_chargeRemainTime++;
+	if ((Pad::IsTrigger(PAD_INPUT_Z))&& m_searchRemainTime >= 2)PlaySoundMem(m_searchSEHandle, DX_PLAYTYPE_BACK);
 	if ((Pad::IsPress(PAD_INPUT_Z)))
 	{
+		m_isSearchFlag = true;
 		m_searchRemainTime--;
 		if (m_searchRemainTime < 0)m_searchRemainTime = 0;
-		if (m_searchRemainTime <= 1)return;
-		m_isSearchFlag = true;
+		if (m_searchRemainTime <= 1)m_Hp-=0.05f;
 	}
 	else
 	{
@@ -124,35 +129,44 @@ void Player::Update()
 	}
 	else
 	{
-		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.front());
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 		item->radius = m_radius;
 	}
-	
+	if (m_isOnDamageFlag)
+	{
+		m_damageFrame--;
+		if (m_damageFrame <0)
+		{
+			m_damageFrame = 0;
+			m_isOnDamageFlag = false;
+		}
 
+	}
+	
 	//SetLightPositionHandle(m_pointLightHandle, m_rigid->GetPos().VGet());
 }
 
 void Player::SetMatrix()
 {
-	//カメラのいる角度から
-	//コントローラーによる移動方向を決定する
-	MATRIX mtx;
-	MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
-	
+	Set3DSoundListenerPosAndFrontPosAndUpVec(m_rigid->GetPos().VGet(), Vec3(m_rigid->GetPos() + GetCameraFrontVector()).VGet(), m_upVec.VGet());
 
-	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F);
-	mtx = MMult(scale, moveDir);
+	////カメラのいる角度から
+	////コントローラーによる移動方向を決定する
+	//MATRIX mtx;
+	//MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
+	//
+	//MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F);
+	//mtx = MMult(scale, moveDir);
 
-	MATRIX moving = MGetTranslate(m_rigid->GetPos().VGet());
+	//MATRIX moving = MGetTranslate(m_rigid->GetPos().VGet());
 
-	mtx = MMult(mtx, moving);
+	//mtx = MMult(mtx, moving);
 
-	MV1SetMatrix(m_modelHandle, mtx);
+	//MV1SetMatrix(m_modelHandle, mtx);
 }
 
 void Player::Draw()
 {
-	
 	if (m_visibleCount % 5 == 0)
 	{
 		//MV1DrawModel(m_modelHandle);
@@ -185,26 +199,43 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	}
 	if (colider->GetTag() == ObjectTag::Takobo)
 	{
+		PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+		StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
 		m_Hp -= 10;
+		m_prevUpdate = m_playerUpdate;
+		m_playerUpdate = &Player::DamegeUpdate;
+		m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 30);
+		m_isOnDamageFlag = true;
+		m_damageFrame= kDamageFrameMax;
 	}
 	if (colider->GetTag() == ObjectTag::Gorori)
 	{
 		PlaySoundMem(m_hitSEHandle,DX_PLAYTYPE_BACK);
+		StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
 		m_Hp -= 10;
-		m_rigid->AddVelocity(Vec3(m_rigid->GetPos()-colider->GetRigidbody()->GetPos()).GetNormalized()*10);
+		m_prevUpdate = m_playerUpdate;
+		m_playerUpdate = &Player::DamegeUpdate;
+		m_rigid->AddVelocity(Vec3(m_rigid->GetPos()-colider->GetRigidbody()->GetPos()).GetNormalized()*40);
+		m_isOnDamageFlag = true;
+		m_damageFrame = kDamageFrameMax;
 	}
 	if (colider->GetTag() == ObjectTag::Item)
 	{
 		PlaySoundMem(m_getItemHandle, DX_PLAYTYPE_BACK);
 		m_itemCount++;
-		
 	}
 	if (colider->GetTag() == ObjectTag::EnemyAttack)
 	{
+		StartJoypadVibration(DX_INPUT_PAD1, 300, 600);
+		m_prevUpdate = m_playerUpdate;
+		m_playerUpdate = &Player::DamegeUpdate;
 		m_Hp -= 20;
+		m_isOnDamageFlag = true;
+		m_damageFrame = kDamageFrameMax;
 	}
 	if (m_Hp <= 0)
 	{
+		m_Hp = 0;
 		m_color = 0xff0000;
 	}
 }
@@ -316,8 +347,9 @@ void Player::NeutralUpdate()
 		move += m_upVec.GetNormalized() * 10;
 		m_playerUpdate = &Player::JumpingUpdate;
 	}
-	if (Pad::IsTrigger(PAD_INPUT_2))//XBoxの
+	if (Pad::IsTrigger(PAD_INPUT_B))//XBoxの
 	{
+
 		m_playerUpdate = &Player::SpiningUpdate;
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
@@ -330,7 +362,6 @@ void Player::NeutralUpdate()
 	//	m_radius = 0;
 	//	m_playerUpdate = &Player::AvoidUpdate;
 	//}
-	
 }
 
 void Player::WalkingUpdate()
@@ -344,8 +375,10 @@ void Player::JumpingUpdate()
 
 void Player::SpiningUpdate()
 {
-	m_spinAngle+=DX_PI_F/60;
-	m_angle += DX_PI_F / 60;
+
+
+	m_spinAngle+=DX_PI_F/30;
+	m_angle += DX_PI_F / 30;
 	if (m_spinAngle >= DX_PI_F * 2)
 	{
 		m_playerUpdate = &Player::NeutralUpdate;
@@ -353,13 +386,14 @@ void Player::SpiningUpdate()
 	}
 }
 
-void Player::HitUpdate()
+void Player::DamegeUpdate()
 {
-
-	//ダメージアニメーションのみ
-	m_playerUpdate = &Player::NeutralUpdate;
-
-
+	m_rigid->SetVelocity(m_rigid->GetPrevVelocity()*0.8f);
+	if (m_rigid->GetVelocity().Length()<7.0f)
+	{
+		//ダメージアニメーションのみ
+		m_playerUpdate = m_prevUpdate;
+	}
 }
 
 void Player::AvoidUpdate()

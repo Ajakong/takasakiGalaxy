@@ -9,8 +9,6 @@
 #include"Game.h"
 #include"Pad.h"
 
-
-
 ClearScene::ClearScene(SceneManager& mgr) :
 	Scene(mgr)
 {

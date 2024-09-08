@@ -39,8 +39,9 @@ namespace
 	/// </summary>
 	constexpr int kStageSizeHalf = 200;
 
-	const char* kShotSEhandlePath = "Sound/Shot.mp3";
+	const char* kShotSEhandlePath = "Shot.mp3";
 
+	const char* name = "takobo";
 }
 
 /*プロトタイプ宣言*/
@@ -51,9 +52,13 @@ float lerp(float start, float end, float t);
 Takobo::Takobo(Vec3 pos) :Enemy(-1, Priority::Low, ObjectTag::Takobo),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
-m_centerToEnemyAngle(0),
-m_shotSEHandle(SoundManager::GetInstance().GetSoundData(kShotSEhandlePath))
+m_centerToEnemyAngle(0)
 {
+
+	SetCreate3DSoundFlag(true);
+	m_shotSEHandle = SoundManager::GetInstance().GetSoundData(kShotSEhandlePath);
+	SetCreate3DSoundFlag(false);
+	Set3DRadiusSoundMem(1000, m_shotSEHandle);
 	m_enemyUpdate = &Takobo::IdleUpdate;
 	m_rigid->SetPos(pos);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
@@ -120,7 +125,6 @@ void Takobo::Draw()
 	{
 		if (m_sphere.size() == 0)return;
 		sphere->Draw();
-
 	}
 }
 
@@ -176,7 +180,6 @@ void Takobo::IdleUpdate()
 				m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
 				m_enemyUpdate = &Takobo::AttackSphereUpdate;
 			}
-
 			break;
 		}
 		default:
@@ -193,6 +196,7 @@ void Takobo::AttackSphereUpdate()
 	m_sphereNum++;
 
 	m_createFrameCount = 0;
+	Set3DPositionSoundMem(m_rigid->GetPos().VGet(), m_shotSEHandle);
 	PlaySoundMem(m_shotSEHandle,DX_PLAYTYPE_BACK);
 	m_sphere.push_back(std::make_shared<EnemySphere>(Priority::Low, ObjectTag::EnemyAttack, shared_from_this(), GetMyPos(), m_attackDir, 1, 0xff0000));
 	MyEngine::Physics::GetInstance().Entry(m_sphere.back());
@@ -340,7 +344,7 @@ Vec3 ToVec(Vec3 a, Vec3 b)
 	float x = (b.x - a.x);
 	float y = (b.y - a.y);
 	float z = (b.z - a.z);
-	return VGet(x, y, z);
+	return Vec3(x, y, z);
 }
 
 Vec3 norm(Vec3 a)
