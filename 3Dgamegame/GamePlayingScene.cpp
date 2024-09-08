@@ -53,8 +53,11 @@ void GamePlayingScene::Update()
 		gameover->SetMaterialXNum(m_gameManager->GetMaterialXCount());
 		PushScene(gameover);
 	}
-	else if (m_isClear)PushScene(std::make_shared<ClearScene>(m_manager));
+	else if (m_isClear)
+	{
 
+		PushScene(std::make_shared<ClearScene>(m_manager));
+	}
 	Pad::Update();
 }
 
@@ -111,7 +114,6 @@ void GamePlayingScene::PushScene(std::shared_ptr<Scene> nextScene)
 {
 	m_manager.PushScene(nextScene);
 	MyEngine::Physics::GetInstance().Clear();
-	WorldTimer::Reset();
 }
 
 void GamePlayingScene::FadeDraw()
