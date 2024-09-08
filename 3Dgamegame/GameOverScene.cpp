@@ -11,6 +11,7 @@
 #include"Quaternion.h"
 #include"SoundManager.h"
 #include"FontManager.h"
+#include"WorldTimer.h"
 
 namespace
 {
@@ -123,10 +124,12 @@ void GameOverScene::FadeOutUpdate()
 		if (m_selectNumber % 2 == 0)
 		{
 			m_manager.ResetScene(std::make_shared<GamePlayingScene>(m_manager));
+			WorldTimer::Reset();
 		}
 		if (m_selectNumber % 2 == 1)
 		{
 			StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
+			WorldTimer::Reset();
 			m_manager.ResetScene(std::make_shared<TitleScene>(m_manager));
 		}
 		//m_manager.PopScene();
