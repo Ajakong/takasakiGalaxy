@@ -15,7 +15,7 @@ public:
 	/// <param name="m_modelhandle">エネミーのモデル</param>
 	/// <param name="obj">影響を与えるオブジェ</param>
 	Takobo(Vec3 pos);
-	~Takobo();
+	virtual ~Takobo();
 
 	void Init();
 	void Update();

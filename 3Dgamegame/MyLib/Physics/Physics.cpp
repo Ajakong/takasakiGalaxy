@@ -10,7 +10,7 @@ using namespace MyEngine;
 namespace
 {
 	// 判定最大回数
-	constexpr int CHECK_COUNT_MAX = 1000;
+	constexpr int CHECK_COUNT_MAX = 500;
 }
 
 Physics::Physics()
@@ -94,8 +94,12 @@ void Physics::Update()
 
 	for (const auto& info : m_onCollideInfo)
 	{
-		if (static_cast<int>(info.send->m_tag) > 8|| static_cast<int>(info.send->m_tag)<0)continue;//応急処置済み:Exitしても履歴に残っているが参照できずに例外がスローされる
-		if (static_cast<int>(info.own->m_tag) > 8 || static_cast<int>(info.own->m_tag) < 0)continue;//:上に同じ
+		if (static_cast<int>(info.send->m_tag) > 10|| static_cast<int>(info.send->m_tag)<0)continue;//応急処置済み:Exitしても履歴に残っているが参照できずに例外がスローされる
+		if (static_cast<int>(info.own->m_tag) > 10 || static_cast<int>(info.own->m_tag) < 0)continue;//:上に同じ
+		if (info.own->GetTag() == ObjectTag::ClearObject)
+		{
+			int a = 0;
+		}
 		OnCollideInfo(info.own, info.send, info.kind);
 	}
 
@@ -196,10 +200,7 @@ void MyEngine::Physics::CheckCollide()
 	{
 		isCheck = false;
 		++checkCount;
-		if (checkCount == 999)
-		{
-			int a = 0;
-		}
+		
 		for (const auto& objA : m_collidables)
 		{
 			for (const auto& objB : m_collidables)
@@ -221,6 +222,7 @@ void MyEngine::Physics::CheckCollide()
 						}
 						else
 						{
+							
 							AddNewCollideInfo(objA, objB, m_newCollideInfo);
 						}
 
@@ -260,7 +262,7 @@ void MyEngine::Physics::CheckCollide()
 
 		if (isCheck && checkCount > CHECK_COUNT_MAX)
 		{
-			printfDx("規定数(%d)を超えました", CHECK_COUNT_MAX);
+			//printfDx("規定数(%d)を超えました", CHECK_COUNT_MAX);
 			break;
 		}
 	}

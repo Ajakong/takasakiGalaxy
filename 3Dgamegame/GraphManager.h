@@ -16,6 +16,8 @@ public:
 	~GraphManager();
 
 	static GraphManager& GetInstance();
+
 	int GetGraphData(const char* filepath);
+	void DeleteGraphData(const char* filepath);
 };
 

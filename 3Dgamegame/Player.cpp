@@ -3,6 +3,9 @@
 #include"MyLib/Physics/ColliderSphere.h"
 #include"Camera.h"
 #include"SoundManager.h"
+#include"Enemy/Gorori.h"
+#include"Enemy/EnemySphere.h"
+#include"Enemy/KillerTheSeeker.h"
 
 /// <summary>
 /// やること:足の当たり判定を生成・踏みつけに使う
@@ -13,6 +16,7 @@ namespace
 {
 	constexpr int kNetralRadius = 20;//通常時の当たり半径
 
+	constexpr int kDamageFrameMax = 20;
 	//アニメーション番号
 	constexpr int kIdleAnimIndex = 1;
 	//constexpr int kIdleAnimIndex = 2;//待機テスト
@@ -39,41 +43,60 @@ namespace
 	constexpr int kSearchRemainTimeMax = 28;
 	constexpr int kChargeRemainCoolTime = 10;
 
-	const char* kGororiHitSEPath = "Sound/GororiHitSE.mp3";
-	const char* kGetItemSEPath = "Sound/GetItemSE.mp3";
+	const char* kGororiHitSEName = "GororiHitSE.mp3";
+	const char* kGetItemSEName = "GetItemSE.mp3";
+	const char* kOnParrySEName = "Parry.mp3";
+
+	const char* kGetSearchSEName = "Search.mp3";
+	const char* name = "Player";
 }
 
-float GetAngle(Vec3 a ,Vec3 b)
+float GetAngle(Vec3 a, Vec3 b)
 {
 	return acos(Dot(a.GetNormalized(), b.GetNormalized())) * 180 / DX_PI_F;
 }
 
 
-Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
-	m_modelHandle(MV1DuplicateModel(modelhandle)),
-	m_anim_move(),
-	m_radius(kNetralRadius),
-	m_Hp(50),
-	m_playerUpdate(&Player::StartUpdate),
-	m_cameraUpdate(&Player::Planet1Update),
-	m_regeneRange(0),
-	m_angle(0),
-	m_spinAngle(0),
-	m_animBlendRate(0),
-	m_currentAnimNo(0),
-	m_prevAnimNo(0),
-	m_isJumpFlag(false),
-	m_nowPlanetPos(Vec3(Vec3(0, -500, 0))),
-	m_searchRemainTime(0),
-	m_chargeRemainTime(0),
-	m_hitSEHandle(SoundManager::GetInstance().GetSoundData(kGororiHitSEPath)),
-	m_color(0x00ffff),
-	m_getItemHandle(SoundManager::GetInstance().GetSoundData(kGetItemSEPath))
+Player::Player(int modelhandle) : Collidable(Priority::High, ObjectTag::Player),
+m_modelHandle(MV1DuplicateModel(modelhandle)),
+m_anim_move(),
+m_radius(kNetralRadius),
+m_Hp(50),
+m_damageFrame(0),
+m_playerUpdate(&Player::StartUpdate),
+m_prevUpdate(&Player::StartUpdate),
+m_cameraUpdate(&Player::Planet1Update),
+m_regeneRange(0),
+m_angle(0),
+m_spinAngle(0),
+m_animBlendRate(0),
+m_currentAnimNo(0),
+m_prevAnimNo(0),
+m_isJumpFlag(false),
+m_isSpinFlag(false),
+m_nowPlanetPos(Vec3(Vec3(0, -500, 0))),
+m_searchRemainTime(0),
+m_chargeRemainTime(0),
+m_hitSEHandle(SoundManager::GetInstance().GetSoundData(kGororiHitSEName)),
+m_color(0x00ffff),
+m_getItemHandle(SoundManager::GetInstance().GetSoundData(kGetItemSEName)),
+m_searchSEHandle(SoundManager::GetInstance().GetSoundData(kGetSearchSEName)),
+m_attackRadius(0),
+m_parrySEHandle(SoundManager::GetInstance().GetSoundData(kOnParrySEName))
 {
-	m_rigid->SetPos(Vec3(0, 0, 0));
-	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
-	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
-	item->radius = m_radius;
+	{
+		m_rigid->SetPos(Vec3(0, 0, 0));
+		AddCollider(MyEngine::ColliderBase::Kind::Sphere);
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		item->radius = m_radius;
+	}
+
+	{
+		AddCollider(MyEngine::ColliderBase::Kind::Sphere);
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		item->radius = m_attackRadius;
+	}
+
 	//m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
 }
 
@@ -84,8 +107,6 @@ Player::~Player()
 
 void Player::Init()
 {
-	
-
 }
 
 void Player::Update()
@@ -93,12 +114,13 @@ void Player::Update()
 	m_isSearchFlag = false;
 	(this->*m_playerUpdate)();
 	m_chargeRemainTime++;
+	if ((Pad::IsTrigger(PAD_INPUT_Z)) && m_searchRemainTime >= 2)PlaySoundMem(m_searchSEHandle, DX_PLAYTYPE_BACK);
 	if ((Pad::IsPress(PAD_INPUT_Z)))
 	{
+		m_isSearchFlag = true;
 		m_searchRemainTime--;
 		if (m_searchRemainTime < 0)m_searchRemainTime = 0;
-		if (m_searchRemainTime <= 1)return;
-		m_isSearchFlag = true;
+		if (m_searchRemainTime <= 1)m_Hp -= 0.05f;
 	}
 	else
 	{
@@ -124,43 +146,56 @@ void Player::Update()
 	}
 	else
 	{
-		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.front());
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 		item->radius = m_radius;
 	}
-	
+	if (m_isOnDamageFlag)
+	{
+		m_damageFrame--;
+		if (m_damageFrame < 0)
+		{
+			m_damageFrame = 0;
+			m_isOnDamageFlag = false;
+		}
+
+	}
 
 	//SetLightPositionHandle(m_pointLightHandle, m_rigid->GetPos().VGet());
 }
 
 void Player::SetMatrix()
 {
-	//カメラのいる角度から
-	//コントローラーによる移動方向を決定する
-	MATRIX mtx;
-	MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
-	
+	Set3DSoundListenerPosAndFrontPosAndUpVec(m_rigid->GetPos().VGet(), Vec3(m_rigid->GetPos() + GetCameraFrontVector()).VGet(), m_upVec.VGet());
 
-	MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F);
-	mtx = MMult(scale, moveDir);
+	////カメラのいる角度から
+	////コントローラーによる移動方向を決定する
+	//MATRIX mtx;
+	//MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
+	//
+	//MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F);
+	//mtx = MMult(scale, moveDir);
 
-	MATRIX moving = MGetTranslate(m_rigid->GetPos().VGet());
+	//MATRIX moving = MGetTranslate(m_rigid->GetPos().VGet());
 
-	mtx = MMult(mtx, moving);
+	//mtx = MMult(mtx, moving);
 
-	MV1SetMatrix(m_modelHandle, mtx);
+	//MV1SetMatrix(m_modelHandle, mtx);
 }
 
 void Player::Draw()
 {
-	
 	if (m_visibleCount % 5 == 0)
 	{
 		//MV1DrawModel(m_modelHandle);
 	}
-	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, 0x000000,m_color , false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, 0x000000, m_color, false);
+	if (m_isSpinFlag)
+	{
+		DrawSphere3D(m_rigid->GetPos().VGet(), m_attackRadius, 10, 0x000000, 0x00ff00, false);
+	}
 #if _DEBUG
-	
-	
+
+
 	//printfDx("%d", HitCount);
 #endif
 }
@@ -179,32 +214,110 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
 	if (colider->GetTag() == ObjectTag::Stage)
 	{
+		m_spinCount = 0;
 		m_nowPlanetPos = colider->GetRigidbody()->GetPos();
 		m_playerUpdate = &Player::NeutralUpdate;
 		m_isJumpFlag = false;
+		m_isBoostFlag = false;
 	}
 	if (colider->GetTag() == ObjectTag::Takobo)
 	{
-		m_Hp -= 10;
+		if (m_isSpinFlag)
+		{
+			PlaySoundMem(m_parrySEHandle, DX_PLAYTYPE_BACK);
+			colider->GetRigidbody()->SetVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * -30);
+		}
+		else
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
+			m_Hp -= 10;
+			m_prevUpdate = m_playerUpdate;
+			m_playerUpdate = &Player::DamegeUpdate;
+			m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 30);
+			m_isOnDamageFlag = true;
+			m_damageFrame = kDamageFrameMax;
+		}
 	}
 	if (colider->GetTag() == ObjectTag::Gorori)
 	{
-		PlaySoundMem(m_hitSEHandle,DX_PLAYTYPE_BACK);
-		m_Hp -= 10;
-		m_rigid->AddVelocity(Vec3(m_rigid->GetPos()-colider->GetRigidbody()->GetPos()).GetNormalized()*10);
+		if (m_isSpinFlag)
+		{
+			PlaySoundMem(m_parrySEHandle, DX_PLAYTYPE_BACK);
+			auto gorori = dynamic_pointer_cast<Gorori>(colider);
+
+			gorori->SetAttackDir(Vec3(gorori->GetRigidbody()->GetPos() - m_rigid->GetPos()).GetNormalized());
+		}
+		else
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
+			m_Hp -= 10;
+			m_prevUpdate = m_playerUpdate;
+			m_playerUpdate = &Player::DamegeUpdate;
+			m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 40);
+			m_isOnDamageFlag = true;
+			m_damageFrame = kDamageFrameMax;
+		}
+	}
+	if (colider->GetTag() == ObjectTag::KillerTheSeeker)
+	{
+		if (m_isSpinFlag)
+		{
+
+			PlaySoundMem(m_parrySEHandle, DX_PLAYTYPE_BACK);
+			auto killer = dynamic_pointer_cast<KillerTheSeeker>(colider);
+
+			killer->SetVelocity(Vec3(killer->GetRigidbody()->GetPos() - m_rigid->GetPos()).GetNormalized());
+			killer->m_Hp -= 50;
+		}
+		else
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
+			m_Hp -= 10;
+			m_prevUpdate = m_playerUpdate;
+			m_playerUpdate = &Player::DamegeUpdate;
+			m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 40);
+			m_isOnDamageFlag = true;
+			m_damageFrame = kDamageFrameMax;
+		}
 	}
 	if (colider->GetTag() == ObjectTag::Item)
 	{
 		PlaySoundMem(m_getItemHandle, DX_PLAYTYPE_BACK);
 		m_itemCount++;
-		
 	}
 	if (colider->GetTag() == ObjectTag::EnemyAttack)
 	{
-		m_Hp -= 20;
+		if (m_isSpinFlag)
+		{
+			PlaySoundMem(m_parrySEHandle, DX_PLAYTYPE_BACK);
+			auto attackSphere = dynamic_pointer_cast<EnemySphere>(colider);
+			attackSphere->SetVelocity(attackSphere->GetVelocity() * -1);
+			attackSphere->SetCounterFlag();
+		}
+		else
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			colider->GetRigidbody()->SetVelocity((colider->GetRigidbody()->GetVelocity()) * -1);
+			StartJoypadVibration(DX_INPUT_PAD1, 300, 600);
+			auto attackSphere = dynamic_pointer_cast<EnemySphere>(colider);
+			attackSphere->DeleteFlag();
+			m_prevUpdate = m_playerUpdate;
+			m_playerUpdate = &Player::DamegeUpdate;
+			m_Hp -= 20;
+			m_isOnDamageFlag = true;
+			m_damageFrame = kDamageFrameMax;
+		}
+	}
+	if (colider->GetTag() == ObjectTag::ClearObject)
+	{
+		m_isClearFlag = true;
 	}
 	if (m_Hp <= 0)
 	{
+		m_Hp = 0;
 		m_color = 0xff0000;
 	}
 }
@@ -272,6 +385,9 @@ void Player::StartUpdate()
 
 void Player::NeutralUpdate()
 {
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	m_attackRadius = 0;
+	item->radius = m_attackRadius;
 	//アナログスティックを使って移動
 
 	int analogX = 0, analogY = 0;
@@ -290,11 +406,11 @@ void Player::NeutralUpdate()
 	float len = move.Length();
 	//ベクトルの長さを0.0~1.0の割合に変換する
 	float rate = len / kAnalogInputMax;
-	Vec3 front=GetCameraFrontVector();
+	Vec3 front = GetCameraFrontVector();
 	Vec3 right = GetCameraRightVector();
-	move=m_frontVec* static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
-	move+=m_sideVec* static_cast<float>(analogX);
-	
+	move = m_frontVec * static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
+	move += m_sideVec * static_cast<float>(analogX);
+
 
 	//アナログスティック無効な範囲を除外する
 	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
@@ -316,8 +432,12 @@ void Player::NeutralUpdate()
 		move += m_upVec.GetNormalized() * 10;
 		m_playerUpdate = &Player::JumpingUpdate;
 	}
-	if (Pad::IsTrigger(PAD_INPUT_2))//XBoxの
+	if (Pad::IsTrigger(PAD_INPUT_B))//XBoxの
 	{
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = kNetralRadius + 10;
+		item->radius = m_attackRadius;
+		m_isSpinFlag = true;
 		m_playerUpdate = &Player::SpiningUpdate;
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
@@ -330,7 +450,6 @@ void Player::NeutralUpdate()
 	//	m_radius = 0;
 	//	m_playerUpdate = &Player::AvoidUpdate;
 	//}
-	
 }
 
 void Player::WalkingUpdate()
@@ -339,27 +458,115 @@ void Player::WalkingUpdate()
 
 void Player::JumpingUpdate()
 {
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	m_attackRadius = 0;
+	item->radius = m_attackRadius;
 	m_rigid->SetVelocity(m_rigid->GetPrevVelocity());
+
+	if (Pad::IsTrigger(PAD_INPUT_B))//XBoxの
+	{
+		if (m_spinCount >= 1)return;
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = kNetralRadius + 10;
+		item->radius = m_attackRadius;
+		m_isSpinFlag = true;
+		m_spinCount++;
+		m_playerUpdate = &Player::JumpingSpinUpdate;
+	}
 }
 
 void Player::SpiningUpdate()
 {
-	m_spinAngle+=DX_PI_F/60;
-	m_angle += DX_PI_F / 60;
+	//アナログスティックを使って移動
+
+	int analogX = 0, analogY = 0;
+
+	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
+	analogY = -analogY;
+	if (analogX * analogY != 0)
+	{
+		int a = 0;
+	}
+	//アナログスティックの入力10%~80%を使用する
+	//ベクトルの長さが最大1000になる
+	//ベクトルの長さを取得
+	Vec3 move;
+
+	float len = move.Length();
+	//ベクトルの長さを0.0~1.0の割合に変換する
+	float rate = len / kAnalogInputMax;
+	Vec3 front = GetCameraFrontVector();
+	Vec3 right = GetCameraRightVector();
+	move = m_frontVec * static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
+	move += m_sideVec * static_cast<float>(analogX);
+
+
+	//アナログスティック無効な範囲を除外する
+	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
+	rate = std::min(rate, 1.0f);
+	rate = std::max(rate, 0.0f);
+
+	//速度が決定できるので移動ベクトルに反映
+	move = move.GetNormalized();
+	float speed = kMaxSpeed;
+
+	m_moveDir = move;
+	move = move * speed;
+
+	m_rigid->SetVelocity(move);
+
+	m_spinAngle += DX_PI_F / 15;
+	m_angle += DX_PI_F / 15;
 	if (m_spinAngle >= DX_PI_F * 2)
 	{
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = 0;
+		item->radius = m_attackRadius;
+		m_isSpinFlag = false;
 		m_playerUpdate = &Player::NeutralUpdate;
 		m_spinAngle = 0;
 	}
 }
 
-void Player::HitUpdate()
+void Player::JumpingSpinUpdate()
 {
+	m_spinAngle += DX_PI_F / 15;
+	m_angle += DX_PI_F / 15;
+	if (m_spinAngle >= DX_PI_F * 2)
+	{
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = 0;
+		item->radius = m_attackRadius;
+		m_isSpinFlag = false;
+		m_playerUpdate = &Player::JumpingUpdate;
+		m_spinAngle = 0;
+	}
 
-	//ダメージアニメーションのみ
-	m_playerUpdate = &Player::NeutralUpdate;
+}
 
+void Player::BoostUpdate()
+{
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	m_attackRadius = 0;
+	item->radius = m_attackRadius;
+	m_rigid->SetVelocity(m_rigid->GetPrevVelocity());
+	if (!m_isBoostFlag)
+	{
+		m_playerUpdate = &Player::NeutralUpdate;
+	}
+}
 
+void Player::DamegeUpdate()
+{
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	m_attackRadius = 0;
+	item->radius = m_attackRadius;
+	m_rigid->SetVelocity(m_rigid->GetPrevVelocity() * 0.8f);
+	if (m_rigid->GetVelocity().Length() < 7.0f)
+	{
+		//ダメージアニメーションのみ
+		m_playerUpdate = m_prevUpdate;
+	}
 }
 
 void Player::AvoidUpdate()
@@ -377,5 +584,5 @@ void Player::AvoidUpdate()
 void Player::Planet1Update()
 {
 
-	
+
 }

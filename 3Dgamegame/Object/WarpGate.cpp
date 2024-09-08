@@ -2,6 +2,10 @@
 #include"../MyLib/Physics/ColliderSphere.h"
 #include"../Player.h"
 #include<EffekseerForDXLib.h>
+namespace
+{
+	const char* name = "warpGate";
+}
 
 WarpGate::WarpGate(Vec3 pos,int handle):Collidable(Priority::Static, ObjectTag::WarpGate),
 m_emitterHandle(-1)
@@ -43,7 +47,7 @@ void WarpGate::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	{
 		colider->GetRigidbody()->SetVelocity(Vec3(m_warpPos - colider->GetRigidbody()->GetPos()).GetNormalized() * 100);
 		auto player = std::dynamic_pointer_cast<Player>(colider);
-		player->m_playerUpdate = &Player::JumpingUpdate;
-		player->IsWarp();
+		player->m_playerUpdate = &Player::BoostUpdate;
+		player->SetBoost();
 	}
 }

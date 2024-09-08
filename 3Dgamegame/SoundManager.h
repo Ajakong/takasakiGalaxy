@@ -10,7 +10,8 @@ class SoundManager
 {
 private:
 	std::map<std::string, SoundInfo> m_pathAndSoundInfoes;
-	
+	int m_soundVol;
+
 public:
 	SoundManager();
 	~SoundManager();
@@ -18,5 +19,6 @@ public:
 	static SoundManager& GetInstance();
 	void ChangeSoundVolume(int vol);
 	int GetSoundData(const char* filepath);
+
 };
 

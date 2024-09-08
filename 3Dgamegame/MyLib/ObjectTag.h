@@ -7,7 +7,9 @@ enum class ObjectTag
 	Enemy,
 	Takobo,
 	Gorori,
+	KillerTheSeeker,
 	EnemyAttack,
 	WarpGate,
-	Item
+	Item,
+	ClearObject
 };

@@ -11,7 +11,7 @@ namespace
 	/// ãÖÇÃê∂ê¨ä‘äu
 	/// </summary>
 	constexpr int kSphereCreateFrame = 50;
-
+	const char* name = "Sphere";
 }
 EnemySphere::EnemySphere(MyEngine::Collidable::Priority priority, ObjectTag tag, std::shared_ptr<MyEngine::Collidable>enemy, Vec3 pos, Vec3 velocity, int moveNum, int color) : Collidable(priority,tag),
 m_enemy(std::dynamic_pointer_cast<Enemy>(enemy)),
@@ -52,7 +52,11 @@ void EnemySphere::Draw()
 void EnemySphere::Hit()
 {
 	//m_isDeleteFlag = true;
+}
 
+void EnemySphere::OnCollideEnter(std::shared_ptr<Collidable> colider)
+{
+	m_isDeleteFlag = true;
 }
 
 void EnemySphere::StraightUpdate()

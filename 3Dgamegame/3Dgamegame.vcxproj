@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BossPlanet.cpp" />
     <ClCompile Include="BoxPlanet.cpp" />
     <ClCompile Include="ColliderHelper.cpp" />
     <ClCompile Include="EnemyAccessor.cpp" />
@@ -152,13 +153,17 @@
     <ClCompile Include="Enemy\EnemyMover.cpp" />
     <ClCompile Include="Enemy\EnemySphere.cpp" />
     <ClCompile Include="Enemy\Gorori.cpp" />
+    <ClCompile Include="Enemy\Killer.cpp" />
+    <ClCompile Include="Enemy\KillerTheSeeker.cpp" />
     <ClCompile Include="Enemy\Takobo.cpp" />
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="GraphManager.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
     <ClCompile Include="MyLib\Geometry.cpp" />
     <ClCompile Include="MyLib\Physics\Collidable.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderBase.cpp" />
+    <ClCompile Include="MyLib\Physics\ColliderBox.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderCapsule.cpp" />
     <ClCompile Include="MyLib\Physics\ColliderSphere.cpp" />
     <ClCompile Include="MyLib\Physics\Physics.cpp" />
@@ -173,6 +178,7 @@
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="GamePlayingScene.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Object\ClearObject.cpp" />
     <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\WarpGate.cpp" />
     <ClCompile Include="Pad.cpp" />
@@ -187,9 +193,11 @@
     <ClCompile Include="System\Model.cpp" />
     <ClCompile Include="System\ModelLoader.cpp" />
     <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="Ui.cpp" />
     <ClCompile Include="WorldTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BossPlanet.h" />
     <ClInclude Include="BoxPlanet.h" />
     <ClInclude Include="ColliderHelper.h" />
     <ClInclude Include="Enemy\Enemy.h" />
@@ -199,14 +207,18 @@
     <ClInclude Include="Enemy\EnemyMover.h" />
     <ClInclude Include="Enemy\EnemySphere.h" />
     <ClInclude Include="Enemy\Gorori.h" />
+    <ClInclude Include="Enemy\Killer.h" />
+    <ClInclude Include="Enemy\KillerTheSeeker.h" />
     <ClInclude Include="Enemy\Takobo.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="FontManager.h" />
     <ClInclude Include="GraphManager.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
     <ClInclude Include="MyLib\Geometry.h" />
     <ClInclude Include="MyLib\ObjectTag.h" />
     <ClInclude Include="MyLib\Physics\Collidable.h" />
     <ClInclude Include="MyLib\Physics\ColliderBase.h" />
+    <ClInclude Include="MyLib\Physics\ColliderBox.h" />
     <ClInclude Include="MyLib\Physics\ColliderCapsule.h" />
     <ClInclude Include="MyLib\Physics\ColliderSphere.h" />
     <ClInclude Include="MyLib\Physics\Physics.h" />
@@ -221,6 +233,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="GamePlayingScene.h" />
+    <ClInclude Include="Object\ClearObject.h" />
     <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\WarpGate.h" />
     <ClInclude Include="Pad.h" />
@@ -235,6 +248,7 @@
     <ClInclude Include="System\Model.h" />
     <ClInclude Include="System\ModelLoader.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="Ui.h" />
     <ClInclude Include="WorldTimer.h" />
   </ItemGroup>
   <ItemGroup>

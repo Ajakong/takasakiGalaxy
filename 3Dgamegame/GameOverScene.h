@@ -27,15 +27,16 @@ private:
     int m_fadeSoundFrame = 0;
     int m_graphHandle = 0;
     int m_selectNumber = 0;
+    int m_fontHandle;
 
     int m_modelHandle = -1;
 
     /// <summary>
-    /// 0:右上 1:右下 2:左上 3:左下
+    /// 0:左上 1:左下 2:右上 3:右下
     /// </summary>
     std::vector<Vec3> m_graphVelocity;
     /// <summary>
-    /// 0:右上 1:右下 2:左上 3:左下
+    /// 0:左上 1:左下 2:右上 3:右下 
     /// </summary>
     std::vector<Vec3> m_graphPos;
     Vec3 m_handleVelo;
@@ -55,6 +56,7 @@ private:
 
     // 描画状態を表す関数
     void FadeDraw();
+    void FadeOutDraw();
     void NormalDraw();
 };
 

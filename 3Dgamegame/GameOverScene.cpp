@@ -10,11 +10,12 @@
 #include"GraphManager.h"
 #include"Quaternion.h"
 #include"SoundManager.h"
+#include"FontManager.h"
 
 namespace
 {
 	const TCHAR* kModekHandlePath = "Player/jump_Falling.mv1";
-	const char* kGraphPath = "image/Elements_pro.png";
+	const char* kGraphPath = "Elements_pro.png";
 
 	constexpr int kSelectFrameLeft = 350;
 	constexpr int kSelectFrameRight = 450;
@@ -54,6 +55,8 @@ GameOverScene::GameOverScene(SceneManager& mgr) :
 	m_updateFunc = &GameOverScene::FadeInUpdate;
 	m_drawFunc = &GameOverScene::FadeDraw;
 	m_materialXPos.push_back(Vec3(0, 0, 0));
+	m_fontHandle = FontManager::GetInstance().GetFontData("SF_font.ttf", "廻想体 ネクスト UP B", 60, 7, DX_FONTTYPE_NORMAL);
+
 }
 
 GameOverScene::~GameOverScene()
@@ -98,7 +101,7 @@ void GameOverScene::NormalUpdate()
 	if (Pad::IsTrigger(PAD_INPUT_1))
 	{
 		m_updateFunc = &GameOverScene::FadeOutUpdate;
-		m_drawFunc = &GameOverScene::FadeDraw;
+		m_drawFunc = &GameOverScene::FadeOutDraw;
 	}
 	if (Pad::IsTrigger(PAD_INPUT_DOWN))
 	{
@@ -123,7 +126,7 @@ void GameOverScene::FadeOutUpdate()
 		}
 		if (m_selectNumber % 2 == 1)
 		{
-			StopSoundMem(SoundManager::GetInstance().GetSoundData("Sound/GamePlaying.mp3"));
+			StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
 			m_manager.ResetScene(std::make_shared<TitleScene>(m_manager));
 		}
 		//m_manager.PopScene();
@@ -139,46 +142,39 @@ void GameOverScene::FadeDraw()
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / 60.0f));
 
 	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
-	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x444444, true);
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0xff4444, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	DrawString(1000, 500, "Continue", 0xffffff);
 	DrawString(1000, 600, "To Title", 0xffffff);
 	m_angle+=0.05f;
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
+	
 	if (m_selectNumber % 2 == 0)
 	{
-		Vec3 zero = m_graphPos[0] + (m_graphVelocity[0].GetNormalized()*10)  * sin(m_angle);
-		Vec3 one = m_graphPos[1] + (m_graphVelocity[1].GetNormalized()*10)  * sin(m_angle);
-		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized()*10)  * sin(m_angle);
-		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized()*10)  * sin(m_angle);
-
-		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX+kSelectFrameWidth+kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-
+		
 		DrawBox(950, 470, 1200, 530, 0xffffff, true);
 		
 	}
 	if (m_selectNumber % 2 == 1)
 	{
-		Vec3 zero = m_graphPos[0] + (m_graphVelocity[0].GetNormalized()*10) * sin(m_angle);
-		Vec3 one = m_graphPos[1] + (m_graphVelocity[1].GetNormalized()*10) * sin(m_angle);
-		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized()*10) * sin(m_angle);
-		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized()*10) * sin(m_angle);
+		DrawBox(950, 570, 1200, 630, 0xffffff, true);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	DrawFormatStringToHandle(500, 300, 0xffffff,m_fontHandle, "取得数:%d", m_materialXNum);
+
+	{
+		Vec3 zero = m_graphPos[0] + (m_graphVelocity[0].GetNormalized() * 10) * sin(m_angle);
+		Vec3 one = m_graphPos[1] + (m_graphVelocity[1].GetNormalized() * 10) * sin(m_angle);
+		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized() * 10) * sin(m_angle);
+		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized() * 10) * sin(m_angle);
 
 		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
 		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
 		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
 		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-
-		DrawBox(950, 570, 1200, 630, 0xffffff, true);
 	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	DrawFormatString(500, 200, 0xffffff, "取得数:%d", m_materialXNum);
-
 
 	//UI:3DmaterialX
 	Vec3 zero = { 0,0,0 };
@@ -188,6 +184,65 @@ void GameOverScene::FadeDraw()
 	Quaternion myQ;
 	Vec3 front = GetCameraFrontVector();
 	Vec3 UIPos = ((Vec3(GetCameraPosition()) + Vec3(GetCameraFrontVector()) * 108) + Vec3(GetCameraLeftVector()) *55 + Vec3(GetCameraUpVector()) * 18);
+	for (int i = 0; i < 3; i++)
+	{
+		myQ.SetQuaternion(offSetVec);
+		float angle = DX_PI_F * 2 / 3 * i + m_angle;
+		myQ.SetMove(angle, front);
+		Vec3 offSet = myQ.Move(offSetVec, zero);
+		DrawSphere3D((UIPos + offSet).VGet(), 2.5f, 6, 0xff00ff, 0xff00ff, false);
+	}
+	DrawSphere3D(UIPos.VGet(), 6, 8, 0x00ff00, 0x00ff00, false);
+}
+
+void GameOverScene::FadeOutDraw()
+{
+	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / 60.0f));
+
+	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x444444, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	DrawString(1000, 500, "Continue", 0xffffff);
+	DrawString(1000, 600, "To Title", 0xffffff);
+	m_angle += 0.05f;
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
+
+	if (m_selectNumber % 2 == 0)
+	{
+
+		DrawBox(950, 470, 1200, 530, 0xffffff, true);
+
+	}
+	if (m_selectNumber % 2 == 1)
+	{
+		DrawBox(950, 570, 1200, 630, 0xffffff, true);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	DrawFormatStringToHandle(500, 300, 0xffffff, m_fontHandle, "取得数:%d", m_materialXNum);
+
+	{
+		Vec3 zero = m_graphPos[0] + (m_graphVelocity[0].GetNormalized() * 10) * sin(m_angle);
+		Vec3 one = m_graphPos[1] + (m_graphVelocity[1].GetNormalized() * 10) * sin(m_angle);
+		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized() * 10) * sin(m_angle);
+		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized() * 10) * sin(m_angle);
+
+		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+	}
+
+
+	//UI:3DmaterialX
+	Vec3 zero = { 0,0,0 };
+	Vec3 offSetVec = GetCameraRightVector();
+	offSetVec -= GetCameraUpVector();
+	offSetVec *= 9.f / 4.f;
+	Quaternion myQ;
+	Vec3 front = GetCameraFrontVector();
+	Vec3 UIPos = ((Vec3(GetCameraPosition()) + Vec3(GetCameraFrontVector()) * 108) + Vec3(GetCameraLeftVector()) * 55 + Vec3(GetCameraUpVector()) * 18);
 	for (int i = 0; i < 3; i++)
 	{
 		myQ.SetQuaternion(offSetVec);
@@ -211,32 +266,13 @@ void GameOverScene::NormalDraw()
 	DrawString(1000, 600, "To Title", 0xffffff);
 	m_angle+=0.05f;
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
+
 	if (m_selectNumber % 2 == 0)
 	{
-		float a = sin(m_angle);
-		Vec3 zero = m_graphPos[0] + (m_graphVelocity[0].GetNormalized()*10) * sin(m_angle);
-		Vec3 one = m_graphPos[1] + (m_graphVelocity[1].GetNormalized()*10) * sin(m_angle);
-		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized()*10) * sin(m_angle);
-		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized()*10) * sin(m_angle);
-
-		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-
 		DrawBox(950, 470, 1200, 530, 0xffffff, true);
 	}
 	if (m_selectNumber % 2 == 1)
 	{
-		Vec3 zero = m_graphPos[0] + (m_graphVelocity[0].GetNormalized()*10) * sin(m_angle);
-		Vec3 one = m_graphPos[1] + (m_graphVelocity[1].GetNormalized()*10) * sin(m_angle);
-		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized()*10) * sin(m_angle);
-		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized()*10) * sin(m_angle);
-
-		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
 		DrawBox(950, 570, 1200, 630, 0xffffff, true);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -247,7 +283,19 @@ void GameOverScene::NormalDraw()
 	int idx = m_btnFrame / 10 % 3;
 	constexpr int kButtonSize = 16;
 	constexpr float kBtnScale = 3.0f;
-	DrawFormatString(500, 200, 0xffffff, "取得数:%d", m_materialXNum);
+	DrawFormatStringToHandle(500, 300, 0xffffff,m_fontHandle, "取得数:%d", m_materialXNum);
+
+	{
+		Vec3 zero = m_graphPos[0] + (m_graphVelocity[0].GetNormalized() * 10) * sin(m_angle);
+		Vec3 one = m_graphPos[1] + (m_graphVelocity[1].GetNormalized() * 10) * sin(m_angle);
+		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized() * 10) * sin(m_angle);
+		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized() * 10) * sin(m_angle);
+
+		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+	}
 
 	//UI:3DmaterialX
 	Vec3 zero = { 0,0,0 };

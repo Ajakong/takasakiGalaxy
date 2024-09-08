@@ -22,19 +22,27 @@ public:
 	void SetCameraFirstPersonPos(Vec3 LookPoint);
 	void SetCameraThirdPersonPos(Vec3 LookPoint);
 	float GetCameraAngle() const { return m_cameraAngle; }
-	void SetUpVec(Vec3 upDir) { m_upVec = upDir; }
+	void SetUpVec(Vec3 upDir) { if (m_watchCount == 0) m_upVec = upDir; }
 	Vec3 GetUpVec() const { return m_upVec; }
-	void SetCameraPoint(Vec3 pos) { m_cameraPoint = pos; }
+	void SetCameraPoint(Vec3 pos) { if (m_watchCount == 0)m_cameraPoint = pos; }
+	void WatchThis(Vec3 lookpoint,Vec3 cameraPos,Vec3 upVec);
 
 	//メンバ関数ポインタ
-	using cameraState_t = void(Camera::*)(Vec3 LookPoint);
-	cameraState_t m_setCameraPos;
+	using cameraState_t = void(Camera::*)(Vec3 lookpoint);
+	cameraState_t m_cameraUpdate;
+private:
+	void NeutralUpdate(Vec3 LookPoint);
+	void WatchThisUpdate(Vec3 LookPoint);
+
 private:
 	int m_lightHandle = -1;
+	int m_watchCount;
+	bool m_isFirstPerson;
 
 	Quaternion m_myQ;
-	Vec3	m_pos;			// ポジション.
+	Vec3 m_pos;			// ポジション.
 	Vec3 m_cameraPoint;//カメラが移動してほしい位置
+	Vec3 m_lookPoint;
 	Vec3 m_postLookPointPos;
 	float m_cameraAngle = -DX_PI_F / 2;
 	float m_pitchAngle;

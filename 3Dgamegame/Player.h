@@ -16,9 +16,8 @@ public:
 	void SetMatrix();
 	void Draw();
 
-
 	Vec3 GetPos() const { return  m_rigid->GetPos(); }
-	int GetHp() { return m_Hp; }
+	float GetHp() { return m_Hp; }
 	void SetCameraToPlayer(Vec3 cameraToPlayer);
 	Vec3 GetMoveDir() const{ return m_moveDir; }
 	Vec3 GetNowPlanetPos() { return m_nowPlanetPos; }
@@ -26,6 +25,7 @@ public:
 	float GetRegenerationRange() { return m_regeneRange; }
 	int WatchHp()const { return m_Hp; }
 
+	void SetBoost() { m_isBoostFlag = true; }
 	void SetCameraAngle(float cameraAngle);
 	void SetSideVec(Vec3 right) { m_sideVec = right; }
 	void SetFrontVec(Vec3 front) { m_frontVec = front; }
@@ -33,7 +33,9 @@ public:
 	void IsWarp() { m_isJumpFlag = true;}
 	int GetPlayerModelhandle() { return m_modelHandle; }
 	bool IsSearch() { return m_isSearchFlag; }
-
+	bool OnDamage() { return m_isOnDamageFlag; }
+	bool IsClear() { return m_isClearFlag; }
+	int GetDamageFrame() { return m_damageFrame; }
 	int& SetReverse() { return m_reverseFlag; }
 	int GetSearchRemainTime() { return m_searchRemainTime; }
 
@@ -44,10 +46,12 @@ public:
 	using playerState_t = void(Player::*)();
 	playerState_t m_playerUpdate;
 
+	playerState_t m_prevUpdate;
 	using cameraState_t = void(Player::*)();
 	cameraState_t m_cameraUpdate;
 
-	void JumpingUpdate();
+
+	void BoostUpdate();
 
 
 private:
@@ -69,10 +73,12 @@ private:
 	void NeutralUpdate();
 	void WalkingUpdate();
 	void SpiningUpdate();
+	void JumpingSpinUpdate();
+	void JumpingUpdate();
 	/// <summary>
-	/// 衝突関数
+	/// ダメージ時
 	/// </summary>
-	void HitUpdate();
+	void DamegeUpdate();
 	/// <summary>
 	/// 回避
 	/// </summary>
@@ -95,7 +101,7 @@ private:
 		float dummy2[2];
 	};
 
-	int m_Hp;
+	float m_Hp;
 	int m_modelHandle = 0;
 
 	int rotRad = 0;
@@ -108,13 +114,20 @@ private:
 	int actionFrame = 0;
 	int m_pointLightHandle = -1;
 	int m_hitSEHandle;
+	int m_parrySEHandle;
+	int m_searchSEHandle;
 	int m_getItemHandle;
 	int m_color;
+	int m_spinCount;
+
+	bool m_isOnDamageFlag;
+	bool m_isSpinFlag;
 
 	float m_regeneRange;
 	float m_angle;
 	float m_spinAngle;
 	float m_radius = 0;
+	float m_attackRadius;
 
 	Vec3 m_cameraToPlayer;
 	Vec3 m_cameraPos;
@@ -132,6 +145,7 @@ private:
 	//0.0f:prevが再生
 	//1.0:currentが再生
 	int m_reverseFlag=0;
+	int m_damageFrame;
 
 	//アニメーション変数
 	int m_anim_nutral = 0;
@@ -154,7 +168,9 @@ private:
 
 	bool m_isVisibleFlag = false;
 	bool m_isJumpFlag = false;
+	bool m_isBoostFlag = false;
 	bool m_isSearchFlag = false;
+	bool m_isClearFlag=false;
 
 	int m_visibleCount = 0;
 

@@ -65,7 +65,7 @@ void GamePlayingScene::Draw()
 
 	if (m_isTitle)
 	{
-		StopSoundMem(SoundManager::GetInstance().GetSoundData("Sound/GamePlaying.mp3"));
+		StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
 		ChangeScene(std::make_shared<TitleScene>(m_manager));
 	}
 	else if (m_isContinue)ChangeScene(std::make_shared<GamePlayingScene>(m_manager));

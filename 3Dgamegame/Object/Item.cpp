@@ -4,13 +4,15 @@
 #include"../Quaternion.h"
 
 
-Item::Item(Vec3 pos):Collidable(Priority::Static,ObjectTag::Item)
+namespace
 {
+	const char* name = "MaterialX";
+}
+
+Item::Item(Vec3 pos,bool antiGravity):Collidable(Priority::Static,ObjectTag::Item)
+{
+	SetAntiGravity(antiGravity);
 	m_rigid->SetPos(pos);
-	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
-	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
-	item->radius = 25;
-	
 }
 
 Item::~Item()
@@ -20,11 +22,17 @@ Item::~Item()
 
 void Item::Init()
 {
+	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	item->radius = 25;
 }
 
 void Item::Update()
 {
-	
+	m_upVec = (m_rigid->GetPos() - m_nowPlanetPos).GetNormalized();
+	m_rigid->SetPos(m_rigid->GetPos());
+	m_upVec = m_upVec * sin(angle) ;
+	m_rigid->SetVelocity(m_upVec);
 }
 
 void Item::Draw()
@@ -51,8 +59,14 @@ void Item::Draw()
 
 void Item::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
+	
 	if (colider->GetTag() == ObjectTag::Player)
 	{
 		m_deleteFlag = true;
 	}
+}
+
+void Item::OnTriggerEnter(std::shared_ptr<Collidable> colider)
+{
+	if (colider->GetTag() == ObjectTag::Stage)	m_nowPlanetPos = colider->GetRigidbody()->GetPos();
 }

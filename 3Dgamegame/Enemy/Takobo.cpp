@@ -10,7 +10,7 @@ namespace
 	/// <summary>
 		/// 最大HP
 		/// </summary>
-	constexpr int kHp = 20;
+	constexpr int kHp = 50;
 
 	constexpr int kStartPosX = 200;
 	constexpr int kStartPosY = 50;
@@ -39,21 +39,21 @@ namespace
 	/// </summary>
 	constexpr int kStageSizeHalf = 200;
 
-	const char* kShotSEhandlePath = "Sound/Shot.mp3";
+	const char* kShotSEhandlePath = "Shot.mp3";
 
+	const char* name = "takobo";
 }
 
-/*プロトタイプ宣言*/
-Vec3 ToVec(Vec3 a, Vec3 b);
-Vec3 norm(Vec3 a);
-float lerp(float start, float end, float t);
 
 Takobo::Takobo(Vec3 pos) :Enemy(-1, Priority::Low, ObjectTag::Takobo),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
-m_centerToEnemyAngle(0),
-m_shotSEHandle(SoundManager::GetInstance().GetSoundData(kShotSEhandlePath))
+m_centerToEnemyAngle(0)
 {
+	SetCreate3DSoundFlag(true);
+	m_shotSEHandle = SoundManager::GetInstance().GetSoundData(kShotSEhandlePath);
+	SetCreate3DSoundFlag(false);
+	Set3DRadiusSoundMem(1000, m_shotSEHandle);
 	m_enemyUpdate = &Takobo::IdleUpdate;
 	m_rigid->SetPos(pos);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
@@ -120,7 +120,6 @@ void Takobo::Draw()
 	{
 		if (m_sphere.size() == 0)return;
 		sphere->Draw();
-
 	}
 }
 
@@ -133,6 +132,14 @@ void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	if (colider->GetTag() == ObjectTag::Player)
 	{
 		m_Hp -= 20;
+	}
+	if (colider->GetTag() == ObjectTag::EnemyAttack)
+	{
+		auto attack= dynamic_pointer_cast<EnemySphere>(colider);
+		if (attack->GetCounterFlag())
+		{
+			m_Hp -= 60;
+		}
 	}
 }
 
@@ -176,7 +183,6 @@ void Takobo::IdleUpdate()
 				m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
 				m_enemyUpdate = &Takobo::AttackSphereUpdate;
 			}
-
 			break;
 		}
 		default:
@@ -193,6 +199,7 @@ void Takobo::AttackSphereUpdate()
 	m_sphereNum++;
 
 	m_createFrameCount = 0;
+	Set3DPositionSoundMem(m_rigid->GetPos().VGet(), m_shotSEHandle);
 	PlaySoundMem(m_shotSEHandle,DX_PLAYTYPE_BACK);
 	m_sphere.push_back(std::make_shared<EnemySphere>(Priority::Low, ObjectTag::EnemyAttack, shared_from_this(), GetMyPos(), m_attackDir, 1, 0xff0000));
 	MyEngine::Physics::GetInstance().Entry(m_sphere.back());
@@ -332,24 +339,3 @@ Vec3 Takobo::GetAttackDir() const
 //	}
 //}
 
-
-/*便利関数*/
-//aからbへ向かうベクトル
-Vec3 ToVec(Vec3 a, Vec3 b)
-{
-	float x = (b.x - a.x);
-	float y = (b.y - a.y);
-	float z = (b.z - a.z);
-	return VGet(x, y, z);
-}
-
-Vec3 norm(Vec3 a)
-{
-	float num = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
-	return VGet(a.x / num, a.y / num, a.z / num);
-}
-
-float lerp(float start, float end, float t)
-{
-	return (1 - t) * start + t * end;
-}

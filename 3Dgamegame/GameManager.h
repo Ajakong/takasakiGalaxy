@@ -1,11 +1,15 @@
 #pragma once
 
+class Ui;
 class Camera;
 class Player;
 class Planet;
+class BossPlanet;
 class Takobo;
+class KillerTheSeeker;
 class Gorori;
 class Item;
+class ClearObject;
 class WarpGate;
 
 class GameManager
@@ -32,8 +36,6 @@ private:
 	void GamePlayingUpdate();
 	void GamePlayingDraw();
 
-	
-
 private:
 
 	struct UserData
@@ -49,17 +51,22 @@ private:
 	int cbuffH = CreateShaderConstantBuffer(sizeof(UserData));
 	UserData* userData = static_cast<UserData*>(GetBufferShaderConstantBuffer(cbuffH));
 
+	std::shared_ptr<Ui> ui;
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<Player> player;
 	std::vector<std::shared_ptr<Planet>> planet;
+	std::shared_ptr<BossPlanet> bossPlanet;
+	std::vector<std::shared_ptr<ClearObject>> clearObject;
 	std::vector<std::shared_ptr<WarpGate>> warpGate;
 	std::vector<std::shared_ptr<Takobo>> takobo;
+	std::vector<std::shared_ptr<KillerTheSeeker>> killerTheSeeker;
 	std::vector<std::shared_ptr<Gorori>> gorori;
 	std::vector<std::shared_ptr<Item>> poworStone;
+
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
 
-	bool m_isFadeIntroFlag = false;
+	
 	int skyDomeH;
 	int modelH ;
 	int textureUIHandle;
@@ -67,7 +74,7 @@ private:
 	int sphMapH ;
 	int itemNum;
 	int m_warpEffectHandle;
-	
+
 	int roughH;
 	
 	int metalH;
@@ -97,11 +104,9 @@ private:
 	int blurRT;
 	int shrinkRT;
 
-	float m_materialXAngle;
+	
 
 	
 	int depthRT;
-
-	int fadeCount;
 };
 

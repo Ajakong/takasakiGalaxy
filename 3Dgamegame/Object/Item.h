@@ -3,19 +3,21 @@
 class Item : public MyEngine::Collidable
 {
 public:
-	Item(Vec3 pos);
-	~Item();
+	Item(Vec3 pos, bool antiGravity=false);
+	virtual ~Item();
 
-	void Init();
-	void Update();
-	void Draw();
+	virtual void Init();
+	virtual void Update();
+	virtual void Draw();
 
 	bool GetDeleteFlag() { return m_deleteFlag; }
-
+	Vec3 GetUpVec() { return m_upVec; }
 	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);
-
-private:
+	virtual void OnTriggerEnter(std::shared_ptr<Collidable> colider);
+protected:
 	float angle=0;
 	bool m_deleteFlag = false;
+	Vec3 m_nowPlanetPos;
+	Vec3 m_upVec;
 };
 

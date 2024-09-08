@@ -7,6 +7,8 @@ namespace
 	constexpr float  kGravityRange = 1500;
 	constexpr float  kGravityPower = 30;
 
+	const char* name = "planet";
+	const char* atom = "atomosphere";
 
 }
 
@@ -14,15 +16,6 @@ SpherePlanet::SpherePlanet(Vec3 pos,int color) :Planet(),
 m_enemyCount(3)
 {
 	m_color = color;
-	gravityPower = 3;
-	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//‚±‚±‚Å“ü‚ê‚½‚Ì‚Íd—Í‚Ì‰e‹¿”ÍˆÍ
-	m_colliders.back()->isTrigger = true;
-	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
-	item->radius = kGravityRange;
-	AddThroughTag(ObjectTag::Stage);
-	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//ƒ}ƒbƒv‚Ì“–‚½‚è”»’è
-	auto item2 = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
-	item2->radius = kGroundRadius;
 	m_rigid->SetPos(pos);
 
 	m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 5000.0f, 0.0f, 0.002f, 0.0f);
@@ -34,6 +27,15 @@ SpherePlanet::~SpherePlanet()
 
 void SpherePlanet::Init()
 {
+	gravityPower = 3;
+	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//‚±‚±‚Å“ü‚ê‚½‚Ì‚Íd—Í‚Ì‰e‹¿”ÍˆÍ
+	m_colliders.back()->isTrigger = true;
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	item->radius = kGravityRange;
+	AddThroughTag(ObjectTag::Stage);
+	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//ƒ}ƒbƒv‚Ì“–‚½‚è”»’è
+	auto item2 = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	item2->radius = kGroundRadius;
 }
 
 void SpherePlanet::Update()
@@ -50,6 +52,10 @@ void SpherePlanet::Draw()
 Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒvŽZ‚µA•â³Œã‚ÌƒxƒNƒgƒ‹‚ð•Ô‚·
 {
 	Vec3 objVelocity = obj->PlanetOnlyGetRigid()->GetVelocity();
+	if (obj->IsAntiGravity())
+	{
+		return objVelocity;
+	}
 
 	if (obj->GetTag() == ObjectTag::EnemyAttack)
 	{
@@ -62,7 +68,7 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒvŽ
 	Vec3 objPos = obj->PlanetOnlyGetRigid()->GetPos();
 	Vec3 toObj = m_rigid->GetPos() - objPos;
 	toObj = toObj.GetNormalized();
-	if (obj->GetTag() == ObjectTag::Gorori)
+	if (obj->GetTag() == ObjectTag::Gorori||obj->GetTag()==ObjectTag::KillerTheSeeker)
 	{
 		float angleX = DX_PI_F / 2 + atan2(toObj.y, toObj.x);
 		float angleZ = DX_PI_F / 2 + atan2(toObj.y, toObj.z);
@@ -82,7 +88,7 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒvŽ
 	if (obj->GetTag() == ObjectTag::Player)
 	{
 		//d—Í‚Ì‚Ý
-		toObj = toObj * gravityPower*0.1* ((kGravityRange+ (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length() - (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length()) / kGravityRange) + objVelocity;
+		toObj = toObj * gravityPower*0.05* ((kGravityRange+ (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length() - (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length()) / kGravityRange) + objVelocity;
 		return toObj;
 	}
 
