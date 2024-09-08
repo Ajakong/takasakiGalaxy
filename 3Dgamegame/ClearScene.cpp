@@ -73,6 +73,7 @@ void ClearScene::FadeOutUpdate()
 	if (60 <= m_frame)
 	{
 		StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
+		WorldTimer::Reset();
 		m_manager.ResetScene(std::make_shared<TitleScene>(m_manager));
 	}
 }
