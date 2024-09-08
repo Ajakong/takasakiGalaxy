@@ -24,6 +24,7 @@ public:
 	float GetColRadius() { return m_radius; }
 
 	float GetIdleSpeed() { return m_idleSpeed; }
+	void SetAttackDir(Vec3 DirVec) { m_attackDir = DirVec; }
 
 	void SetTarget(std::shared_ptr<Collidable> target);
 

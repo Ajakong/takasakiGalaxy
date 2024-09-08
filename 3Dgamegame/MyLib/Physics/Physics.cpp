@@ -10,7 +10,7 @@ using namespace MyEngine;
 namespace
 {
 	// ”»’èÅ‘å‰ñ”
-	constexpr int CHECK_COUNT_MAX = 1000;
+	constexpr int CHECK_COUNT_MAX = 500;
 }
 
 Physics::Physics()

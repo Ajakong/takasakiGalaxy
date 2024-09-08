@@ -56,6 +56,7 @@ private:
 	std::vector<std::shared_ptr<Takobo>> takobo;
 	std::vector<std::shared_ptr<Gorori>> gorori;
 	std::vector<std::shared_ptr<Item>> poworStone;
+
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
 

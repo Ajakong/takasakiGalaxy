@@ -3,6 +3,7 @@
 #include"MyLib/Physics/ColliderSphere.h"
 #include"Camera.h"
 #include"SoundManager.h"
+#include"Enemy/Gorori.h"
 
 /// <summary>
 /// やること:足の当たり判定を生成・踏みつけに使う
@@ -68,18 +69,29 @@ Player::Player(int modelhandle) : Collidable(Priority::High,ObjectTag::Player),
 	m_currentAnimNo(0),
 	m_prevAnimNo(0),
 	m_isJumpFlag(false),
+	m_isSpinFlag(false),
 	m_nowPlanetPos(Vec3(Vec3(0, -500, 0))),
 	m_searchRemainTime(0),
 	m_chargeRemainTime(0),
 	m_hitSEHandle(SoundManager::GetInstance().GetSoundData(kGororiHitSEName)),
 	m_color(0x00ffff),
 	m_getItemHandle(SoundManager::GetInstance().GetSoundData(kGetItemSEName)),
-	m_searchSEHandle(SoundManager::GetInstance().GetSoundData(kGetSearchSEName))
+	m_searchSEHandle(SoundManager::GetInstance().GetSoundData(kGetSearchSEName)),
+	m_attackRadius(0)
 {
-	m_rigid->SetPos(Vec3(0, 0, 0));
-	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
-	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
-	item->radius = m_radius;
+	{
+		m_rigid->SetPos(Vec3(0, 0, 0));
+		AddCollider(MyEngine::ColliderBase::Kind::Sphere);
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		item->radius = m_radius;
+	}
+
+	{
+		AddCollider(MyEngine::ColliderBase::Kind::Sphere);
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		item->radius = m_attackRadius;
+	}
+	
 	//m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
 }
 
@@ -199,25 +211,43 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	}
 	if (colider->GetTag() == ObjectTag::Takobo)
 	{
-		PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
-		StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
-		m_Hp -= 10;
-		m_prevUpdate = m_playerUpdate;
-		m_playerUpdate = &Player::DamegeUpdate;
-		m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 30);
-		m_isOnDamageFlag = true;
-		m_damageFrame= kDamageFrameMax;
+		if (m_isSpinFlag)
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			colider->GetRigidbody()->SetVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * -30);
+		}
+		else
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
+			m_Hp -= 10;
+			m_prevUpdate = m_playerUpdate;
+			m_playerUpdate = &Player::DamegeUpdate;
+			m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 30);
+			m_isOnDamageFlag = true;
+			m_damageFrame = kDamageFrameMax;
+		}
 	}
 	if (colider->GetTag() == ObjectTag::Gorori)
 	{
-		PlaySoundMem(m_hitSEHandle,DX_PLAYTYPE_BACK);
-		StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
-		m_Hp -= 10;
-		m_prevUpdate = m_playerUpdate;
-		m_playerUpdate = &Player::DamegeUpdate;
-		m_rigid->AddVelocity(Vec3(m_rigid->GetPos()-colider->GetRigidbody()->GetPos()).GetNormalized()*40);
-		m_isOnDamageFlag = true;
-		m_damageFrame = kDamageFrameMax;
+		if (m_isSpinFlag)
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			auto gorori= dynamic_pointer_cast<Gorori>(colider);
+
+			gorori->SetAttackDir(Vec3(gorori->GetRigidbody()->GetPos()-m_rigid->GetPos()).GetNormalized());
+		}
+		else
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			StartJoypadVibration(DX_INPUT_PAD1, 600, 600);
+			m_Hp -= 10;
+			m_prevUpdate = m_playerUpdate;
+			m_playerUpdate = &Player::DamegeUpdate;
+			m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 40);
+			m_isOnDamageFlag = true;
+			m_damageFrame = kDamageFrameMax;
+		}		
 	}
 	if (colider->GetTag() == ObjectTag::Item)
 	{
@@ -226,6 +256,11 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	}
 	if (colider->GetTag() == ObjectTag::EnemyAttack)
 	{
+		if (m_isSpinFlag)
+		{
+			PlaySoundMem(m_hitSEHandle, DX_PLAYTYPE_BACK);
+			colider->GetRigidbody()->SetVelocity((colider->GetRigidbody()->GetVelocity()) * -1);
+		}
 		StartJoypadVibration(DX_INPUT_PAD1, 300, 600);
 		m_prevUpdate = m_playerUpdate;
 		m_playerUpdate = &Player::DamegeUpdate;
@@ -349,7 +384,10 @@ void Player::NeutralUpdate()
 	}
 	if (Pad::IsTrigger(PAD_INPUT_B))//XBoxの
 	{
-
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = kNetralRadius + 10;
+		item->radius = m_attackRadius;
+		m_isSpinFlag = true;
 		m_playerUpdate = &Player::SpiningUpdate;
 	}
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
@@ -371,16 +409,82 @@ void Player::WalkingUpdate()
 void Player::JumpingUpdate()
 {
 	m_rigid->SetVelocity(m_rigid->GetPrevVelocity());
+
+	if (Pad::IsTrigger(PAD_INPUT_B))//XBoxの
+	{
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = kNetralRadius + 10;
+		item->radius = m_attackRadius;
+		m_isSpinFlag = true;
+		m_playerUpdate = &Player::JumpingSpinUpdate;
+	}
 }
 
 void Player::SpiningUpdate()
 {
+	//アナログスティックを使って移動
 
+	int analogX = 0, analogY = 0;
+
+	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
+	analogY = -analogY;
+	if (analogX * analogY != 0)
+	{
+		int a = 0;
+	}
+	//アナログスティックの入力10%~80%を使用する
+	//ベクトルの長さが最大1000になる
+	//ベクトルの長さを取得
+	Vec3 move;
+
+	float len = move.Length();
+	//ベクトルの長さを0.0~1.0の割合に変換する
+	float rate = len / kAnalogInputMax;
+	Vec3 front = GetCameraFrontVector();
+	Vec3 right = GetCameraRightVector();
+	move = m_frontVec * static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
+	move += m_sideVec * static_cast<float>(analogX);
+
+
+	//アナログスティック無効な範囲を除外する
+	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
+	rate = std::min(rate, 1.0f);
+	rate = std::max(rate, 0.0f);
+
+	//速度が決定できるので移動ベクトルに反映
+	move = move.GetNormalized();
+	float speed = kMaxSpeed;
+
+	m_moveDir = move;
+	move = move * speed;
+	
+	m_rigid->SetVelocity(move);
 
 	m_spinAngle+=DX_PI_F/30;
 	m_angle += DX_PI_F / 30;
 	if (m_spinAngle >= DX_PI_F * 2)
 	{
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = 0;
+		item->radius = m_attackRadius;
+		m_isSpinFlag=false;
+		m_playerUpdate = &Player::NeutralUpdate;
+		m_spinAngle = 0;
+	}
+}
+
+void Player::JumpingSpinUpdate()
+{
+	m_rigid->SetVelocity(m_rigid->GetPrevVelocity());
+
+	m_spinAngle += DX_PI_F / 30;
+	m_angle += DX_PI_F / 30;
+	if (m_spinAngle >= DX_PI_F * 2)
+	{
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = 0;
+		item->radius = m_attackRadius;
+		m_isSpinFlag = false;
 		m_playerUpdate = &Player::NeutralUpdate;
 		m_spinAngle = 0;
 	}

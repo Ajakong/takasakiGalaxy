@@ -88,7 +88,7 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒvŽ
 	if (obj->GetTag() == ObjectTag::Player)
 	{
 		//d—Í‚Ì‚Ý
-		toObj = toObj * gravityPower*0.1* ((kGravityRange+ (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length() - (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length()) / kGravityRange) + objVelocity;
+		toObj = toObj * gravityPower*0.05* ((kGravityRange+ (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length() - (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length()) / kGravityRange) + objVelocity;
 		return toObj;
 	}
 

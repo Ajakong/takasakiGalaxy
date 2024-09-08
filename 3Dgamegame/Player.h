@@ -70,6 +70,7 @@ private:
 	void NeutralUpdate();
 	void WalkingUpdate();
 	void SpiningUpdate();
+	void JumpingSpinUpdate();
 	/// <summary>
 	/// É_ÉÅÅ[ÉWéû
 	/// </summary>
@@ -114,11 +115,13 @@ private:
 	int m_color;
 
 	bool m_isOnDamageFlag;
+	bool m_isSpinFlag;
 
 	float m_regeneRange;
 	float m_angle;
 	float m_spinAngle;
 	float m_radius = 0;
+	float m_attackRadius;
 
 	Vec3 m_cameraToPlayer;
 	Vec3 m_cameraPos;
