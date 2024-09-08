@@ -5,12 +5,19 @@
 #include "ClearScene.h"
 #include "TitleScene.h"
 #include"WorldTimer.h"
+#include"FontManager.h"
 
 #include"Game.h"
 #include"Pad.h"
 
+namespace
+{
+
+}
+
 ClearScene::ClearScene(SceneManager& mgr) :
-	Scene(mgr)
+	Scene(mgr),
+	m_numFontHandle(FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator", 60, 7, DX_FONTTYPE_NORMAL))
 {
 	m_frame = 60;
 	m_updateFunc = &ClearScene::FadeInUpdate;
@@ -65,6 +72,7 @@ void ClearScene::FadeOutUpdate()
 	m_frame++;
 	if (60 <= m_frame)
 	{
+		StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
 		m_manager.ResetScene(std::make_shared<TitleScene>(m_manager));
 	}
 }
@@ -76,7 +84,7 @@ void ClearScene::ChangeScene(std::shared_ptr<Scene> nextScene)
 
 void ClearScene::FadeDraw()
 {
-	DrawFormatString(200, Game::kScreenHeight / 2, 0xffffff,"%d.%d",WorldTimer::GetMinute(),WorldTimer::GetTimer());
+	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff,m_numFontHandle,"%d.%d",WorldTimer::GetMinute(),WorldTimer::GetTimer());
 
 	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "Clear");
 	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "タイトルへ");
@@ -88,7 +96,7 @@ void ClearScene::FadeDraw()
 
 void ClearScene::NormalDraw()
 {
-	DrawFormatString(200, Game::kScreenHeight / 2, 0xffffff, "%d.%d", WorldTimer::GetMinute(), WorldTimer::GetTimer());
+	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff, m_numFontHandle, "%d.%d", WorldTimer::GetMinute(), WorldTimer::GetTimer());
 
 	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "Clear");
 	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "タイトルへ");

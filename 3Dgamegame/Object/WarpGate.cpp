@@ -47,7 +47,7 @@ void WarpGate::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	{
 		colider->GetRigidbody()->SetVelocity(Vec3(m_warpPos - colider->GetRigidbody()->GetPos()).GetNormalized() * 100);
 		auto player = std::dynamic_pointer_cast<Player>(colider);
-		player->m_playerUpdate = &Player::JumpingUpdate;
-		player->IsWarp();
+		player->m_playerUpdate = &Player::BoostUpdate;
+		player->SetBoost();
 	}
 }

@@ -7,10 +7,12 @@
 #include"MyLib/Physics/Physics.h"
 #include"Player.h"
 #include"Object/WarpGate.h"
-#include"SpherePlanet.h"
+#include"BossPlanet.h"
 #include"Enemy/Takobo.h"
+#include"Enemy/KillerTheSeeker.h"
 #include"Enemy/Gorori.h"
 #include"Object/Item.h"
+#include"Object/ClearObject.h"
 #include<cassert>
 #include"WorldTimer.h"
 #include"Pad.h"
@@ -18,6 +20,7 @@
 #include"GraphManager.h"
 #include"FontManager.h"
 #include"Game.h"
+
 
 namespace
 {
@@ -115,7 +118,9 @@ GameManager::GameManager() :
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33));
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff));
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400));
+	bossPlanet = std::make_shared<BossPlanet>(Vec3(0, -6000, 0), 0x444444);
 	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,500)) };
+	killerTheSeeker.push_back(std::make_shared<KillerTheSeeker>(Vec3(0, -7000, 0)));
 	gorori = { std::make_shared<Gorori>(Vec3(7000,500,2300)),std::make_shared<Gorori>(Vec3(6500,500,1700)),std::make_shared<Gorori>(Vec3(5500,0,2000)) };
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, -800, 0),true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(-300, 0, 0), true));
@@ -123,11 +128,11 @@ GameManager::GameManager() :
 	poworStone.push_back(std::make_shared<Item>(Vec3(-200, -800, 0),true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, 500), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, 0, -500), true));
-	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 800, 2000), true));
-	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 2800), true));
-	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 1200), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 600, 2000), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 2200), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 100, 1400), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, -500, 2000), true));
-	poworStone.push_back(std::make_shared<Item>(Vec3(-3000, 1300, -3000), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(-3000, 1200, -3000), true));
 	
 	fontHandle = FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator",60,7,DX_FONTTYPE_NORMAL);
 
@@ -193,14 +198,45 @@ void GameManager::Init()
 	DxLib::SetCreateDrawValidGraphChannelNum(1);
 
 	MyEngine::Physics::GetInstance().Entry(player);
-	for(auto& item : planet)MyEngine::Physics::GetInstance().Entry(item);
+	MyEngine::Physics::GetInstance().Entry(bossPlanet);
+	for (auto& item : planet)
+	{
+		item->Init();
+		MyEngine::Physics::GetInstance().Entry(item);
+	}
+	for (auto& item : clearObject)
+	{
+		item->Init();
+		MyEngine::Physics::GetInstance().Entry(item);
+	}
+	
 
-	for (auto& item : poworStone)MyEngine::Physics::GetInstance().Entry(item);
+	for (auto& item : poworStone)
+	{
+		item->Init();
+		MyEngine::Physics::GetInstance().Entry(item);
+	}
 	for (auto& item : takobo)
 	{
 		MyEngine::Physics::GetInstance().Entry(item);
 		item->SetTarget(player);
 	}
+	for (auto& item : killerTheSeeker)
+	{
+		item->Init();
+		MyEngine::Physics::GetInstance().Entry(item);
+		item->SetTarget(player);
+	}
+
+
+	/*for (auto& item : killerTheSeeker)
+	{
+		MyEngine::Physics::GetInstance().Entry(item);
+		item->SetTarget(player);
+	}*/
+
+
+
 	for (auto& item : gorori)
 	{
 		MyEngine::Physics::GetInstance().Entry(item);
@@ -263,7 +299,8 @@ void GameManager::IntroDraw()
 	MV1SetPosition(skyDomeH, player->GetPos().VGet());
 
 	MV1DrawModel(skyDomeH);
-	for(auto& item :planet )item->Draw();
+	bossPlanet->Draw();
+	for(auto& item :planet)item->Draw();
 	player->Draw();
 	for (auto& item : warpGate)
 	{
@@ -274,14 +311,14 @@ void GameManager::IntroDraw()
 		item->Draw();
 	}
 	for (auto& item : takobo)item->Draw();
+	//for (auto& item : killerTheSeeker)item->Draw();
 	for (auto& item : gorori)item->Draw();
 	camera->DebagDraw();
-	SetRenderTargetToShader(1, -1);		// RTの解除
-	SetRenderTargetToShader(2, -1);		// RTの解除
+	DxLib::SetRenderTargetToShader(1, -1);		// RTの解除
+	DxLib::SetRenderTargetToShader(2, -1);		// RTの解除
 
 
 	ui->Draw(fontHandle, player->WatchHp(), player->GetSearchRemainTime());
-	
 }
 
 void GameManager::GamePlayingUpdate()
@@ -322,15 +359,24 @@ void GameManager::GamePlayingUpdate()
 
 	 /*camera->SetUpVec(planet->GetNormVec(player->GetPos()));
 	 camera->Update(player->GetPos());*/
+	bossPlanet->Update();
 	for(auto& item : planet)item->Update();
 	//player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
 	for (auto& item : poworStone)
 	{
 		item->Update();
 	}
+	for (auto& item : clearObject)
+	{
+		item->Update();
+	}
 	player->Update();
 
 	for (auto& item : takobo)
+	{
+		item->Update();
+	}
+	for (auto& item : killerTheSeeker)
 	{
 		item->Update();
 	}
@@ -350,6 +396,36 @@ void GameManager::GamePlayingUpdate()
 			i--;
 		}
 	}
+
+	//for (int i = 0; i < killerTheSeeker.size(); i++)
+	//{
+	//	killerTheSeeker[i]->DeleteManage();
+	//	if (killerTheSeeker[i]->WatchHp() < 0)
+	//	{
+	//		MyEngine::Physics::GetInstance().Exit(killerTheSeeker[i]);
+
+	//		killerTheSeeker.erase(killerTheSeeker.begin() + i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
+	//		i--;
+	//	}
+	//}
+
+	for (int i = 0; i < killerTheSeeker.size(); i++)
+	{
+		killerTheSeeker[i]->DeleteManage();
+		if (killerTheSeeker[i]->WatchHp() < 0)
+		{
+			clearObject.push_back(std::make_shared<ClearObject>(killerTheSeeker[i]->GetRigidbody()->GetPos()));
+			clearObject.back()->Init();
+			MyEngine::Physics::GetInstance().Entry(clearObject.back());
+			
+			camera->WatchThis(clearObject.back()->GetRigidbody()->GetPos(),Vec3(clearObject.back()->GetRigidbody()->GetPos()+ (bossPlanet->GetNormVec(clearObject.back()->GetRigidbody()->GetPos())*300)), bossPlanet->GetNormVec(clearObject.back()->GetRigidbody()->GetPos()));
+			MyEngine::Physics::GetInstance().Exit(killerTheSeeker[i]);
+
+			killerTheSeeker.erase(killerTheSeeker.begin() + i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
+			i--;
+		}
+	}
+
 	for (int i = 0; i < gorori.size(); i++)
 	{
 		if (gorori[i]->WatchHp() < 0)
@@ -456,7 +532,7 @@ void GameManager::GamePlayingUpdate()
 		m_isClearFlag = true;
 		MyEngine::Physics::GetInstance().Clear();
 	}*/
-	if (poworStone.size() == 0)
+	if (player->IsClear())
 	{
 		m_isClearFlag = true;
 	}
@@ -469,9 +545,17 @@ void GameManager::GamePlayingUpdate()
 	}
 	if (poworStone.size() <= 1 && warpGate.size() == 1)
 	{
-		warpGate.push_back(std::make_shared<WarpGate>(Vec3(6800, -500, 2300), m_warpEffectHandle));
+		warpGate.push_back(std::make_shared<WarpGate>(Vec3(5500, 500, 1700), m_warpEffectHandle));
 		warpGate.back()->SetWarpPos(Vec3(-3000, 1000, -3000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
+		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(4000, 700, 1000), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
+	}
+	if (poworStone.size() == 0&&warpGate.size()==2)
+	{
+		warpGate.push_back(std::make_shared<WarpGate>(Vec3(-2500, 500, -2800), m_warpEffectHandle));
+		warpGate.back()->SetWarpPos(Vec3(0, -6000, 0));
+		MyEngine::Physics::GetInstance().Entry(warpGate.back());
+		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(-2000, 0, -2000), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
 	}
 
 	WorldTimer::Update();
@@ -484,6 +568,7 @@ void GameManager::GamePlayingDraw()
 	MV1SetPosition(skyDomeH, player->GetPos().VGet());
 
 	MV1DrawModel(skyDomeH);
+	bossPlanet->Draw();
 	for(auto& item : planet)item->Draw();
 	player->Draw();
 	for (auto& item : warpGate)
@@ -503,12 +588,17 @@ void GameManager::GamePlayingDraw()
 	{
 		item->Draw();
 	}
+	for (auto& item : clearObject)
+	{
+		item->Draw();
+	}
 	SetUseZBufferFlag(true);
 	for (auto& item : takobo)item->Draw();
+	for (auto& item : killerTheSeeker)item->Draw();
 	for (auto& item : gorori)item->Draw();
 	camera->DebagDraw();
-	SetRenderTargetToShader(1, -1);		// RTの解除
-	SetRenderTargetToShader(2, -1);		// RTの解除
+	DxLib::SetRenderTargetToShader(1, -1);		// RTの解除
+	DxLib::SetRenderTargetToShader(2, -1);		// RTの解除
 
 	ui->Draw(fontHandle, player->WatchHp(), player->GetSearchRemainTime());
 

@@ -13,10 +13,6 @@ Item::Item(Vec3 pos,bool antiGravity):Collidable(Priority::Static,ObjectTag::Ite
 {
 	SetAntiGravity(antiGravity);
 	m_rigid->SetPos(pos);
-	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
-	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
-	item->radius = 25;
-	
 }
 
 Item::~Item()
@@ -26,6 +22,9 @@ Item::~Item()
 
 void Item::Init()
 {
+	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	item->radius = 25;
 }
 
 void Item::Update()

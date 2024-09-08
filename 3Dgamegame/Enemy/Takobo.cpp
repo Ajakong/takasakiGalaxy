@@ -10,7 +10,7 @@ namespace
 	/// <summary>
 		/// 最大HP
 		/// </summary>
-	constexpr int kHp = 20;
+	constexpr int kHp = 50;
 
 	constexpr int kStartPosX = 200;
 	constexpr int kStartPosY = 50;
@@ -44,17 +44,12 @@ namespace
 	const char* name = "takobo";
 }
 
-/*プロトタイプ宣言*/
-Vec3 ToVec(Vec3 a, Vec3 b);
-Vec3 norm(Vec3 a);
-float lerp(float start, float end, float t);
 
 Takobo::Takobo(Vec3 pos) :Enemy(-1, Priority::Low, ObjectTag::Takobo),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
 m_centerToEnemyAngle(0)
 {
-
 	SetCreate3DSoundFlag(true);
 	m_shotSEHandle = SoundManager::GetInstance().GetSoundData(kShotSEhandlePath);
 	SetCreate3DSoundFlag(false);
@@ -137,6 +132,14 @@ void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	if (colider->GetTag() == ObjectTag::Player)
 	{
 		m_Hp -= 20;
+	}
+	if (colider->GetTag() == ObjectTag::EnemyAttack)
+	{
+		auto attack= dynamic_pointer_cast<EnemySphere>(colider);
+		if (attack->GetCounterFlag())
+		{
+			m_Hp -= 60;
+		}
 	}
 }
 
@@ -336,24 +339,3 @@ Vec3 Takobo::GetAttackDir() const
 //	}
 //}
 
-
-/*便利関数*/
-//aからbへ向かうベクトル
-Vec3 ToVec(Vec3 a, Vec3 b)
-{
-	float x = (b.x - a.x);
-	float y = (b.y - a.y);
-	float z = (b.z - a.z);
-	return Vec3(x, y, z);
-}
-
-Vec3 norm(Vec3 a)
-{
-	float num = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
-	return VGet(a.x / num, a.y / num, a.z / num);
-}
-
-float lerp(float start, float end, float t)
-{
-	return (1 - t) * start + t * end;
-}

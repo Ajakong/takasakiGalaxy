@@ -187,7 +187,6 @@ void TitleScene::FadeDraw()
 	{
 		ChangeScene(std::make_shared<GamePlayingScene>(m_manager));
 	}
-	
 	DrawLine(m_frame * 30, 0, m_frame * 30, 900, 0x44ffff);
 }
 

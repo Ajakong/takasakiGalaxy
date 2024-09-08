@@ -7,11 +7,9 @@ namespace MyEngine
 	{
 	public:
 		ColliderBox(Vec3 startPos,Vec3 endPos);
-	private:
+	public:
 		Vec3 m_startPos;
 		Vec3 m_endPos;
-
-
 	};
 }
 

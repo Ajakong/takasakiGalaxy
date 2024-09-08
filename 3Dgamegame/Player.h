@@ -25,6 +25,7 @@ public:
 	float GetRegenerationRange() { return m_regeneRange; }
 	int WatchHp()const { return m_Hp; }
 
+	void SetBoost() { m_isBoostFlag = true; }
 	void SetCameraAngle(float cameraAngle);
 	void SetSideVec(Vec3 right) { m_sideVec = right; }
 	void SetFrontVec(Vec3 front) { m_frontVec = front; }
@@ -33,6 +34,7 @@ public:
 	int GetPlayerModelhandle() { return m_modelHandle; }
 	bool IsSearch() { return m_isSearchFlag; }
 	bool OnDamage() { return m_isOnDamageFlag; }
+	bool IsClear() { return m_isClearFlag; }
 	int GetDamageFrame() { return m_damageFrame; }
 	int& SetReverse() { return m_reverseFlag; }
 	int GetSearchRemainTime() { return m_searchRemainTime; }
@@ -48,7 +50,8 @@ public:
 	using cameraState_t = void(Player::*)();
 	cameraState_t m_cameraUpdate;
 
-	void JumpingUpdate();
+
+	void BoostUpdate();
 
 
 private:
@@ -71,6 +74,7 @@ private:
 	void WalkingUpdate();
 	void SpiningUpdate();
 	void JumpingSpinUpdate();
+	void JumpingUpdate();
 	/// <summary>
 	/// É_ÉÅÅ[ÉWéû
 	/// </summary>
@@ -110,9 +114,11 @@ private:
 	int actionFrame = 0;
 	int m_pointLightHandle = -1;
 	int m_hitSEHandle;
+	int m_parrySEHandle;
 	int m_searchSEHandle;
 	int m_getItemHandle;
 	int m_color;
+	int m_spinCount;
 
 	bool m_isOnDamageFlag;
 	bool m_isSpinFlag;
@@ -162,7 +168,9 @@ private:
 
 	bool m_isVisibleFlag = false;
 	bool m_isJumpFlag = false;
+	bool m_isBoostFlag = false;
 	bool m_isSearchFlag = false;
+	bool m_isClearFlag=false;
 
 	int m_visibleCount = 0;
 

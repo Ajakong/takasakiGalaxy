@@ -64,6 +64,18 @@
     <Filter Include="ソース ファイル\Enemy\Gorori">
       <UniqueIdentifier>{ef6883a8-3d96-47a6-a3b4-74504e60ba98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Enemy\KillerTheSeeker">
+      <UniqueIdentifier>{8ccfe036-a0cb-4fda-8811-93125473ffa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Object">
+      <UniqueIdentifier>{c45bb040-e062-4cbd-8438-1f939603c871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Object\cpp">
+      <UniqueIdentifier>{82990109-e20a-4e49-a274-0cc9c21f934a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Object\h">
+      <UniqueIdentifier>{406f40c7-6d69-4451-88f7-8f1aef7ec5f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -186,9 +198,6 @@
     <ClCompile Include="Object\WarpGate.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Item.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy\Gorori.cpp">
       <Filter>ソース ファイル\Enemy\Gorori</Filter>
     </ClCompile>
@@ -209,6 +218,21 @@
     </ClCompile>
     <ClCompile Include="MyLib\Physics\ColliderBox.cpp">
       <Filter>ソース ファイル\MyLib\Physics\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\KillerTheSeeker.cpp">
+      <Filter>ソース ファイル\Enemy\KillerTheSeeker</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\Killer.cpp">
+      <Filter>ソース ファイル\Enemy\KillerTheSeeker</Filter>
+    </ClCompile>
+    <ClCompile Include="BossPlanet.cpp">
+      <Filter>ソース ファイル\Planet\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ClearObject.cpp">
+      <Filter>ソース ファイル\Object\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Item.cpp">
+      <Filter>ソース ファイル\Object\cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -335,9 +359,6 @@
     <ClInclude Include="Object\WarpGate.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Item.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Enemy\Gorori.h">
       <Filter>ソース ファイル\Enemy\Gorori</Filter>
     </ClInclude>
@@ -358,6 +379,21 @@
     </ClInclude>
     <ClInclude Include="MyLib\Physics\ColliderBox.h">
       <Filter>ソース ファイル\MyLib\Physics\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\KillerTheSeeker.h">
+      <Filter>ソース ファイル\Enemy\KillerTheSeeker</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\Killer.h">
+      <Filter>ソース ファイル\Enemy\KillerTheSeeker</Filter>
+    </ClInclude>
+    <ClInclude Include="BossPlanet.h">
+      <Filter>ソース ファイル\Planet\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ClearObject.h">
+      <Filter>ソース ファイル\Object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Item.h">
+      <Filter>ソース ファイル\Object\h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

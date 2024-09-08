@@ -1,27 +1,19 @@
 #pragma once
 #include "Enemy.h"
-#include"EnemySphere.h"
 
+class Killer;
 
-
-/// <summary>
-/// 左右に移動し、一定間隔で射撃してくる敵e
-/// 踏みつけられるとつぶれる
-/// </summary>
-class Takobo : public Enemy
+class KillerTheSeeker :
+    public Enemy
 {
 public:
+    KillerTheSeeker(Vec3 pos);
+    virtual ~KillerTheSeeker();
 
-	/// <param name="m_modelhandle">エネミーのモデル</param>
-	/// <param name="obj">影響を与えるオブジェ</param>
-	Takobo(Vec3 pos);
-	virtual ~Takobo();
-
-	void Init();
-	void Update();
-	void SetMatrix();
+    void Init();
+    void Update();
 	void DeleteManage();
-	void Draw();
+    void Draw();
 
 	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);
 
@@ -33,13 +25,16 @@ public:
 
 	void SetTarget(std::shared_ptr<Collidable> target);
 	void SetNormVec(Vec3 norm) { m_normVec = norm; }
-
-	std::list<std::shared_ptr<EnemySphere>> GetAttackObj() { return m_sphere; }
-	
+	void SetVelocity(Vec3 vel) { m_velocity = vel; }
+	Vec3 GetVelocity() const { return m_velocity; }
+	std::list<std::shared_ptr<Killer>> GetAttackObj() { return m_sphere; }
 
 	//メンバ関数ポインタ
-	using enemyState_t = void(Takobo::*)();
+	using enemyState_t = void(KillerTheSeeker::*)();
 	enemyState_t m_enemyUpdate;
+
+
+	int m_Hp;
 private:
 	/// <summary>
 	/// 通常(クールダウン)状態
@@ -49,10 +44,13 @@ private:
 	/// 球体を生成して攻撃
 	/// </summary>
 	void AttackSphereUpdate();
+	void AttackRollingUpdate();
 
 	Vec3 GetAttackDir() const;
 private:
-	int m_Hp;
+	
+	int m_color;
+	int m_attackCount;
 
 	int m_attackCoolDownCount;
 
@@ -69,9 +67,11 @@ private:
 	int m_sphereNum = 0;
 	int m_bombNum = 0;
 	int m_shotSEHandle;
+	int m_counterHitSEHandle;
 
 	Vec3 m_vec;
 	Vec3 m_attackDir;
+	Vec3 m_velocity;
 	Vec3 m_moveShaftPos;
 	Vec3 m_normVec;
 	Vec3 m_nowPlanetPos;
@@ -82,6 +82,6 @@ private:
 	int m_anim_jump = 0;
 	int m_anim_attack = 0;
 
-	std::list<std::shared_ptr<EnemySphere>> m_sphere;
+	std::list<std::shared_ptr<Killer>> m_sphere;
 };
 
