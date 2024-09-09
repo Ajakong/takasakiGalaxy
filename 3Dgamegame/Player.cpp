@@ -269,7 +269,7 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			auto killer = dynamic_pointer_cast<KillerTheSeeker>(colider);
 
 			killer->SetVelocity(Vec3(killer->GetRigidbody()->GetPos() - m_rigid->GetPos()).GetNormalized());
-			killer->m_Hp -= 50;
+			killer->m_Hp -= 20;
 		}
 		else
 		{

@@ -228,15 +228,6 @@ void GameManager::Init()
 		item->SetTarget(player);
 	}
 
-
-	/*for (auto& item : killerTheSeeker)
-	{
-		MyEngine::Physics::GetInstance().Entry(item);
-		item->SetTarget(player);
-	}*/
-
-
-
 	for (auto& item : gorori)
 	{
 		MyEngine::Physics::GetInstance().Entry(item);
@@ -279,8 +270,7 @@ void GameManager::IntroUpdate()
 	{
 		MV1SetMeshBackCulling(modelH, i, DX_CULLING_RIGHT);
 	}
-	/*SetUseVertexShader(outlineVsH);
-	SetUsePixelShader(outlinePsH);*/
+
 	// カリング方向を元に戻す
 	for (int i = 0; i < MV1GetMeshNum(modelH); ++i)
 	{
@@ -323,10 +313,6 @@ void GameManager::IntroDraw()
 
 void GameManager::GamePlayingUpdate()
 {
-	/*FillGraph(depthRT, 0, 0, 0, 0);
-	FillGraph(shrinkRT, 0, 0, 0, 0);
-	FillGraph(normRT, 0, 0, 0, 0);*/
-
 	for (int x = -50; x <= 50; x += 10)
 	{
 		DrawLine3D(VGet(static_cast<float>(x), 0, -50), VGet(static_cast<float>(x), 0, 50), 0xffff00);
@@ -396,18 +382,6 @@ void GameManager::GamePlayingUpdate()
 			i--;
 		}
 	}
-
-	//for (int i = 0; i < killerTheSeeker.size(); i++)
-	//{
-	//	killerTheSeeker[i]->DeleteManage();
-	//	if (killerTheSeeker[i]->WatchHp() < 0)
-	//	{
-	//		MyEngine::Physics::GetInstance().Exit(killerTheSeeker[i]);
-
-	//		killerTheSeeker.erase(killerTheSeeker.begin() + i);//さっきの例をそのまま使うと(1,2,5,3,4)でitには5まで入ってるので取り除きたい3,4はitからend()までで指定できる
-	//		i--;
-	//	}
-	//}
 
 	for (int i = 0; i < killerTheSeeker.size(); i++)
 	{

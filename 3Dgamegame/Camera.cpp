@@ -38,8 +38,8 @@ Camera::Camera():
 	m_postLookPointPos = { 0,0,0 };
 	m_fowardVec = { 0.f,0.f,0.1f };
 
-	m_lightHandle = CreateSpotLightHandle(m_pos.VGet(),GetCameraFrontVector() ,DX_PI_F / 2.0f,
-		DX_PI_F / 4.0f,
+	m_lightHandle = CreateSpotLightHandle(m_pos.VGet(),GetCameraFrontVector() ,DX_PI_F*2,
+		DX_PI_F*2,
 		2000.0f,
 		0.0f,
 		0.002f,
@@ -77,9 +77,9 @@ void Camera::NeutralUpdate(Vec3 LookPoint)
 		m_cameraUpdate = &Camera::SetCameraFirstPersonPos;
 	}
 	m_lookPoint = LookPoint;
-	SetLightPositionHandle(m_lightHandle, m_pos.VGet());
+	SetLightPositionHandle(m_lightHandle,Vec3(LookPoint+m_upVec*120).VGet());
 	SetLightDirectionHandle(m_lightHandle,(Vec3(GetCameraUpVector())*-1).VGet());
-
+	
 	Vec3 velocity;
 	velocity.x = (m_cameraPoint.x - m_pos.x) / 15.f;
 	velocity.y = (m_cameraPoint.y - m_pos.y) / 15.f;
