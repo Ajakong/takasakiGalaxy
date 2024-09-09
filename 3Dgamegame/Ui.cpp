@@ -49,7 +49,7 @@ namespace
 	constexpr float kUiTimeCountFrame_Exrate = 0.3f;
 
 	//タイマー
-	constexpr int kUiTimeCount_PosX = 1350;
+	constexpr int kUiTimeCount_PosX = 1420;
 	constexpr int kUiTimeCount_PosY = 90;
 
 	constexpr float kCameraDistanceFront = 300.f;
@@ -142,7 +142,7 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 	//UI:タイマー
 	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, m_textureUIHandle, 1, 1);
 
-	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d.%d m/s", WorldTimer::GetMinute(), WorldTimer::GetTimer());
+	DrawFormatStringToHandle(kUiTimeCount_PosX, kUiTimeCount_PosY, 0xffffff, fontHandle, "%d:%d", WorldTimer::GetMinute(), WorldTimer::GetTimer());
 	//UI:HPバー
 	DrawRectRotaGraph(kUiHpbarFrame_PosX, kUiHpbarFrame_PosY, kUiHpbarFrame_SrkX, kUiHpbarFrame_SrkY, kUiHpbarFrame_Width, kUiHpbarFrame_Height, kUiHpbarFrame_Exrate, 0, m_textureUIHandle, true);
 	DrawBox(15, 25, static_cast<int>(15 + playerHP * kUiHpbar_mag), kUiHpbar_PosY + kUiHpbar_Height, 0x00ffff, true);

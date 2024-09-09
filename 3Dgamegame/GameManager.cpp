@@ -144,7 +144,6 @@ GameManager::GameManager() :
 
 GameManager::~GameManager()
 {
-	
 	DeleteEffekseerEffect(m_warpEffectHandle);
 }
 
