@@ -25,6 +25,7 @@ private:
 	int m_leftBottonHandle;
 	int m_RightBottonHandle;
 
+	int m_languageFontHandle;
 	int m_textureUIHandle;
 	int m_fadeCount;
 	float m_materialXAngle;

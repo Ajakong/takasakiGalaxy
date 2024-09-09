@@ -33,5 +33,6 @@ protected:
 	virtual void CounterUpdate();
 private:
 	std::shared_ptr<MyEngine::Collidable> m_target;
+	int m_pointeLightHandle;
 };
 

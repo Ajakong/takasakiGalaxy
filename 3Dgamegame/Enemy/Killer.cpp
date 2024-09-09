@@ -17,6 +17,7 @@ Killer::Killer(MyEngine::Collidable::Priority priority, ObjectTag tag, std::shar
 	m_counterFlag = false;
 	m_target = target;
 	m_moveUpdate = &Killer::SearchUpDate;
+	m_pointeLightHandle = CreatePointLightHandle(pos.VGet(), 2000.0f, 0.0f, 0.002f, 0.0f);
 }
 
 Killer::~Killer()
@@ -29,6 +30,7 @@ void Killer::Init()
 
 void Killer::Update()
 {
+	SetLightPositionHandle(m_pointeLightHandle, m_rigid->GetPos().VGet());
 	if (m_counterFlag)
 	{
 		m_moveUpdate = &Killer::CounterUpdate;
@@ -55,7 +57,7 @@ void Killer::SearchUpDate()
 	Vec3 toVec = m_target->GetRigidbody()->GetPos() - m_rigid->GetPos();
 	m_velocity = toVec.GetNormalized();
 
-	m_rigid->SetVelocity(m_velocity * 5);
+	m_rigid->SetVelocity(m_velocity * 4);
 	if (toVec.Length() <= 150)
 	{
 		m_moveUpdate = &Killer::StraightUpdate;
@@ -64,7 +66,7 @@ void Killer::SearchUpDate()
 
 void Killer::StraightUpdate()
 {
-	m_rigid->SetVelocity(m_velocity * 10);
+	m_rigid->SetVelocity(m_velocity * 7);
 }
 
 void Killer::CounterUpdate()

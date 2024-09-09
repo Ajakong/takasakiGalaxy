@@ -11,7 +11,7 @@ namespace
 	/// <summary>
 		/// ç≈ëÂHP
 		/// </summary>
-	constexpr int kHp = 500;
+	constexpr int kHp = 300;
 
 	constexpr int kStartPosX = 200;
 	constexpr int kStartPosY = 50;
@@ -68,7 +68,7 @@ m_centerToEnemyAngle(0)
 	AddThroughTag(ObjectTag::Takobo);
 	AddThroughTag(ObjectTag::Gorori);
 	AddThroughTag(ObjectTag::WarpGate);
-	m_color = 0x440044;
+	m_color = 0x444444;
 }
 
 KillerTheSeeker::~KillerTheSeeker()
@@ -109,7 +109,7 @@ void KillerTheSeeker::DeleteManage()
 
 void KillerTheSeeker::Draw()
 {
-	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10,m_color, m_color, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10,m_color, m_color, true);
 	
 	for (auto& sphere : m_sphere)
 	{

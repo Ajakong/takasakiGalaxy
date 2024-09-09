@@ -188,10 +188,10 @@ void Player::Draw()
 	{
 		//MV1DrawModel(m_modelHandle);
 	}
-	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, 0x000000, m_color, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, m_color, 0xffffff, false);
 	if (m_isSpinFlag)
 	{
-		DrawSphere3D(m_rigid->GetPos().VGet(), m_attackRadius, 10, 0x000000, 0x00ff00, false);
+		DrawSphere3D(m_rigid->GetPos().VGet(), m_attackRadius, 10, 0x00ff00, 0xffffff, false);
 	}
 #if _DEBUG
 
@@ -264,7 +264,8 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	{
 		if (m_isSpinFlag)
 		{
-
+			m_prevUpdate = m_playerUpdate;
+			m_playerUpdate = &Player::DamegeUpdate;
 			PlaySoundMem(m_parrySEHandle, DX_PLAYTYPE_BACK);
 			auto killer = dynamic_pointer_cast<KillerTheSeeker>(colider);
 
@@ -296,6 +297,8 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			auto attackSphere = dynamic_pointer_cast<EnemySphere>(colider);
 			attackSphere->SetVelocity(attackSphere->GetVelocity() * -1);
 			attackSphere->SetCounterFlag();
+			
+
 		}
 		else
 		{
@@ -530,6 +533,46 @@ void Player::SpiningUpdate()
 
 void Player::JumpingSpinUpdate()
 {
+	//アナログスティックを使って移動
+
+	int analogX = 0, analogY = 0;
+
+	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
+	analogY = -analogY;
+	if (analogX * analogY != 0)
+	{
+		int a = 0;
+	}
+	//アナログスティックの入力10%~80%を使用する
+	//ベクトルの長さが最大1000になる
+	//ベクトルの長さを取得
+	Vec3 move;
+
+	float len = move.Length();
+	//ベクトルの長さを0.0~1.0の割合に変換する
+	float rate = len / kAnalogInputMax;
+	Vec3 front = GetCameraFrontVector();
+	Vec3 right = GetCameraRightVector();
+	move = m_frontVec * static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
+	move += m_sideVec * static_cast<float>(analogX);
+
+
+	//アナログスティック無効な範囲を除外する
+	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
+	rate = std::min(rate, 1.0f);
+	rate = std::max(rate, 0.0f);
+
+	//速度が決定できるので移動ベクトルに反映
+	move = move.GetNormalized();
+	float speed = kMaxSpeed;
+
+	m_moveDir = move;
+	move = move * speed;
+
+	m_rigid->SetVelocity(move);
+
+	m_spinAngle += DX_PI_F / 15;
+	m_angle += DX_PI_F / 15;
 	m_spinAngle += DX_PI_F / 15;
 	m_angle += DX_PI_F / 15;
 	if (m_spinAngle >= DX_PI_F * 2)

@@ -3,6 +3,7 @@
 #include"Quaternion.h"
 #include"WorldTimer.h"
 #include"GraphManager.h"
+#include"FontManager.h"
 #include"Pad.h"
 namespace
 {
@@ -72,18 +73,20 @@ namespace
 	const char* kGraphPath = "Elements_pro.png";
 	const char* kLeftBottonGraphPath = "Left_Botton.png";
 	const char* kRightBottonGraphPath = "Right_Botton.png";
+	const char* kLanguageFontPath = "Right_Botton.png";
 }
 
 
-Ui::Ui():
-	m_textureUIHandle(GraphManager::GetInstance().GetGraphData("Elements_pro.png")),
+Ui::Ui() :
+	m_textureUIHandle(GraphManager::GetInstance().GetGraphData(kGraphPath)),
 	m_fadeCount(100),
 	m_materialXAngle(0),
 	m_isFadeIntroFlag(false),
 	m_angle(0),
 	m_isFadeEnd(false),
 	m_leftBottonHandle(GraphManager::GetInstance().GetGraphData(kLeftBottonGraphPath)),
-	m_RightBottonHandle(GraphManager::GetInstance().GetGraphData(kRightBottonGraphPath))
+	m_RightBottonHandle(GraphManager::GetInstance().GetGraphData(kRightBottonGraphPath)),
+	m_languageFontHandle(FontManager::GetInstance().GetFontData("SF_font.ttf", "廻想体 ネクスト UP B"))
 {
 	Vec3 centerPos = Vec3(800, 450, 0);
 
@@ -128,16 +131,14 @@ void Ui::Update()
 void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 {
 	//UI: LeftBotton
-	DrawExtendGraph(200, 700,300,800, m_leftBottonHandle, true);
+	DrawExtendGraph(200, 600,400,800, m_leftBottonHandle, true);
 	//UI: RightBotton
-	DrawExtendGraph(1300, 700,1400,800, m_RightBottonHandle, true);
+	DrawExtendGraph(1200, 600,1400,800, m_RightBottonHandle, true);
 	
-	
-	
-	DrawExtendFormatString(210, 680,0.7f,0.7f, 0xffffff,"お助けモード");
-	DrawExtendFormatStringToHandle(1330, 680,0.3f,0.3f, 0xffffff, fontHandle, "Search");
-	DrawExtendFormatStringToHandle(1400, 750, 0.3f, 0.3f, 0xffffff, fontHandle, "Parry");
-	DrawExtendFormatStringToHandle(1370, 780, 0.3f, 0.3f, 0xffffff, fontHandle, "Jump");
+	DrawExtendFormatString(240, 580,1.2f,1.2f, 0xffffff,"視点切り替え");
+	DrawExtendFormatStringToHandle(1260, 570,0.5f,0.5f, 0xffffff, fontHandle, "Search");
+	DrawExtendFormatStringToHandle(1390, 700, 0.5f, 0.5f, 0xffffff, fontHandle, "Parry");
+	DrawExtendFormatStringToHandle(1330, 760, 0.5f, 0.5f, 0xffffff, fontHandle, "Jump");
 
 	//UI:タイマー
 	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, m_textureUIHandle, 1, 1);
@@ -154,6 +155,7 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 	
 	//UI:ミッション
 	DrawRectRotaGraph(kUiText_SrkX + (100 * 7 - m_fadeCount * 7), static_cast<int>(kUiText_SrkY + (100 * 2.2f - m_fadeCount * 2.2f)), kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate * 1 + 1.25f * ((100.f - m_fadeCount) / 100.f), 0, m_textureUIHandle, true);
+
 	//UI:3DmaterialX
 	Vec3 zero = { 0,0,0 };
 	Vec3 offSetVec = GetCameraRightVector();

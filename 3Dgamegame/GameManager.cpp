@@ -120,7 +120,6 @@ GameManager::GameManager() :
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400));
 	bossPlanet = std::make_shared<BossPlanet>(Vec3(0, -6000, 0), 0x444444);
 	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,500)) };
-	killerTheSeeker.push_back(std::make_shared<KillerTheSeeker>(Vec3(0, -7000, 0)));
 	gorori = { std::make_shared<Gorori>(Vec3(7000,500,2300)),std::make_shared<Gorori>(Vec3(6500,500,1700)),std::make_shared<Gorori>(Vec3(5500,0,2000)) };
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, -800, 0),true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(-300, 0, 0), true));
@@ -222,12 +221,7 @@ void GameManager::Init()
 		MyEngine::Physics::GetInstance().Entry(item);
 		item->SetTarget(player);
 	}
-	for (auto& item : killerTheSeeker)
-	{
-		item->Init();
-		MyEngine::Physics::GetInstance().Entry(item);
-		item->SetTarget(player);
-	}
+	
 
 	for (auto& item : gorori)
 	{
@@ -531,6 +525,13 @@ void GameManager::GamePlayingUpdate()
 		warpGate.back()->SetWarpPos(Vec3(0, -6000, 0));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(-2000, 0, -2000), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
+		killerTheSeeker.push_back(std::make_shared<KillerTheSeeker>(Vec3(0, -7000, 0)));
+		for (auto& item : killerTheSeeker)
+		{
+			item->Init();
+			MyEngine::Physics::GetInstance().Entry(item);
+			item->SetTarget(player);
+		}
 	}
 
 	WorldTimer::Update();
