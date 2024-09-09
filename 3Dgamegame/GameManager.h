@@ -74,6 +74,7 @@ private:
 	int sphMapH ;
 	int itemNum;
 	int m_warpEffectHandle;
+	
 
 	int roughH;
 	

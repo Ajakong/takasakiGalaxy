@@ -70,6 +70,8 @@ namespace
 	constexpr float kSelectFrameExrate = 0.3f;
 
 	const char* kGraphPath = "Elements_pro.png";
+	const char* kLeftBottonGraphPath = "Left_Botton.png";
+	const char* kRightBottonGraphPath = "Right_Botton.png";
 }
 
 
@@ -79,7 +81,9 @@ Ui::Ui():
 	m_materialXAngle(0),
 	m_isFadeIntroFlag(false),
 	m_angle(0),
-	m_isFadeEnd(false)
+	m_isFadeEnd(false),
+	m_leftBottonHandle(GraphManager::GetInstance().GetGraphData(kLeftBottonGraphPath)),
+	m_RightBottonHandle(GraphManager::GetInstance().GetGraphData(kRightBottonGraphPath))
 {
 	Vec3 centerPos = Vec3(800, 450, 0);
 
@@ -123,6 +127,18 @@ void Ui::Update()
 
 void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 {
+	//UI: LeftBotton
+	DrawExtendGraph(200, 700,300,800, m_leftBottonHandle, true);
+	//UI: RightBotton
+	DrawExtendGraph(1300, 700,1400,800, m_RightBottonHandle, true);
+	
+	
+	
+	DrawExtendFormatString(210, 680,0.7f,0.7f, 0xffffff,"お助けモード");
+	DrawExtendFormatStringToHandle(1330, 680,0.3f,0.3f, 0xffffff, fontHandle, "Search");
+	DrawExtendFormatStringToHandle(1400, 750, 0.3f, 0.3f, 0xffffff, fontHandle, "Parry");
+	DrawExtendFormatStringToHandle(1370, 780, 0.3f, 0.3f, 0xffffff, fontHandle, "Jump");
+
 	//UI:タイマー
 	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, m_textureUIHandle, 1, 1);
 

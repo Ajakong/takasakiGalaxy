@@ -78,7 +78,8 @@ void Camera::NeutralUpdate(Vec3 LookPoint)
 	}
 	m_lookPoint = LookPoint;
 	SetLightPositionHandle(m_lightHandle, m_pos.VGet());
-	SetLightDirectionHandle(m_lightHandle, GetCameraFrontVector());
+	SetLightDirectionHandle(m_lightHandle,(Vec3(GetCameraUpVector())*-1).VGet());
+
 	Vec3 velocity;
 	velocity.x = (m_cameraPoint.x - m_pos.x) / 15.f;
 	velocity.y = (m_cameraPoint.y - m_pos.y) / 15.f;

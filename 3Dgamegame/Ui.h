@@ -22,6 +22,9 @@ private:
 	/// </summary>
 	std::vector<Vec3> m_graphPos;
 
+	int m_leftBottonHandle;
+	int m_RightBottonHandle;
+
 	int m_textureUIHandle;
 	int m_fadeCount;
 	float m_materialXAngle;
