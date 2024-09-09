@@ -133,8 +133,10 @@ GameManager::GameManager() :
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 100, 1400), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, -500, 2000), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(-3000, 1200, -3000), true));
-	
+	m_skyDomeH = MV1LoadModel("Model/SkyDome.mv1");
 	fontHandle = FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator",60,7,DX_FONTTYPE_NORMAL);
+
+	MV1SetScale(m_skyDomeH, VGet(300, 300, 300));
 
 	m_managerUpdate = &GameManager::IntroUpdate;
 	m_managerDraw = &GameManager::IntroDraw;
@@ -286,9 +288,9 @@ void GameManager::IntroUpdate()
 
 void GameManager::IntroDraw()
 {
-	MV1SetPosition(skyDomeH, player->GetPos().VGet());
+	MV1SetPosition(m_skyDomeH, VGet(0,0,0));
 
-	MV1DrawModel(skyDomeH);
+	MV1DrawModel(m_skyDomeH);
 	bossPlanet->Draw();
 	for(auto& item :planet)item->Draw();
 	player->Draw();
@@ -537,11 +539,10 @@ void GameManager::GamePlayingUpdate()
 
 void GameManager::GamePlayingDraw()
 {
+	MV1DrawModel(m_skyDomeH);
 	DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
 
-	MV1SetPosition(skyDomeH, player->GetPos().VGet());
-
-	MV1DrawModel(skyDomeH);
+	
 	bossPlanet->Draw();
 	for(auto& item : planet)item->Draw();
 	player->Draw();

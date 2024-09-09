@@ -66,8 +66,7 @@ private:
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
 
-	
-	int skyDomeH;
+	int m_skyDomeH;
 	int modelH ;
 	int textureUIHandle;
 	int fontHandle;
