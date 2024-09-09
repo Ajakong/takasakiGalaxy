@@ -2,6 +2,7 @@
 #include"../MyLib/Physics/ColliderSphere.h"
 #include"../Player.h"
 #include<EffekseerForDXLib.h>
+#include"../SoundManager.h"
 namespace
 {
 	const char* name = "warpGate";
@@ -45,6 +46,7 @@ void WarpGate::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
 	if (colider->GetTag() == ObjectTag::Player)
 	{
+		PlaySoundMem(SoundManager::GetInstance().GetSoundData("boost.mp3"), DX_PLAYTYPE_BACK);
 		colider->GetRigidbody()->SetVelocity(Vec3(m_warpPos - colider->GetRigidbody()->GetPos()).GetNormalized() * 100);
 		auto player = std::dynamic_pointer_cast<Player>(colider);
 		player->m_playerUpdate = &Player::BoostUpdate;

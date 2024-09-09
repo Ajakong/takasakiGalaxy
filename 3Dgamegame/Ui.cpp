@@ -86,7 +86,8 @@ Ui::Ui() :
 	m_isFadeEnd(false),
 	m_leftBottonHandle(GraphManager::GetInstance().GetGraphData(kLeftBottonGraphPath)),
 	m_RightBottonHandle(GraphManager::GetInstance().GetGraphData(kRightBottonGraphPath)),
-	m_languageFontHandle(FontManager::GetInstance().GetFontData("SF_font.ttf", "廻想体 ネクスト UP B"))
+	m_languageFontHandle(FontManager::GetInstance().GetFontData("SF_font.ttf", "廻想体 ネクスト UP B")),
+	m_manualFlag(true)
 {
 	Vec3 centerPos = Vec3(800, 450, 0);
 
@@ -130,15 +131,29 @@ void Ui::Update()
 
 void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 {
-	//UI: LeftBotton
-	DrawExtendGraph(200, 600,400,800, m_leftBottonHandle, true);
-	//UI: RightBotton
-	DrawExtendGraph(1200, 600,1400,800, m_RightBottonHandle, true);
-	
-	DrawExtendFormatString(240, 580,1.2f,1.2f, 0xffffff,"視点切り替え");
-	DrawExtendFormatStringToHandle(1260, 570,0.5f,0.5f, 0xffffff, fontHandle, "Search");
-	DrawExtendFormatStringToHandle(1390, 700, 0.5f, 0.5f, 0xffffff, fontHandle, "Parry");
-	DrawExtendFormatStringToHandle(1330, 760, 0.5f, 0.5f, 0xffffff, fontHandle, "Jump");
+	if (m_manualFlag)
+	{
+		if (Pad::IsTrigger(PAD_INPUT_7))
+		{
+			m_manualFlag = false;
+		}
+		//UI: LeftBotton
+		DrawExtendGraph(200, 600, 400, 800, m_leftBottonHandle, true);
+		//UI: RightBotton
+		DrawExtendGraph(1200, 600, 1400, 800, m_RightBottonHandle, true);
+
+		DrawExtendFormatString(240, 580, 1.2f, 1.2f, 0xffffff, "視点切り替え");
+		DrawExtendFormatStringToHandle(1260, 570, 0.5f, 0.5f, 0xffffff, fontHandle, "Search");
+		DrawExtendFormatStringToHandle(1390, 700, 0.5f, 0.5f, 0xffffff, fontHandle, "Parry");
+		DrawExtendFormatStringToHandle(1330, 760, 0.5f, 0.5f, 0xffffff, fontHandle, "Jump");
+	}
+	else
+	{
+		if (Pad::IsTrigger(PAD_INPUT_7))
+		{
+			m_manualFlag = true;
+		}
+	}
 
 	//UI:タイマー
 	DrawRectRotaGraph(kUiTimeCountFrame_PosX, kUiTimeCountFrame_PosY, kUiTimeCountFrame_SrkX, kUiTimeCountFrame_SrkY, kUiTimeCountFrame_Width, kUiTimeCountFrame_Height, kUiTimeCountFrame_Exrate, 0, m_textureUIHandle, 1, 1);
@@ -207,4 +222,6 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 		}
 		DrawSphere3D(UIPos.VGet(), 6, 8, 0x00ff00, 0x00ff00, false);
 	}
+
+	
 }

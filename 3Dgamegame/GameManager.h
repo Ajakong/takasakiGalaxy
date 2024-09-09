@@ -74,7 +74,7 @@ private:
 	int itemNum;
 	int m_warpEffectHandle;
 	
-
+	int m_bgmHandle;
 	int roughH;
 	
 	int metalH;

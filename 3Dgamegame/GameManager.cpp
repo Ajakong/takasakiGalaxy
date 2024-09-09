@@ -532,6 +532,8 @@ void GameManager::GamePlayingUpdate()
 			MyEngine::Physics::GetInstance().Entry(item);
 			item->SetTarget(player);
 		}
+		/*StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
+		PlaySoundMem(SoundManager::GetInstance().GetSoundData("BossEntry.mp3"),DX_PLAYTYPE_LOOP);*/
 	}
 
 	WorldTimer::Update();
@@ -542,7 +544,6 @@ void GameManager::GamePlayingDraw()
 	MV1DrawModel(m_skyDomeH);
 	DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
 
-	
 	bossPlanet->Draw();
 	for(auto& item : planet)item->Draw();
 	player->Draw();

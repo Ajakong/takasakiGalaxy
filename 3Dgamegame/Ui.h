@@ -31,6 +31,7 @@ private:
 	float m_materialXAngle;
 	bool m_isFadeIntroFlag;
 	bool m_isFadeEnd;
+	bool m_manualFlag;
 	float m_angle;
 };
 
