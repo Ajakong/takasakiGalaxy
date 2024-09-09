@@ -63,7 +63,6 @@ m_centerToEnemyAngle(0)
 	AddThroughTag(ObjectTag::Takobo);
 	AddThroughTag(ObjectTag::Gorori);
 	AddThroughTag(ObjectTag::WarpGate);
-	AddThroughTag(ObjectTag::EnemyAttack);
 }
 
 Takobo::~Takobo()
@@ -136,6 +135,7 @@ void Takobo::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	if (colider->GetTag() == ObjectTag::EnemyAttack)
 	{
 		auto attack= dynamic_pointer_cast<EnemySphere>(colider);
+		attack->DeleteFlag();
 		if (attack->GetCounterFlag())
 		{
 			m_Hp -= 60;

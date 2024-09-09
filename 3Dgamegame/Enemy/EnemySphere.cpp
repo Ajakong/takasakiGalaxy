@@ -56,7 +56,6 @@ void EnemySphere::Hit()
 
 void EnemySphere::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
-	m_isDeleteFlag = true;
 }
 
 void EnemySphere::StraightUpdate()

@@ -85,10 +85,8 @@ void Camera::NeutralUpdate(Vec3 LookPoint)
 	velocity.y = (m_cameraPoint.y - m_pos.y) / 15.f;
 	velocity.z = (m_cameraPoint.z - m_pos.z) / 15.f;
 	m_pos += velocity;//イージング
-	//m_pos = m_cameraPoint;
 
-	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
-	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(m_lookPoint + m_upVec.GetNormalized() * 100.0f).VGet(), m_upVec.VGet());
+	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),Vec3(m_lookPoint + m_upVec.GetNormalized() * 100.0f).VGet(), m_upVec.VGet());
 	m_postLookPointPos = m_lookPoint;
 }
 
@@ -103,10 +101,8 @@ void Camera::WatchThisUpdate(Vec3 LookPoint)
 	velocity.y = (m_cameraPoint.y - m_pos.y) / 10.f;
 	velocity.z = (m_cameraPoint.z - m_pos.z) / 10.f;
 	m_pos += velocity;//イージング
-	//m_pos = m_cameraPoint;
-
-	//SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, -1000.0f), m_pos.VGet());
-	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(m_lookPoint + m_upVec.GetNormalized() * 100.0f).VGet(), m_upVec.VGet());
+	
+	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),Vec3(m_lookPoint + m_upVec.GetNormalized() * 100.0f).VGet(), m_upVec.VGet());
 	m_postLookPointPos = m_lookPoint;
 	if (m_watchCount > kWatchThisTime)
 	{
@@ -139,15 +135,4 @@ void Camera::WatchThis(Vec3 lookpoint, Vec3 cameraPos, Vec3 upVec)
 	m_cameraPoint = cameraPos;
 	m_upVec = upVec;
 	WatchThisUpdate(lookpoint);
-
-	//SetLightPositionHandle(m_lightHandle, m_pos.VGet());
-	//SetLightDirectionHandle(m_lightHandle, GetCameraFrontVector());
-	//Vec3 velocity;
-	//velocity.x = (cameraPos.x - m_pos.x) / 15.f;
-	//velocity.y = (cameraPos.y - m_pos.y) / 15.f;
-	//velocity.z = (cameraPos.z - m_pos.z) / 15.f;
-	//m_pos += velocity;//イージング
-	//
-	//SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),/*Vec3(m_pos.x, LookPoint.y, LookPoint.z)*/Vec3(lookpoint + upVec.GetNormalized() * 100.0f).VGet(), upVec.VGet());
-	//m_postLookPointPos = lookpoint;
 }
