@@ -7,6 +7,8 @@
 #include"TitleScene.h"
 #include"Game.h"
 #include"SoundManager.h"
+#include"GraphManager.h"
+#include"FontManager.h"
 #include"MyLib/Physics/Physics.h"
 
 namespace
@@ -23,14 +25,24 @@ namespace
 	/// </summary>
 	constexpr int kCharPosOffSetY = 6;
 
+	
+	constexpr int kFadeFrameMax = 60;
+	const char* kFrameName = "Frame.png";
+
 }
 
 PauseScene::PauseScene(SceneManager& mgr) : Scene(mgr),
-m_soundVol(SoundManager::GetInstance().GetSoundVol())
+m_soundVol(SoundManager::GetInstance().GetSoundVol()),
+m_btnFrame(0),
+m_fadeSpeed(1),
+m_frameHandle(GraphManager::GetInstance().GetGraphData(kFrameName)),
+m_fontHandle(FontManager::GetInstance().GetFontData("SF_font.ttf", "廻想体 ネクスト UP B", 60, 7, DX_FONTTYPE_NORMAL)),
+m_tutoFlag(false)
 {
 	m_updateFunc = &PauseScene::AppearUpdate;
 	m_drawFunc = &PauseScene::ExpandDraw;
-	m_tutoHandle = LoadGraph("data/image/tuto/controller_format.png");
+	m_tutoHandle =GraphManager::GetInstance().GetGraphData("information.png");
+	
 }
 
 void PauseScene::Load()
@@ -51,6 +63,9 @@ void PauseScene::Update()
 
 	SoundManager::GetInstance().ChangeSoundVolume(m_soundVol);
 
+	m_btnFrame += m_fadeSpeed;
+	if (m_btnFrame > kFadeFrameMax)m_fadeSpeed *= -1;
+	if (m_btnFrame < 0)m_fadeSpeed *= -1;
 
 	Pad::Update();
 }
@@ -97,25 +112,13 @@ void PauseScene::NormalUpdate()
 			m_updateFunc = &PauseScene::DisappearUpdate;
 			m_drawFunc = &PauseScene::ExpandDraw;
 		}
-		else
-		{
-			if (m_tutoFlag)
-			{
-				m_tutoFlag = false;
-			}
-			else
-			{
-				m_tutoFlag = true;
-
-			}
-		}
 		if(m_select % 3 == 1|| m_select % 3 == -2)
 		{
 			if (m_tutoFlag)
 			{
 				m_tutoFlag = false;
 			}
-			else
+			else if(!m_tutoFlag)
 			{
 				m_tutoFlag = true;
 			}
@@ -123,8 +126,6 @@ void PauseScene::NormalUpdate()
 		}
 		if (m_select % 3 == 2 || m_select % 3 == -1)
 		{
-			m_manager.PopScene();
-
 			StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
 			m_manager.ResetScene(std::make_shared<TitleScene>(m_manager));
 			MyEngine::Physics::GetInstance().Clear();
@@ -174,30 +175,32 @@ void PauseScene::NormalDraw()
 
 	DrawRotaString(670, 300, 6, 6, 0, 0, 0, 0xffffbb, 0, 0, "Pause");
 
-	DrawString(750, 500, "ゲームに戻る", 0xffffff);
-	DrawString(770, 600, "操作説明", 0xffffff);
-	DrawString(760, 700, "タイトルへ", 0xffffff);
+	DrawExtendFormatStringToHandle(750, 500,0.3f,0.3f,  0xffffff,m_fontHandle,"ゲームに戻る");
+	DrawExtendFormatStringToHandle(770, 600, 0.3f, 0.3f, 0xffffff,m_fontHandle, "操作説明");
+	DrawExtendFormatStringToHandle(760, 700, 0.3f, 0.3f, 0xffffff,m_fontHandle, "タイトルへ");
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
 	if (m_select % 3 == 0)
 	{
-		DrawBox(700, 480, 900, 550, 0xffffff, true);
+		DrawRectExtendGraph(690 - static_cast<int>(m_btnFrame) / 6, 470 - static_cast<int>(m_btnFrame) / 6, 920 + static_cast<int>(m_btnFrame) / 6, 540 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 	}
 	if (m_select % 3 == 1 || m_select % 3 == -2)
 	{
-		DrawBox(700, 580, 900, 650, 0xffffff, true);
+		DrawRectExtendGraph(690 - static_cast<int>(m_btnFrame) / 6, 570 - static_cast<int>(m_btnFrame) / 6, 920 + static_cast<int>(m_btnFrame) / 6, 640 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 	}
 	if (m_select % 3 == 2 || m_select % 3 == -1)
 	{
-		DrawBox(700, 680, 900, 750, 0xffffff, true);
+		DrawRectExtendGraph(690 - static_cast<int>(m_btnFrame) / 6, 670 - static_cast<int>(m_btnFrame) / 6, 920 + static_cast<int>(m_btnFrame) / 6, 740 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 
 	if (m_tutoFlag)
 	{
-		DrawRotaGraph(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0.8f, 0, m_tutoHandle, false);
-
+		SetDrawBlendMode(DX_BLENDMODE_MUL, 255);
+		// ちょっと暗い矩形を描画
+		DrawBox(kMenuMargin, kMenuMargin, size.w - kMenuMargin, size.h - kMenuMargin,
+			0x111111, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		DrawRotaGraph(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0.8f, 0, m_tutoHandle, true);
 	}
 
 	DrawBox(kMenuMargin, kMenuMargin, size.w - kMenuMargin, size.h - kMenuMargin,

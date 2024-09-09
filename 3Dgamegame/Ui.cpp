@@ -71,6 +71,7 @@ namespace
 	constexpr float kSelectFrameExrate = 0.3f;
 
 	const char* kGraphPath = "Elements_pro.png";
+	const char* kMissionName = "mission.png";
 	const char* kLeftBottonGraphPath = "Left_Botton.png";
 	const char* kRightBottonGraphPath = "Right_Botton.png";
 	const char* kLanguageFontPath = "Right_Botton.png";
@@ -87,7 +88,10 @@ Ui::Ui() :
 	m_leftBottonHandle(GraphManager::GetInstance().GetGraphData(kLeftBottonGraphPath)),
 	m_RightBottonHandle(GraphManager::GetInstance().GetGraphData(kRightBottonGraphPath)),
 	m_languageFontHandle(FontManager::GetInstance().GetFontData("SF_font.ttf", "廻想体 ネクスト UP B")),
-	m_manualFlag(true)
+	m_missionHandle(GraphManager::GetInstance().GetGraphData(kMissionName)),
+	m_manualFlag(true),
+	m_missionFadeFrame(0),
+	m_nextMissionFlag(false)
 {
 	Vec3 centerPos = Vec3(800, 450, 0);
 
@@ -145,7 +149,14 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 		DrawExtendFormatString(240, 580, 1.2f, 1.2f, 0xffffff, "視点切り替え");
 		DrawExtendFormatStringToHandle(1260, 570, 0.5f, 0.5f, 0xffffff, fontHandle, "Search");
 		DrawExtendFormatStringToHandle(1390, 700, 0.5f, 0.5f, 0xffffff, fontHandle, "Parry");
-		DrawExtendFormatStringToHandle(1330, 760, 0.5f, 0.5f, 0xffffff, fontHandle, "Jump");
+		if (!m_isFadeEnd)
+		{
+			DrawExtendFormatStringToHandle(1330, 760, 0.5f, 0.5f, 0xffffff, m_languageFontHandle, "続ける");
+		}
+		else
+		{
+			DrawExtendFormatStringToHandle(1330, 760, 0.5f, 0.5f, 0xffffff, fontHandle, "Jump");
+		}
 	}
 	else
 	{
@@ -170,6 +181,23 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 	
 	//UI:ミッション
 	DrawRectRotaGraph(kUiText_SrkX + (100 * 7 - m_fadeCount * 7), static_cast<int>(kUiText_SrkY + (100 * 2.2f - m_fadeCount * 2.2f)), kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate * 1 + 1.25f * ((100.f - m_fadeCount) / 100.f), 0, m_textureUIHandle, true);
+	if (m_nextMissionFlag)
+	{
+		m_missionFadeFrame += 5;
+		if (m_missionFadeFrame > 150)
+		{
+			m_missionFadeFrame = 150;
+		}
+	}
+	if (!m_nextMissionFlag && m_missionFadeFrame > -150)
+	{
+		m_missionFadeFrame -= 5;
+	}
+	if (m_missionFadeFrame>-150)
+	{
+		DrawRotaGraph(m_missionFadeFrame/3+95, 270,0.185f,0, m_missionHandle, true);
+		DrawExtendFormatStringToHandle(m_missionFadeFrame/3 ,270,0.3f,0.3f,0xffffff, m_languageFontHandle, "出現した物に当たろう");
+	}
 
 	//UI:3DmaterialX
 	Vec3 zero = { 0,0,0 };
@@ -188,7 +216,7 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 		Vec3 offSet = myQ.Move(offSetVec, zero);
 		DrawSphere3D((UIPos + offSet).VGet(), 1 * 1 + 1.25f * ((100.f - m_fadeCount) / 100.f), 6, 0xff00ff, 0xff00ff, false);
 	}
-	DrawSphere3D(UIPos.VGet(), 2.5 * 1 + 1.25f * ((100.f - m_fadeCount) / 100.f), 6, 0x00ff00, 0x00ff00, false);
+	DrawSphere3D(UIPos.VGet(), 2.5f * 1.f + 1.25f * ((100.f - m_fadeCount) / 100.f), 6, 0x00ff00, 0x00ff00, false);
 
 	if (!m_isFadeEnd)
 	{
@@ -198,10 +226,10 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 			Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized() * 10) * sin(m_angle);
 			Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized() * 10) * sin(m_angle);
 
-			DrawRectRotaGraph(zero.x-m_fadeCount*7, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_textureUIHandle, true);
-			DrawRectRotaGraph(one.x - m_fadeCount * 7, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_textureUIHandle, true);
-			DrawRectRotaGraph(two.x - m_fadeCount * 7, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_textureUIHandle, true);
-			DrawRectRotaGraph(three.x - m_fadeCount * 7, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_textureUIHandle, true);
+			DrawRectRotaGraph(static_cast<int>(zero.x - m_fadeCount * 7), static_cast<int>(zero.y), kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_textureUIHandle, true);
+			DrawRectRotaGraph(static_cast<int>(one.x - m_fadeCount * 7), static_cast<int>(one.y), kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_textureUIHandle, true);
+			DrawRectRotaGraph(static_cast<int>(two.x - m_fadeCount * 7), static_cast<int>(two.y), kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_textureUIHandle, true);
+			DrawRectRotaGraph(static_cast<int>(three.x - m_fadeCount * 7), static_cast<int>(three.y), kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_textureUIHandle, true);
 		}
 
 		//UI:3DmaterialX
@@ -211,7 +239,7 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 		offSetVec *= 9.f / 4.f;
 		Quaternion myQ;
 		Vec3 front = GetCameraFrontVector();
-		Vec3 UIPos = ((Vec3(GetCameraPosition()) + Vec3(GetCameraFrontVector()) * 108) + Vec3(GetCameraLeftVector()) * 70 + Vec3(GetCameraUpVector()) * 10+Vec3(-m_fadeCount,0,0));
+		Vec3 UIPos = ((Vec3(GetCameraPosition()) + Vec3(GetCameraFrontVector()) * 108) + Vec3(GetCameraLeftVector()) * 70 + Vec3(GetCameraUpVector()) * 10+Vec3(-static_cast<float>(m_fadeCount), 0, 0));
 		for (int i = 0; i < 3; i++)
 		{
 			myQ.SetQuaternion(offSetVec);

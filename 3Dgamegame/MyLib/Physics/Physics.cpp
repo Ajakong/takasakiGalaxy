@@ -60,7 +60,7 @@ void Physics::Exit(const std::shared_ptr<Collidable>& collidable)
 	// “o˜^Ï‚İ‚È‚çíœ
 	if (it!= m_collidables.end())
 	{
-		int index = distance(m_collidables.begin(), it);
+		int index =static_cast<int>( distance(m_collidables.begin(), it));
 		auto iterater = m_collidables.begin();
 		for (int i = 0; i < index; i++)
 		{

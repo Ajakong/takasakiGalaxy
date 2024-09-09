@@ -173,10 +173,10 @@ void GameOverScene::FadeDraw()
 		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized() * 10) * sin(m_angle);
 		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized() * 10) * sin(m_angle);
 
-		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(zero.x), static_cast<int>(zero.y), kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(one.x), static_cast<int>(one.y), kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(two.x), static_cast<int>(two.y), kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(three.x), static_cast<int>(three.y), kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
 	}
 
 	//UI:3DmaterialX
@@ -231,10 +231,10 @@ void GameOverScene::FadeOutDraw()
 		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized() * 10) * sin(m_angle);
 		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized() * 10) * sin(m_angle);
 
-		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(zero.x), static_cast<int>(zero.y), kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(one.x), static_cast<int>(one.y), kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(two.x), static_cast<int>(two.y), kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(three.x), static_cast<int>(three.y), kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
 	}
 
 
@@ -294,10 +294,10 @@ void GameOverScene::NormalDraw()
 		Vec3 two = m_graphPos[2] + (m_graphVelocity[2].GetNormalized() * 10) * sin(m_angle);
 		Vec3 three = m_graphPos[3] + (m_graphVelocity[3].GetNormalized() * 10) * sin(m_angle);
 
-		DrawRectRotaGraph(zero.x, zero.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(one.x, one.y, kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(two.x, two.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
-		DrawRectRotaGraph(three.x, three.y, kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(zero.x), static_cast<int>(zero.y), kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(one.x), static_cast<int>(one.y), kSelectFrameLeftTopSrkX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(two.x), static_cast<int>(two.y), kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
+		DrawRectRotaGraph(static_cast<int>(three.x), static_cast<int>(three.y), kSelectFrameLeftTopSrkX + kSelectFrameWidth + kSelectFrameDistanceX, kSelectFrameLeftTopSrkY + kSelectFrameHeight + kSelectFrameDistanceY, kSelectFrameWidth, kSelectFrameHeight, kSelectFrameExrate, 0, m_graphHandle, true);
 	}
 
 	//UI:3DmaterialX

@@ -17,7 +17,8 @@ namespace
 
 ClearScene::ClearScene(SceneManager& mgr) :
 	Scene(mgr),
-	m_numFontHandle(FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator", 60, 7, DX_FONTTYPE_NORMAL))
+	m_numFontHandle(FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator", 60, 7, DX_FONTTYPE_NORMAL)),
+	m_fontHandle(FontManager::GetInstance().GetFontData("SF_font.ttf", "廻想体 ネクスト UP B", 60, 7, DX_FONTTYPE_NORMAL))
 {
 	m_frame = 60;
 	m_updateFunc = &ClearScene::FadeInUpdate;
@@ -87,8 +88,8 @@ void ClearScene::FadeDraw()
 {
 	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff,m_numFontHandle,"%d.%d",WorldTimer::GetMinute(),WorldTimer::GetTimer());
 
-	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "Clear");
-	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "タイトルへ");
+	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle , "Clear");
+	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 200, 0x00ffff, m_fontHandle, "タイトルに戻る");
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / 60.0f));
 	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
 	DrawBox(0, 0, 2000, 2000, 0x000000, true);
@@ -99,8 +100,8 @@ void ClearScene::NormalDraw()
 {
 	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff, m_numFontHandle, "%d.%d", WorldTimer::GetMinute(), WorldTimer::GetTimer());
 
-	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "Clear");
-	DrawRotaString(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + 200, 5, 5, 0, 0, 0, 0xffffff, 0, 0, "タイトルへ");
+	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle, "Clear");
+	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 200, 0x00ffff, m_fontHandle, "タイトルに戻る"); 
 	auto& app = Application::GetInstance();
 	auto size = app.GetWindowSize();
 	int idx = m_btnFrame / 10 % 3;

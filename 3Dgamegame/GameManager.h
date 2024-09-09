@@ -20,7 +20,7 @@ public:
 	void Init();
 	void Update();
 	void Draw();
-	int GetMaterialXCount() { return 11 - poworStone.size(); };
+	int GetMaterialXCount() { return static_cast<int>(11 - poworStone.size()); };
 	bool GetGameOver() { return m_isGameOverFlag; }
 	bool GetClear() { return m_isClearFlag; }
 
@@ -74,6 +74,7 @@ private:
 	int sphMapH ;
 	int itemNum;
 	int m_warpEffectHandle;
+	float m_angle;
 	
 	int m_bgmHandle;
 	int roughH;

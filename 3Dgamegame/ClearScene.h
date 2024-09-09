@@ -17,6 +17,7 @@ private:
     int m_frame;
     int m_chenronHandle;
     int m_numFontHandle;
+    int m_fontHandle;
 
     // メンバ関数ポインタの宣言
     using UpdateFunc_t = void (ClearScene::*)();

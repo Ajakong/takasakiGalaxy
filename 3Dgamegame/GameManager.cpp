@@ -132,7 +132,7 @@ GameManager::GameManager() :
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 2200), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 100, 1400), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, -500, 2000), true));
-	poworStone.push_back(std::make_shared<Item>(Vec3(-3000, 1200, -3000), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(-5000, 1000, -3400), true));
 	m_skyDomeH = MV1LoadModel("Model/SkyDome.mv1");
 	fontHandle = FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator",60,7,DX_FONTTYPE_NORMAL);
 
@@ -210,8 +210,6 @@ void GameManager::Init()
 		item->Init();
 		MyEngine::Physics::GetInstance().Entry(item);
 	}
-	
-
 	for (auto& item : poworStone)
 	{
 		item->Init();
@@ -223,7 +221,6 @@ void GameManager::Init()
 		item->SetTarget(player);
 	}
 	
-
 	for (auto& item : gorori)
 	{
 		MyEngine::Physics::GetInstance().Entry(item);
@@ -304,7 +301,7 @@ void GameManager::IntroDraw()
 	DxLib::SetRenderTargetToShader(2, -1);		// RT‚Ì‰ðœ
 
 
-	ui->Draw(fontHandle, player->WatchHp(), player->GetSearchRemainTime());
+	ui->Draw(fontHandle, static_cast<float>(player->WatchHp()), player->GetSearchRemainTime());
 }
 
 void GameManager::GamePlayingUpdate()
@@ -513,6 +510,7 @@ void GameManager::GamePlayingUpdate()
 		warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(1600, 0, 600), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
+		ui->FadeNextMission();
 	}
 	if (poworStone.size() <= 1 && warpGate.size() == 1)
 	{
@@ -520,6 +518,27 @@ void GameManager::GamePlayingUpdate()
 		warpGate.back()->SetWarpPos(Vec3(-3000, 1000, -3000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(4000, 700, 1000), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
+
+		Vec3 zero = Vec3(0, 0, 0);
+		Vec3 offSetVec =Vec3(0,650,0);
+		Quaternion myQ;
+		m_angle += 0.05f;
+
+		Vec3 front = (Vec3(5500, 500, 1700) - Vec3(-3000, 1000, -3000)).GetNormalized();
+		for (int i = 0; i < 16; i++)
+		{
+			myQ.SetQuaternion(offSetVec);
+			myQ.SetMove(DX_PI_F * 1 / 8 * i + m_angle, front);
+			Vec3 offSet = myQ.Move(offSetVec, zero);
+			takobo.push_back(std::make_shared<Takobo>(Vec3(-3000, 1000, -3000) + offSet));
+
+			MyEngine::Physics::GetInstance().Entry(takobo.back());
+			takobo.back()->SetTarget(player);
+
+		}
+
+
+
 	}
 	if (poworStone.size() == 0&&warpGate.size()==2)
 	{
@@ -541,6 +560,10 @@ void GameManager::GamePlayingUpdate()
 	{
 		m_isBossWatch = true;
 		camera->WatchThis(killerTheSeeker.back()->GetMyPos(), killerTheSeeker.back()->GetMyPos() + Vec3(0, 0, -1200), bossPlanet->GetNormVec(killerTheSeeker.back()->GetMyPos()));
+	}
+	if (player->GetNowPlanetPos() == Vec3(6000, 0, 2000))
+	{
+		ui->OutNextMission();
 	}
 
 	WorldTimer::Update();
@@ -583,7 +606,7 @@ void GameManager::GamePlayingDraw()
 	DxLib::SetRenderTargetToShader(1, -1);		// RT‚Ì‰ðœ
 	DxLib::SetRenderTargetToShader(2, -1);		// RT‚Ì‰ðœ
 
-	ui->Draw(fontHandle, player->WatchHp(), player->GetSearchRemainTime());
+	ui->Draw(fontHandle, static_cast<float>(player->WatchHp()), player->GetSearchRemainTime());
 
 	if (player->OnDamage())
 	{

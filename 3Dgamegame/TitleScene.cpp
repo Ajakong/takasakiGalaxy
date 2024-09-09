@@ -206,7 +206,7 @@ void TitleScene::NormalDraw()
 	DrawFormatString(0, 0, 0xffffff, "TitleScene");
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_btnFrame) / kFadeFrameMax));
 
-	DrawRectExtendGraph(700-static_cast<float>(m_btnFrame)/6, 630 - static_cast<float>(m_btnFrame) /6, 900 + static_cast<float>(m_btnFrame) /6, 680 + static_cast<float>(m_btnFrame) /6, 0, 0, 4167, 4167, m_frameHandle, true);
+	DrawRectExtendGraph(700-static_cast<int>(m_btnFrame)/6, 630 - static_cast<int>(m_btnFrame) /6, 900 + static_cast<int>(m_btnFrame) /6, 680 + static_cast<int>(m_btnFrame) /6, 0, 0, 4167, 4167, m_frameHandle, true);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, alpha);
 	
 

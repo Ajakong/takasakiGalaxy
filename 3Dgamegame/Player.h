@@ -23,7 +23,7 @@ public:
 	Vec3 GetNowPlanetPos() { return m_nowPlanetPos; }
 	Vec3 GetNormVec() { return Vec3(m_rigid->GetPos() - m_nowPlanetPos).GetNormalized(); }
 	float GetRegenerationRange() { return m_regeneRange; }
-	int WatchHp()const { return m_Hp; }
+	int WatchHp()const { return static_cast<int>(m_Hp); }
 
 	void SetBoost() { m_isBoostFlag = true; }
 	void SetCameraAngle(float cameraAngle);

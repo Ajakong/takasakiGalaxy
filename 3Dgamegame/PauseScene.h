@@ -10,9 +10,13 @@ public:
 	void Draw();
 
 private:
+	int m_frameHandle;
+	int m_btnFrame;
+	int m_fadeSpeed;
 	int m_frame = 0;
 	int m_select = 0;
 	int m_soundVol;
+	int m_fontHandle;
 
 	int m_tutoHandle = 0;
 

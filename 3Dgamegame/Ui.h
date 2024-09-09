@@ -11,7 +11,9 @@ public:
 	void Update();
 	void Draw(int fontHandle,float playerHP,int SearchRemainTime);
 	int GetFadeCount() { return m_fadeCount; }
-	
+	void FadeNextMission() { m_nextMissionFlag = true; }
+	void OutNextMission() { m_nextMissionFlag = false; }
+	void IsBoss(bool flag) { m_isBoss=flag; }
 private:
 	/// <summary>
    /// 0:ç∂è„ 1:ç∂â∫ 2:âEè„ 3:âEâ∫
@@ -27,11 +29,15 @@ private:
 
 	int m_languageFontHandle;
 	int m_textureUIHandle;
+	int m_missionHandle;
 	int m_fadeCount;
 	float m_materialXAngle;
 	bool m_isFadeIntroFlag;
 	bool m_isFadeEnd;
 	bool m_manualFlag;
+	bool m_nextMissionFlag;
+	bool m_isBoss;
 	float m_angle;
+	int m_missionFadeFrame;
 };
 
