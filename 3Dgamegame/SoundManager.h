@@ -16,6 +16,8 @@ public:
 	SoundManager();
 	~SoundManager();
 
+	int GetSoundVol() const { return m_soundVol; }
+
 	static SoundManager& GetInstance();
 	void ChangeSoundVolume(int vol);
 	int GetSoundData(const char* filepath);

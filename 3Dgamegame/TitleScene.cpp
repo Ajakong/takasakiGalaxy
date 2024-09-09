@@ -35,7 +35,7 @@ TitleScene::TitleScene(SceneManager& manager) :
 	m_gameStartSEHandle(SoundManager::GetInstance().GetSoundData(kGameStartSEName)),
 	m_btnFrame(0),
 	m_fadeSpeed(1),
-	m_soundVolume(255),
+	m_soundVolume(SoundManager::GetInstance().GetSoundVol()),
 	m_frameHandle(GraphManager::GetInstance().GetGraphData(kFrameName))
 {
 	PlaySoundMem(m_titleBGMHandle,DX_PLAYTYPE_LOOP);

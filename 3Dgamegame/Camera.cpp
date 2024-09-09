@@ -49,6 +49,7 @@ Camera::Camera():
 Camera::~Camera()
 {
 	// ˆ—‚È‚µ.
+	DeleteLightHandle(m_lightHandle);
 }
 
 void Camera::Update(Vec3 LookPoint)

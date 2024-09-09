@@ -100,7 +100,8 @@ GameManager::GameManager() :
 	depthRT(MakeScreen(640, 480)),
 	/*skyDomeH(MV1LoadModel("Model/Skydome/universe_skydome.mv1")),*/
 	m_isClearFlag(false),
-	itemNum(0)
+	itemNum(0),
+	m_isBossWatch(false)
 {
 	assert(modelH != -1);
 	assert(roughH != -1);
@@ -491,6 +492,7 @@ void GameManager::GamePlayingUpdate()
 	DrawExtendGraph(0, 0, 640, 480, shrinkRT, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 #endif
+	
 
 	if (player->GetHp() <= 0)
 	{
@@ -534,6 +536,11 @@ void GameManager::GamePlayingUpdate()
 		}
 		/*StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
 		PlaySoundMem(SoundManager::GetInstance().GetSoundData("BossEntry.mp3"),DX_PLAYTYPE_LOOP);*/
+	}
+	if (player->GetNowPlanetPos() == Vec3(0, -6000, 0)&& !m_isBossWatch)
+	{
+		m_isBossWatch = true;
+		camera->WatchThis(killerTheSeeker.back()->GetMyPos(), killerTheSeeker.back()->GetMyPos() + Vec3(0, 0, -1200), bossPlanet->GetNormVec(killerTheSeeker.back()->GetMyPos()));
 	}
 
 	WorldTimer::Update();

@@ -443,6 +443,7 @@ void Player::NeutralUpdate()
 		m_isSpinFlag = true;
 		m_playerUpdate = &Player::SpiningUpdate;
 	}
+	
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
 	m_rigid->SetVelocity(move);

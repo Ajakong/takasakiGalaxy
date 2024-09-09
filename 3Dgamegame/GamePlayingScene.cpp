@@ -8,6 +8,7 @@
 #include"TitleScene.h"
 #include"Pad.h"
 #include"ClearScene.h"
+#include"PauseScene.h"
 #include"WorldTimer.h"
 #include"MyLib/Physics/Physics.h"
 #include"SoundManager.h"
@@ -94,6 +95,11 @@ void GamePlayingScene::NormalUpdate()
 
 	m_isGameOver = m_gameManager->GetGameOver();
 	m_isClear = m_gameManager->GetClear();
+	if (Pad::IsPress(PAD_INPUT_R))//XBOXコントローラーのSTART
+	{
+		m_manager.PushScene(std::make_shared<PauseScene>(m_manager));
+	}
+
 }
 
 void GamePlayingScene::FadeOutUpdate()

@@ -22,6 +22,7 @@ Killer::Killer(MyEngine::Collidable::Priority priority, ObjectTag tag, std::shar
 
 Killer::~Killer()
 {
+	DeleteLightHandle(m_pointeLightHandle);
 }
 
 void Killer::Init()

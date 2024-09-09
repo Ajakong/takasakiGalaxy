@@ -182,6 +182,7 @@
     <ClCompile Include="Object\Item.cpp" />
     <ClCompile Include="Object\WarpGate.cpp" />
     <ClCompile Include="Pad.cpp" />
+    <ClCompile Include="PauseScene.cpp" />
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Quaternion.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="Object\Item.h" />
     <ClInclude Include="Object\WarpGate.h" />
     <ClInclude Include="Pad.h" />
+    <ClInclude Include="PauseScene.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Quaternion.h" />

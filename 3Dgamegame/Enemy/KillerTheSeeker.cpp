@@ -11,7 +11,7 @@ namespace
 	/// <summary>
 		/// 最大HP
 		/// </summary>
-	constexpr int kHp = 300;
+	constexpr int kHp = 400;
 
 	constexpr int kStartPosX = 200;
 	constexpr int kStartPosY = 50;
@@ -174,7 +174,7 @@ void KillerTheSeeker::IdleUpdate()
 		}
 		case 1:
 		{
-			if (toTarget.Length() > 500)break;
+			if (toTarget.Length() > 2000)break;
 			m_attackCoolDownCount = 0;
 			m_attackDir = GetAttackDir().GetNormalized();//オブジェクトに向かうベクトルを正規化したもの
 			m_enemyUpdate = &KillerTheSeeker::AttackRollingUpdate;
@@ -206,12 +206,12 @@ void KillerTheSeeker::AttackSphereUpdate()
 
 void KillerTheSeeker::AttackRollingUpdate()
 {
-	m_rigid->SetVelocity(m_velocity * 30);
+	m_rigid->SetVelocity(m_velocity * 40);
 	m_attackCount++;
 	if (m_attackCount > 500)
 	{
 		m_attackCount = 0;
-		m_color = 0x440044;
+		m_color = 0x444444;
 		m_enemyUpdate = &KillerTheSeeker::IdleUpdate;
 	}
 }

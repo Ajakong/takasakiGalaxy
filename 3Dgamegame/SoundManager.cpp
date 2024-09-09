@@ -4,7 +4,8 @@
 
 using namespace std;
 
-SoundManager::SoundManager()
+SoundManager::SoundManager():
+	m_soundVol(255)
 {
 }
 

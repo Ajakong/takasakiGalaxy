@@ -65,6 +65,7 @@ private:
 
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
+	bool m_isBossWatch = false;
 
 	int m_skyDomeH;
 	int modelH ;
