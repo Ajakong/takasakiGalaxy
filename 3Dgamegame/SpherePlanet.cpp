@@ -12,12 +12,12 @@ namespace
 
 }
 
-SpherePlanet::SpherePlanet(Vec3 pos,int color) :Planet(),
+SpherePlanet::SpherePlanet(Vec3 pos,int color,float gravity) :Planet(),
 m_enemyCount(3)
 {
 	m_color = color;
 	m_rigid->SetPos(pos);
-
+	gravityPower = gravity;
 	m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 5000.0f, 0.0f, 0.002f, 0.0f);
 }
 
@@ -27,7 +27,6 @@ SpherePlanet::~SpherePlanet()
 
 void SpherePlanet::Init()
 {
-	gravityPower = 3;
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//‚±‚±‚Å“ü‚ê‚½‚Ì‚Íd—Í‚Ì‰e‹¿”ÍˆÍ
 	m_colliders.back()->isTrigger = true;
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
@@ -46,7 +45,6 @@ void SpherePlanet::Draw()
 {
 	//DrawSphere3D(m_rigid->GetPos().VGet(), kGravityRange, 10, 0xddddff, 0x0000ff, false);
 	DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, m_color, 0x0000ff, !m_isSearch);
-	//printfDX("m_enemyCount:%d", m_enemyCount);
 }
 
 Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒvZ‚µA•â³Œã‚ÌƒxƒNƒgƒ‹‚ğ•Ô‚·
@@ -91,7 +89,6 @@ Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//¬•ª‚²‚Æ‚ÉŒv
 		toObj = toObj * gravityPower*0.05f* ((kGravityRange+ (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length() - (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length()) / kGravityRange) + objVelocity;
 		return toObj;
 	}
-
 
 	//d—Í‚Ì‚İ
 	toObj = toObj * gravityPower * ((kGravityRange +(obj->GetRigidbody()->GetPos()-m_rigid->GetPos()).Length()- (obj->GetRigidbody()->GetPos() - m_rigid->GetPos()).Length()) / kGravityRange) + objVelocity;

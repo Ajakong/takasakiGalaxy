@@ -70,9 +70,10 @@ namespace
 	constexpr int kUiTimeCount_PosX = 1350;
 	constexpr int kUiTimeCount_PosY = 90;
 
-	constexpr float kCameraDistanceFront = 300.f;
+	//カメラ
+	constexpr float kCameraDistanceFront = 500.f;
 	constexpr float kCameraDistanceAddFrontInJump = 200.f;
-	constexpr float kCameraDistanceUp = 100.f;
+	constexpr float kCameraDistanceUp = 200.f;
 }
 
 GameManager::GameManager() :
@@ -92,23 +93,13 @@ GameManager::GameManager() :
 	itemNum(0),
 	m_isBossWatch(false)
 {
-	assert(modelH != -1);
-	assert(roughH != -1);
-	assert(metalH != -1);
-	assert(toonH != -1);
-	assert(psH != -1);
-	assert(vsH != -1);
-	assert(outlinePsH != -1);
-	assert(outlineVsH != -1);
-	assert(dissolveH != -1);
-	assert(postEffectH != -1);
 	ui = std::make_shared<Ui>();
 	player = std::make_shared<Player>(modelH);
 	camera = std::make_shared<Camera>();
-	planet.push_back(std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33));
-	planet.push_back(std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff));
-	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400));
-	bossPlanet = std::make_shared<BossPlanet>(Vec3(0, -6000, 0), 0x444444);
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33,3));
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff,3));
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400,1.f));
+	bossPlanet = std::make_shared<BossPlanet>(Vec3(0, -6000, 0), 0x0000ff);
 	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,500)) };
 	gorori = { std::make_shared<Gorori>(Vec3(7000,500,2300)),std::make_shared<Gorori>(Vec3(6500,500,1700)),std::make_shared<Gorori>(Vec3(5500,0,2000)) };
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, -800, 0),true));
@@ -268,8 +259,6 @@ void GameManager::IntroUpdate()
 
 void GameManager::IntroDraw()
 {
-	
-	
 	MV1SetPosition(m_skyDomeH, VGet(0,0,0));
 
 	MV1DrawModel(m_skyDomeH);
@@ -291,13 +280,11 @@ void GameManager::IntroDraw()
 	DxLib::SetRenderTargetToShader(1, -1);		// RTの解除
 	DxLib::SetRenderTargetToShader(2, -1);		// RTの解除
 
-
 	ui->Draw(fontHandle, static_cast<float>(player->WatchHp()), player->GetSearchRemainTime());
 }
 
 void GameManager::GamePlayingUpdate()
 {
-	
 	//// 使用するシェーダをセットしておく
 	//SetUseVertexShader(vsH);
 	//SetUsePixelShader(psH);
@@ -324,7 +311,7 @@ void GameManager::GamePlayingUpdate()
 	 camera->Update(player->GetPos());*/
 	bossPlanet->Update();
 	for(auto& item : planet)item->Update();
-	//player->SetCameraToPlayer(camera->cameraToPlayer(player->GetPos()));
+	
 	for (auto& item : poworStone)
 	{
 		item->Update();
@@ -367,6 +354,17 @@ void GameManager::GamePlayingUpdate()
 	for (int i = 0; i < killerTheSeeker.size(); i++)
 	{
 		killerTheSeeker[i]->DeleteManage();
+		if (killerTheSeeker[i]->WatchHp() < 300)
+		{
+			bossPlanet->SetColor(0x000000);
+			bossPlanet->SetGravityPower(20.f);
+			
+		}
+		if (killerTheSeeker[i]->WatchHp() < 100)
+		{
+			bossPlanet->SetColor(0xffaa00);
+			bossPlanet->SetGravityPower(1.f);
+		}
 		if (killerTheSeeker[i]->WatchHp() < 0)
 		{
 			clearObject.push_back(std::make_shared<ClearObject>(killerTheSeeker[i]->GetRigidbody()->GetPos()));

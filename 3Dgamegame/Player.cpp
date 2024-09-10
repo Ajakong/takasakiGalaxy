@@ -269,7 +269,7 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			PlaySoundMem(m_parrySEHandle, DX_PLAYTYPE_BACK);
 			auto killer = dynamic_pointer_cast<KillerTheSeeker>(colider);
 
-			killer->SetVelocity(Vec3(killer->GetRigidbody()->GetPos() - m_rigid->GetPos()).GetNormalized());
+			killer->SetVelocity(Vec3(killer->GetRigidbody()->GetPos() - m_rigid->GetPos()).GetNormalized()*2);
 			killer->m_Hp -= 20;
 		}
 		else
@@ -307,7 +307,7 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			attackSphere->DeleteFlag();
 			m_prevUpdate = m_playerUpdate;
 			m_playerUpdate = &Player::DamegeUpdate;
-			m_Hp -= 20;
+			m_Hp -= 10;
 			m_isOnDamageFlag = true;
 			m_damageFrame = kDamageFrameMax;
 		}
@@ -464,6 +464,7 @@ void Player::JumpingUpdate()
 	m_attackRadius = 0;
 	item->radius = m_attackRadius;
 	m_rigid->SetVelocity(m_rigid->GetPrevVelocity());
+
 
 	if (Pad::IsTrigger(PAD_INPUT_B))//XBox‚Ì
 	{

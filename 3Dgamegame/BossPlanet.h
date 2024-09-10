@@ -9,7 +9,8 @@ public:
 	virtual void Init();
 	virtual void Update();
 	virtual void Draw();
-
+	void SetColor(int col) { m_color = col; }
+	void SetGravityPower(float power) { gravityPower = power; }
 private:
 	int m_color;
 };

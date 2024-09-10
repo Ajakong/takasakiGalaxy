@@ -27,8 +27,8 @@ namespace
 	/// </summary>
 	constexpr int kIdleSpeed = 20;
 	/// <summary>
-/// 球の生成間隔
-/// </summary>
+	/// 球の生成間隔
+	/// </summary>
 	constexpr int kSphereCreateFrame = 50;
 	/// <summary>
 	/// 再攻撃までのクールタイム
@@ -152,7 +152,7 @@ void KillerTheSeeker::SetTarget(std::shared_ptr<Collidable> target)
 
 void KillerTheSeeker::IdleUpdate()
 {
-	m_velocity = m_attackDir;
+	m_velocity = m_attackDir.GetNormalized();
 	m_rigid->SetVelocity(m_velocity * 10);
 	m_attackCoolDownCount++;
 
@@ -174,7 +174,6 @@ void KillerTheSeeker::IdleUpdate()
 		}
 		case 1:
 		{
-			if (toTarget.Length() > 2000)break;
 			m_attackCoolDownCount = 0;
 			m_attackDir = GetAttackDir().GetNormalized();//オブジェクトに向かうベクトルを正規化したもの
 			m_enemyUpdate = &KillerTheSeeker::AttackRollingUpdate;
@@ -206,7 +205,7 @@ void KillerTheSeeker::AttackSphereUpdate()
 
 void KillerTheSeeker::AttackRollingUpdate()
 {
-	m_rigid->SetVelocity(m_velocity * 40);
+	m_rigid->SetVelocity(m_velocity * 10);
 	m_attackCount++;
 	if (m_attackCount > 500)
 	{

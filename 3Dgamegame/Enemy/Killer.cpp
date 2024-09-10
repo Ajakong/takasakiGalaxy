@@ -50,7 +50,6 @@ void Killer::Hit()
 
 void Killer::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
-
 }
 
 void Killer::SearchUpDate()

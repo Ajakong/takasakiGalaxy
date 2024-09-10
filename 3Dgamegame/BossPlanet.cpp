@@ -12,7 +12,7 @@ namespace
 
 }
 
-BossPlanet::BossPlanet(Vec3 pos, int color):SpherePlanet(pos,color),
+BossPlanet::BossPlanet(Vec3 pos, int color):SpherePlanet(pos,color,3),
 m_color(color)
 {
 	gravityPower = 3;
@@ -32,7 +32,6 @@ BossPlanet::~BossPlanet()
 
 void BossPlanet::Init()
 {
-
 }
 
 void BossPlanet::Update()
@@ -41,6 +40,5 @@ void BossPlanet::Update()
 
 void BossPlanet::Draw()
 {
-	DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, 0x0000ff, m_color, !m_isSearch);
-	
+	DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, m_color, 0xffffff, !m_isSearch);
 }

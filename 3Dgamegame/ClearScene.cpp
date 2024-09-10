@@ -86,7 +86,7 @@ void ClearScene::ChangeScene(std::shared_ptr<Scene> nextScene)
 
 void ClearScene::FadeDraw()
 {
-	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff,m_numFontHandle,"%d.%d",WorldTimer::GetMinute(),WorldTimer::GetTimer());
+	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff,m_numFontHandle,"%02d.%02d",WorldTimer::GetMinute(),WorldTimer::GetTimer());
 
 	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle , "Clear");
 	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 200, 0x00ffff, m_fontHandle, "タイトルに戻る");
@@ -98,10 +98,10 @@ void ClearScene::FadeDraw()
 
 void ClearScene::NormalDraw()
 {
-	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff, m_numFontHandle, "%d.%d", WorldTimer::GetMinute(), WorldTimer::GetTimer());
+	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff, m_numFontHandle, "%02d.%02d", WorldTimer::GetMinute(), WorldTimer::GetTimer());
 
 	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle, "Clear");
-	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 200, 0x00ffff, m_fontHandle, "タイトルに戻る"); 
+	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle, "タイトルに戻る"); 
 	auto& app = Application::GetInstance();
 	auto size = app.GetWindowSize();
 	int idx = m_btnFrame / 10 % 3;
