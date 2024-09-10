@@ -25,11 +25,14 @@ private:
     int m_btnFrame = 0;
     int m_frame;
     int m_fadeSoundFrame = 0;
+    int m_fadeSpeed;
     int m_graphHandle = 0;
     int m_selectNumber = 0;
     int m_fontHandle;
 
     int m_modelHandle = -1;
+    int m_frameHandle;
+
 
     /// <summary>
     /// 0:ç∂è„ 1:ç∂â∫ 2:âEè„ 3:âEâ∫

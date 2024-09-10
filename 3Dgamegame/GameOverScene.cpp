@@ -17,6 +17,7 @@ namespace
 {
 	const TCHAR* kModekHandlePath = "Player/jump_Falling.mv1";
 	const char* kGraphPath = "Elements_pro.png";
+	const char* kFrameName = "Frame.png";
 
 	constexpr int kSelectFrameLeft = 350;
 	constexpr int kSelectFrameRight = 450;
@@ -30,6 +31,7 @@ namespace
 	constexpr int kSelectFrameLeftTopSrkX = 820;
 	constexpr int kSelectFrameLeftTopSrkY = 800;
 	constexpr float kSelectFrameExrate = 0.3f;
+	constexpr int kFadeFrameMax = 60;
 }
 
 
@@ -38,7 +40,10 @@ GameOverScene::GameOverScene(SceneManager& mgr) :
 	m_fadeSoundFrame(200),
 	m_handleVelo(0,0,0),
 	m_graphHandle(GraphManager::GetInstance().GetGraphData(kGraphPath)),
-	m_angle(0)
+	m_angle(0),
+	m_frameHandle(GraphManager::GetInstance().GetGraphData(kFrameName)),
+	m_btnFrame(0),
+	m_fadeSpeed(1)
 {
 	Vec3 centerPos = Vec3(800, 450, 0);
 
@@ -93,7 +98,9 @@ void GameOverScene::FadeInUpdate()
 
 void GameOverScene::NormalUpdate()
 {
-	m_btnFrame++;
+	m_btnFrame += m_fadeSpeed;
+	if (m_btnFrame > kFadeFrameMax)m_fadeSpeed *= -1;
+	if (m_btnFrame < 0)m_fadeSpeed *= -1;
 
 	MV1SetPosition(m_modelHandle,m_handleVelo.VGet());
 	MV1SetScale(m_modelHandle, VGet(0.1f, 0.1f, 0.1f));
@@ -148,20 +155,18 @@ void GameOverScene::FadeDraw()
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0xff4444, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	DrawString(1000, 500, "Continue", 0xffffff);
-	DrawString(1000, 600, "To Title", 0xffffff);
+	DrawString(1040, 495, "Continue", 0xffffff);
+	DrawString(1040, 595, "To Title", 0xffffff);
 	m_angle+=0.05f;
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
 	
 	if (m_selectNumber % 2 == 0)
 	{
-		
-		DrawBox(950, 470, 1200, 530, 0xffffff, true);
-		
+		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 470 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 530 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 	}
 	if (m_selectNumber % 2 == 1)
 	{
-		DrawBox(950, 570, 1200, 630, 0xffffff, true);
+		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 570 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 630 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
@@ -206,20 +211,19 @@ void GameOverScene::FadeOutDraw()
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x444444, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	DrawString(1000, 500, "Continue", 0xffffff);
-	DrawString(1000, 600, "To Title", 0xffffff);
+	DrawString(1040, 495, "Continue", 0xffffff);
+	DrawString(1040, 595, "To Title", 0xffffff);
 	m_angle += 0.05f;
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
 
 	if (m_selectNumber % 2 == 0)
 	{
-
-		DrawBox(950, 470, 1200, 530, 0xffffff, true);
-
+		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 470 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 530 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 	}
 	if (m_selectNumber % 2 == 1)
 	{
-		DrawBox(950, 570, 1200, 630, 0xffffff, true);
+		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 570 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 630 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
+
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
@@ -265,18 +269,21 @@ void GameOverScene::NormalDraw()
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x444444, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	DrawString(1000, 500, "Continue", 0xffffff);
-	DrawString(1000, 600, "To Title", 0xffffff);
+	DrawString(1040, 495, "Continue", 0xffffff);
+	DrawString(1040, 595, "To Title", 0xffffff);
 	m_angle+=0.05f;
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255 / 3);
 
 	if (m_selectNumber % 2 == 0)
 	{
-		DrawBox(950, 470, 1200, 530, 0xffffff, true);
+		
+		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 470 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 530 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
+
 	}
 	if (m_selectNumber % 2 == 1)
 	{
-		DrawBox(950, 570, 1200, 630, 0xffffff, true);
+		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 570 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 630 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
+
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 

@@ -297,8 +297,6 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			auto attackSphere = dynamic_pointer_cast<EnemySphere>(colider);
 			attackSphere->SetVelocity(attackSphere->GetVelocity() * -1);
 			attackSphere->SetCounterFlag();
-			
-
 		}
 		else
 		{

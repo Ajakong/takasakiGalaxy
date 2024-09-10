@@ -521,6 +521,8 @@ void GameManager::GamePlayingDraw()
 		item->SetIsSearch(player->IsSearch());
 		item->Draw();
 	}
+	
+	SetUseZBufferFlag(!player->IsSearch());
 	player->Draw();
 	for (auto& item : warpGate)
 	{
@@ -533,7 +535,7 @@ void GameManager::GamePlayingDraw()
 		DrawBox(0, 0, 1600, 900,
 			0x444488, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		SetUseZBufferFlag(false);
+		
 	}
 	for (auto& item : poworStone)
 	{
