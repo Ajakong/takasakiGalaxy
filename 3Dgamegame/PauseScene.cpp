@@ -10,6 +10,7 @@
 #include"GraphManager.h"
 #include"FontManager.h"
 #include"MyLib/Physics/Physics.h"
+#include"WorldTimer.h"
 
 namespace
 {
@@ -129,6 +130,7 @@ void PauseScene::NormalUpdate()
 			StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
 			m_manager.ResetScene(std::make_shared<TitleScene>(m_manager));
 			MyEngine::Physics::GetInstance().Clear();
+			WorldTimer::Reset();
 		}
 	}
 

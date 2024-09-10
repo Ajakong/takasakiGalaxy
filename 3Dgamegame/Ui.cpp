@@ -91,7 +91,8 @@ Ui::Ui() :
 	m_missionHandle(GraphManager::GetInstance().GetGraphData(kMissionName)),
 	m_manualFlag(true),
 	m_missionFadeFrame(0),
-	m_nextMissionFlag(false)
+	m_nextMissionFlag(false),
+	m_isBoss(false)
 {
 	Vec3 centerPos = Vec3(800, 450, 0);
 

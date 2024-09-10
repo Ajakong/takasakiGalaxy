@@ -608,8 +608,15 @@ void Player::DamegeUpdate()
 	m_rigid->SetVelocity(m_rigid->GetPrevVelocity() * 0.8f);
 	if (m_rigid->GetVelocity().Length() < 7.0f)
 	{
-		//ダメージアニメーションのみ
-		m_playerUpdate = m_prevUpdate;
+		if (m_prevUpdate != m_playerUpdate)
+		{
+			//ダメージアニメーションのみ
+			m_playerUpdate = m_prevUpdate;
+		}
+		else
+		{
+			m_playerUpdate = &Player::NeutralUpdate;
+		}
 	}
 }
 

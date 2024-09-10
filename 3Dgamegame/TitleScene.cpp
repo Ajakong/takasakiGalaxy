@@ -174,7 +174,6 @@ void TitleScene::FadeDraw()
 		DrawSphere3D(item.pos.VGet(), 20, 60, item.color, item.color, true);
 	}
 
-	DrawFormatString(0, 0, 0xffffff, "TitleScene");
 	DrawGraph(130, 0, m_titleHandle, true);
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / kFadeFrameMax));
 	
@@ -203,7 +202,6 @@ void TitleScene::NormalDraw()
 		DrawSphere3D(item.pos.VGet(), 20, 60, item.color, item.color, true);
 	}
 
-	DrawFormatString(0, 0, 0xffffff, "TitleScene");
 	int alpha = static_cast<int>(255 * (static_cast<float>(m_btnFrame) / kFadeFrameMax));
 
 	DrawRectExtendGraph(700-static_cast<int>(m_btnFrame)/6, 630 - static_cast<int>(m_btnFrame) /6, 900 + static_cast<int>(m_btnFrame) /6, 680 + static_cast<int>(m_btnFrame) /6, 0, 0, 4167, 4167, m_frameHandle, true);

@@ -15,7 +15,6 @@ private:
 
     int m_btnFrame = 0;
     int m_frame;
-    int m_chenronHandle;
     int m_numFontHandle;
     int m_fontHandle;
 

@@ -76,17 +76,6 @@ namespace
 }
 
 GameManager::GameManager() :
-	/*modelH(MV1LoadModel("Player/knight.mv1")),
-	roughH(LoadGraph("Model/Sphere/roughness.png")),
-	metalH(LoadGraph("Model/Sphere/metalness.png")),
-	toonH(LoadGraph("Image/toon01.bmp")),
-	psH(LoadPixelShader("PixelShader.pso")),
-	vsH(LoadVertexShader("VertexShader.vso")),
-	outlinePsH(LoadPixelShader("OutlinePS.pso")),
-	outlineVsH(LoadVertexShader("OutlineVS.vso")),
-	dissolveH(LoadGraph("Image/dissolve.png")),
-	postEffectH(LoadPixelShader("PostEffect.pso")),*/
-	//(LoadEffekseerEffect("Effect/warpEffect.efk")),
 	// 通常のRT
 	RT(MakeScreen(640, 480, true)),
 	RT2(MakeScreen(640, 480, true)),
@@ -132,7 +121,7 @@ GameManager::GameManager() :
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 500, 2200), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 100, 1400), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, -500, 2000), true));
-	poworStone.push_back(std::make_shared<Item>(Vec3(-5000, 1000, -3400), true));
+	poworStone.push_back(std::make_shared<Item>(Vec3(-3300, 1000, -3300), true));
 	m_skyDomeH = MV1LoadModel("Model/SkyDome.mv1");
 	fontHandle = FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator",60,7,DX_FONTTYPE_NORMAL);
 
@@ -279,6 +268,8 @@ void GameManager::IntroUpdate()
 
 void GameManager::IntroDraw()
 {
+	
+	
 	MV1SetPosition(m_skyDomeH, VGet(0,0,0));
 
 	MV1DrawModel(m_skyDomeH);
@@ -306,14 +297,7 @@ void GameManager::IntroDraw()
 
 void GameManager::GamePlayingUpdate()
 {
-	for (int x = -50; x <= 50; x += 10)
-	{
-		DrawLine3D(VGet(static_cast<float>(x), 0, -50), VGet(static_cast<float>(x), 0, 50), 0xffff00);
-	}
-	for (int z = -50; z <= 50; z += 10)
-	{
-		DrawLine3D(VGet(-50, 0, static_cast<float>(z)), VGet(50, 0, static_cast<float>(z)), 0xff0000);
-	}
+	
 	//// 使用するシェーダをセットしておく
 	//SetUseVertexShader(vsH);
 	//SetUsePixelShader(psH);
@@ -364,6 +348,10 @@ void GameManager::GamePlayingUpdate()
 	userData->dissolveY = player->GetRegenerationRange();
 
 	MyEngine::Physics::GetInstance().Update();
+	if (player->GetBoostFlag())
+	{
+		camera->m_cameraUpdate = &Camera::NeutralUpdate;
+	}
 	for (int i = 0; i < takobo.size(); i++)
 	{
 		takobo[i]->DeleteManage();
@@ -449,48 +437,6 @@ void GameManager::GamePlayingUpdate()
 		MV1SetMeshBackCulling(modelH, i, DX_CULLING_LEFT);
 	}
 
-#if false
-	//MV1SetRotationXYZ(modelH, VGet(0, angle, 0));
-	//MV1SetPosition(modelH, VGet(100.0f, 50.0f, 300.0f));
-	//MV1DrawModel(modelH);
-	SetDrawScreen(RT2);
-	ClearDrawScreen();
-	GraphFilterBlt(RT, blurRT, DX_GRAPH_FILTER_GAUSS, 8, 1400);
-	GraphFilterBlt(blurRT, shrinkRT, DX_GRAPH_FILTER_DOWN_SCALE, 2);
-	GraphFilter(shrinkRT, DX_GRAPH_FILTER_GAUSS, 8, 1400);
-	//// 通常描画
-	//DrawGraph(0, 0, RT, true);
-	//// ぼかし描画
-	//DrawGraph(0, 0, blurRT, true);
-	//// 深度を描画
-	//DrawExtendGraph(0, 0, 160, 120, depthRT, false);
-	SetRenderTargetToShader(1, outlineRT);
-	MyEngine::DrawGraph(0, 0, RT, postEffectH, blurRT, depthRT, normRT, true);
-
-	SetRenderTargetToShader(1, -1);
-
-	SetUseTextureToShader(0, -1);		// テクスチャの解除
-	SetUseTextureToShader(1, -1);		// テクスチャの解除
-	SetUseTextureToShader(2, -1);		// テクスチャの解除
-	SetUseTextureToShader(3, -1);		// テクスチャの解除
-
-	SetDrawScreen(DX_SCREEN_BACK);
-	ClearDrawScreen();
-	GraphFilterBlt(outlineRT, blurRT, DX_GRAPH_FILTER_GAUSS, 8, 1400);
-	GraphFilterBlt(blurRT, shrinkRT, DX_GRAPH_FILTER_DOWN_SCALE, 2);
-	GraphFilter(shrinkRT, DX_GRAPH_FILTER_GAUSS, 8, 1400);
-
-	DrawGraph(0, 0, RT2, true);
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	DrawGraph(0, 0, outlineRT, true);
-	DrawGraph(0, 0, blurRT, true);
-	DrawGraph(0, 0, blurRT, true);
-	DrawExtendGraph(0, 0, 640, 480, shrinkRT, true);
-	DrawExtendGraph(0, 0, 640, 480, shrinkRT, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-#endif
-	
-
 	if (player->GetHp() <= 0)
 	{
 		m_isGameOverFlag = true;
@@ -519,7 +465,7 @@ void GameManager::GamePlayingUpdate()
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(4000, 700, 1000), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
 
-		Vec3 zero = Vec3(0, 0, 0);
+		/*Vec3 zero = Vec3(0, 0, 0);
 		Vec3 offSetVec =Vec3(0,650,0);
 		Quaternion myQ;
 		m_angle += 0.05f;
@@ -535,10 +481,7 @@ void GameManager::GamePlayingUpdate()
 			MyEngine::Physics::GetInstance().Entry(takobo.back());
 			takobo.back()->SetTarget(player);
 
-		}
-
-
-
+		}*/
 	}
 	if (poworStone.size() == 0&&warpGate.size()==2)
 	{
@@ -553,8 +496,6 @@ void GameManager::GamePlayingUpdate()
 			MyEngine::Physics::GetInstance().Entry(item);
 			item->SetTarget(player);
 		}
-		/*StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
-		PlaySoundMem(SoundManager::GetInstance().GetSoundData("BossEntry.mp3"),DX_PLAYTYPE_LOOP);*/
 	}
 	if (player->GetNowPlanetPos() == Vec3(0, -6000, 0)&& !m_isBossWatch)
 	{
@@ -573,9 +514,13 @@ void GameManager::GamePlayingDraw()
 {
 	MV1DrawModel(m_skyDomeH);
 	DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
-
+	bossPlanet->SetIsSearch(player->IsSearch());
 	bossPlanet->Draw();
-	for(auto& item : planet)item->Draw();
+	for (auto& item : planet)
+	{
+		item->SetIsSearch(player->IsSearch());
+		item->Draw();
+	}
 	player->Draw();
 	for (auto& item : warpGate)
 	{
@@ -598,10 +543,12 @@ void GameManager::GamePlayingDraw()
 	{
 		item->Draw();
 	}
-	SetUseZBufferFlag(true);
+	
 	for (auto& item : takobo)item->Draw();
 	for (auto& item : killerTheSeeker)item->Draw();
 	for (auto& item : gorori)item->Draw();
+
+	SetUseZBufferFlag(true);
 	camera->DebagDraw();
 	DxLib::SetRenderTargetToShader(1, -1);		// RTの解除
 	DxLib::SetRenderTargetToShader(2, -1);		// RTの解除

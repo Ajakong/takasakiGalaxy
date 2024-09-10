@@ -45,7 +45,7 @@ void SpherePlanet::Update()
 void SpherePlanet::Draw()
 {
 	//DrawSphere3D(m_rigid->GetPos().VGet(), kGravityRange, 10, 0xddddff, 0x0000ff, false);
-	DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, m_color, 0x0000ff, true);
+	DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, m_color, 0x0000ff, !m_isSearch);
 	//printfDX("m_enemyCount:%d", m_enemyCount);
 }
 

@@ -41,5 +41,6 @@ void BossPlanet::Update()
 
 void BossPlanet::Draw()
 {
-	DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, 0x0000ff,m_color, true);
+	DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, 0x0000ff, m_color, !m_isSearch);
+	
 }

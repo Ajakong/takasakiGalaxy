@@ -24,6 +24,7 @@ public:
 	Vec3 GetNormVec() { return Vec3(m_rigid->GetPos() - m_nowPlanetPos).GetNormalized(); }
 	float GetRegenerationRange() { return m_regeneRange; }
 	int WatchHp()const { return static_cast<int>(m_Hp); }
+	bool GetBoostFlag() { return m_isBoostFlag; }
 
 	void SetBoost() { m_isBoostFlag = true; }
 	void SetCameraAngle(float cameraAngle);
@@ -38,7 +39,6 @@ public:
 	int GetDamageFrame() { return m_damageFrame; }
 	int& SetReverse() { return m_reverseFlag; }
 	int GetSearchRemainTime() { return m_searchRemainTime; }
-
 	bool GetJumpFlag() { return m_isJumpFlag; }
 
 	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);

@@ -71,29 +71,8 @@ private:
 	int modelH ;
 	int textureUIHandle;
 	int fontHandle;
-	int sphMapH ;
 	int itemNum;
 	int m_warpEffectHandle;
-	float m_angle;
-	
-	int m_bgmHandle;
-	int roughH;
-	
-	int metalH;
-	
-	int toonH;
-	
-	int psH;
-	
-	int vsH;
-	
-	int outlinePsH;
-	
-	int outlineVsH;
-	
-	int dissolveH;
-	
-	int postEffectH;
 	
 	// í èÌÇÃRT
 	int RT;
@@ -105,10 +84,6 @@ private:
 	// Ç⁄Ç©ÇµópRT
 	int blurRT;
 	int shrinkRT;
-
-	
-
-	
 	int depthRT;
 };
 

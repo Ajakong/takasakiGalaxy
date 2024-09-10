@@ -26,12 +26,12 @@ public:
 	Vec3 GetUpVec() const { return m_upVec; }
 	void SetCameraPoint(Vec3 pos) { if (m_watchCount == 0)m_cameraPoint = pos; }
 	void WatchThis(Vec3 lookpoint,Vec3 cameraPos,Vec3 upVec);
-
+	void NeutralUpdate(Vec3 LookPoint);
 	//メンバ関数ポインタ
 	using cameraState_t = void(Camera::*)(Vec3 lookpoint);
 	cameraState_t m_cameraUpdate;
 private:
-	void NeutralUpdate(Vec3 LookPoint);
+	
 	void WatchThisUpdate(Vec3 LookPoint);
 
 private:
@@ -39,6 +39,7 @@ private:
 	int m_watchCount;
 	bool m_isFirstPerson;
 
+	Vec3 m_frontVec;
 	Quaternion m_myQ;
 	Vec3 m_pos;			// ポジション.
 	Vec3 m_cameraPoint;//カメラが移動してほしい位置

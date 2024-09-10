@@ -131,7 +131,6 @@ void Gorori::IdleUpdate()
 			switch (attackState)
 			{
 			case 0:
-				PlaySoundMem(m_attackSEHandle, DX_PLAYTYPE_LOOP);
 				m_attackCoolDownCount = 0;
 				m_attackDir = GetAttackDir().GetNormalized();//オブジェクトに向かうベクトルを正規化したもの
 				m_enemyUpdate = &Gorori::AttackUpdate;
@@ -147,12 +146,11 @@ void Gorori::IdleUpdate()
 
 void Gorori::AttackUpdate()
 {
-	m_rigid->SetVelocity(m_attackDir * 10);
+	m_rigid->SetVelocity(m_attackDir * 8);
 	m_attackCount++;
 	if (m_attackCount > 1000)
 	{
 		m_attackCount = 0;
-		StopSoundMem(m_attackSEHandle);
 		m_color = 0xaaaa11;
 		m_enemyUpdate = &Gorori::IdleUpdate;
 	}

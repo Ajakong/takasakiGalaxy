@@ -8,7 +8,7 @@ namespace
 	constexpr float kCameraDist = 96;
 	constexpr float kCameraHeight = 32;
 
-	constexpr float kCameraNear = 100.0f;
+	constexpr float kCameraNear = 0.1f;
 	constexpr float kCameraFar =100000.0f;
 
 	//constexpr VECTOR kFirstPos=VGet(300, 300, -200);
@@ -89,6 +89,7 @@ void Camera::NeutralUpdate(Vec3 LookPoint)
 
 	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(),Vec3(m_lookPoint + m_upVec.GetNormalized() * 100.0f).VGet(), m_upVec.VGet());
 	m_postLookPointPos = m_lookPoint;
+	m_frontVec = GetCameraFrontVector();
 }
 
 void Camera::WatchThisUpdate(Vec3 LookPoint)
@@ -115,6 +116,9 @@ void Camera::WatchThisUpdate(Vec3 LookPoint)
 
 void Camera::SetCameraFirstPersonPos(Vec3 LookPoint)
 {
+	SetLightPositionHandle(m_lightHandle, Vec3(LookPoint + m_upVec * 120).VGet());
+	SetLightDirectionHandle(m_lightHandle, (Vec3(GetCameraUpVector()) * -1).VGet());
+
 	if (Pad::IsTrigger(PAD_INPUT_Y))//XBoxコントローラーのL
 	{
 		m_cameraUpdate = &Camera::NeutralUpdate;
@@ -125,6 +129,8 @@ void Camera::SetCameraFirstPersonPos(Vec3 LookPoint)
 
 void Camera::SetCameraThirdPersonPos(Vec3 LookPoint)
 {
+	SetLightPositionHandle(m_lightHandle, Vec3(LookPoint + m_upVec * 120).VGet());
+	SetLightDirectionHandle(m_lightHandle, (Vec3(GetCameraUpVector()) * -1).VGet());
 
 	SetCameraPositionAndTargetAndUpVec(m_pos.VGet(), LookPoint.VGet(), m_upVec.VGet());
 }
