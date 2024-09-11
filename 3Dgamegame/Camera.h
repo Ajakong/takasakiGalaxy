@@ -24,6 +24,7 @@ public:
 	float GetCameraAngle() const { return m_cameraAngle; }
 	void SetUpVec(Vec3 upDir) { if (m_watchCount == 0) m_upVec = upDir; }
 	Vec3 GetUpVec() const { return m_upVec; }
+	void SetBoost(bool boost) { m_isBoost = boost; }
 	void SetCameraPoint(Vec3 pos) { if (m_watchCount == 0)m_cameraPoint = pos; }
 	void WatchThis(Vec3 lookpoint,Vec3 cameraPos,Vec3 upVec);
 	void NeutralUpdate(Vec3 LookPoint);
@@ -38,6 +39,7 @@ private:
 	int m_lightHandle = -1;
 	int m_watchCount;
 	bool m_isFirstPerson;
+	bool m_isBoost;
 
 	Vec3 m_frontVec;
 	Quaternion m_myQ;

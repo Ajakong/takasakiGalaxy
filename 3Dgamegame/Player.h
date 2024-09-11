@@ -146,6 +146,7 @@ private:
 	//1.0:currentが再生
 	int m_reverseFlag=0;
 	int m_damageFrame;
+	int m_damageFrameSpeed;
 
 	//アニメーション変数
 	int m_anim_nutral = 0;

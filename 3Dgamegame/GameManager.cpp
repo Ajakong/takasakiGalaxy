@@ -411,6 +411,7 @@ void GameManager::GamePlayingUpdate()
 
 	if ( a> 68)*/
 
+	camera->SetBoost(player->GetBoostFlag());
 	//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
 	//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
 	camera->SetUpVec(player->GetNormVec());
@@ -520,7 +521,6 @@ void GameManager::GamePlayingDraw()
 		item->Draw();
 	}
 	
-	SetUseZBufferFlag(!player->IsSearch());
 	player->Draw();
 	for (auto& item : warpGate)
 	{
@@ -548,19 +548,16 @@ void GameManager::GamePlayingDraw()
 	for (auto& item : killerTheSeeker)item->Draw();
 	for (auto& item : gorori)item->Draw();
 
-	SetUseZBufferFlag(true);
 	camera->DebagDraw();
 	DxLib::SetRenderTargetToShader(1, -1);		// RTの解除
 	DxLib::SetRenderTargetToShader(2, -1);		// RTの解除
 
 	ui->Draw(fontHandle, static_cast<float>(player->WatchHp()), player->GetSearchRemainTime());
 
-	if (player->OnDamage())
-	{
-		int alpha = static_cast<int>(255 * (static_cast<float>(player->GetDamageFrame()) / 60.0f));
+	int alpha = static_cast<int>(255 * (static_cast<float>(player->GetDamageFrame()) / 60.0f));
 
-		SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
-		DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0xff4444, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	}
+	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0xff4444, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	
 }

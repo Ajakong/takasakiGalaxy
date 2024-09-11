@@ -133,7 +133,7 @@ void GameOverScene::FadeOutUpdate()
 			m_manager.ResetScene(std::make_shared<GamePlayingScene>(m_manager));
 			WorldTimer::Reset();
 		}
-		if (m_selectNumber % 2 == 1)
+		if (m_selectNumber % 2 == 1|| m_selectNumber % 2 == -1)
 		{
 			StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
 			WorldTimer::Reset();
@@ -164,7 +164,7 @@ void GameOverScene::FadeDraw()
 	{
 		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 470 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 530 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 	}
-	if (m_selectNumber % 2 == 1)
+	if (m_selectNumber % 2 == 1 || m_selectNumber % 2 == -1)
 	{
 		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 570 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 630 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 	}
@@ -280,7 +280,7 @@ void GameOverScene::NormalDraw()
 		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 470 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 530 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 
 	}
-	if (m_selectNumber % 2 == 1)
+	if (m_selectNumber % 2 == 1 || m_selectNumber % 2 == -11)
 	{
 		DrawRectExtendGraph(950 - static_cast<int>(m_btnFrame) / 6, 570 - static_cast<int>(m_btnFrame) / 6, 1200 + static_cast<int>(m_btnFrame) / 6, 630 + static_cast<int>(m_btnFrame) / 6, 0, 0, 4167, 4167, m_frameHandle, true);
 

@@ -153,8 +153,15 @@ void KillerTheSeeker::SetTarget(std::shared_ptr<Collidable> target)
 void KillerTheSeeker::IdleUpdate()
 {
 	m_velocity = m_attackDir.GetNormalized();
-	m_rigid->SetVelocity(m_velocity * 10);
-	m_attackCoolDownCount++;
+	if (m_Hp < 300 && m_Hp >= 100)
+	{
+		m_rigid->SetVelocity(m_velocity);
+	}
+	else
+	{
+		m_rigid->SetVelocity(m_velocity * 5);
+	}
+		m_attackCoolDownCount++;
 
 	if (m_attackCoolDownCount > kAttackCoolDownTime)
 	{
@@ -162,29 +169,40 @@ void KillerTheSeeker::IdleUpdate()
 		Vec3 norm = (m_rigid->GetPos() - m_nowPlanetPos).GetNormalized();
 		Vec3 toTarget = ToVec(m_rigid->GetPos(), m_target->GetRigidbody()->GetPos());
 		
-		switch (attackState)
+		if (m_Hp < 300 && m_Hp >= 100)
 		{
-		case 0:
-		{
-			if (toTarget.Length() > 2000)break;
 			m_attackCoolDownCount = 0;
 			m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
 			m_enemyUpdate = &KillerTheSeeker::AttackSphereUpdate;
-			break;
 		}
-		case 1:
+		else
 		{
-			m_attackCoolDownCount = 0;
-			m_attackDir = GetAttackDir().GetNormalized();//オブジェクトに向かうベクトルを正規化したもの
-			m_enemyUpdate = &KillerTheSeeker::AttackRollingUpdate;
-			
-			m_color = 0xff0000;
-			break;
+			switch (attackState)
+			{
+			case 0:
+			{
+				if (toTarget.Length() > 4000)break;
+				m_attackCoolDownCount = 0;
+				m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
+				m_enemyUpdate = &KillerTheSeeker::AttackSphereUpdate;
+				break;
+			}
+			case 1:
+			{
+				if (toTarget.Length() > 4000)break;
+				m_attackCoolDownCount = 0;
+				m_attackDir = GetAttackDir().GetNormalized();//オブジェクトに向かうベクトルを正規化したもの
+				m_enemyUpdate = &KillerTheSeeker::AttackRollingUpdate;
+
+				m_color = 0xff0000;
+				break;
+			}
+			default:
+				m_attackCoolDownCount = 250;
+				break;
+			}
 		}
-		default:
-			m_attackCoolDownCount = 250;
-			break;
-		}
+		
 	}
 }
 
@@ -208,6 +226,12 @@ void KillerTheSeeker::AttackRollingUpdate()
 	m_rigid->SetVelocity(m_velocity * 10);
 	m_attackCount++;
 	if (m_attackCount > 500)
+	{
+		m_attackCount = 0;
+		m_color = 0x444444;
+		m_enemyUpdate = &KillerTheSeeker::IdleUpdate;
+	}
+	if (m_Hp < 300 && m_Hp >= 100)
 	{
 		m_attackCount = 0;
 		m_color = 0x444444;

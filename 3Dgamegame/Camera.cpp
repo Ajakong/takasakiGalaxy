@@ -24,7 +24,8 @@ namespace
 Camera::Camera():
 	m_pitchAngle(0),
 	m_watchCount(0),
-	m_isFirstPerson(0)
+	m_isFirstPerson(0),
+	m_isBoost(false)
 {
 	m_cameraUpdate = &Camera::NeutralUpdate;
 	//‰œs0.1`1000‚Ü‚Å‚ğƒJƒƒ‰‚Ì•`‰æ”ÍˆÍ‚Æ‚·‚é
@@ -54,6 +55,18 @@ Camera::~Camera()
 
 void Camera::Update(Vec3 LookPoint)
 {
+	if (m_isBoost)
+	{
+		// FOV(‹–ìŠp)‚ğ60“x‚É
+		SetupCamera_Perspective(kCameraFOV * (static_cast<float>(DX_PI_F)*2 / 180.0f));
+
+	}
+	else
+	{
+		// FOV(‹–ìŠp)‚ğ60“x‚É
+		SetupCamera_Perspective(kCameraFOV * (static_cast<float>(DX_PI_F) / 180.0f));
+
+	}
 	(this->*m_cameraUpdate)(LookPoint);
 }
 

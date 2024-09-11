@@ -82,7 +82,8 @@ m_color(0x00ffff),
 m_getItemHandle(SoundManager::GetInstance().GetSoundData(kGetItemSEName)),
 m_searchSEHandle(SoundManager::GetInstance().GetSoundData(kGetSearchSEName)),
 m_attackRadius(0),
-m_parrySEHandle(SoundManager::GetInstance().GetSoundData(kOnParrySEName))
+m_parrySEHandle(SoundManager::GetInstance().GetSoundData(kOnParrySEName)),
+m_damageFrameSpeed(1)
 {
 	{
 		m_rigid->SetPos(Vec3(0, 0, 0));
@@ -121,6 +122,7 @@ void Player::Update()
 		m_searchRemainTime--;
 		if (m_searchRemainTime < 0)m_searchRemainTime = 0;
 		if (m_searchRemainTime <= 1)m_Hp -= 0.05f;
+		if (m_Hp <= 0)m_Hp = 0.05f;
 	}
 	else
 	{
@@ -158,6 +160,16 @@ void Player::Update()
 			m_isOnDamageFlag = false;
 		}
 
+	}
+	if (m_searchRemainTime <= 0)
+	{
+		m_damageFrame += m_damageFrameSpeed;
+		if (m_damageFrame > 60)m_damageFrameSpeed *= -1;
+		if (m_damageFrame < 0)m_damageFrameSpeed *= -1;
+	}
+	else
+	{
+		m_damageFrame = 0;
 	}
 
 	//SetLightPositionHandle(m_pointLightHandle, m_rigid->GetPos().VGet());
@@ -615,6 +627,7 @@ void Player::DamegeUpdate()
 		else
 		{
 			m_playerUpdate = &Player::NeutralUpdate;
+			m_prevUpdate = m_playerUpdate;
 		}
 	}
 }

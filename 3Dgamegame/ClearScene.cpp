@@ -12,7 +12,8 @@
 
 namespace
 {
-
+	constexpr int kAppeaInterval = 60;
+	constexpr int kMenuMargin = 50;
 }
 
 ClearScene::ClearScene(SceneManager& mgr) :
@@ -50,8 +51,8 @@ void ClearScene::Draw()
 
 void ClearScene::FadeInUpdate()
 {
-	m_frame--;
-	if (m_frame <= 0)
+	m_frame++;
+	if (kAppeaInterval <= m_frame)
 	{
 		m_updateFunc = &ClearScene::NormalUpdate;
 		m_drawFunc = &ClearScene::NormalDraw;
@@ -70,8 +71,8 @@ void ClearScene::NormalUpdate()
 
 void ClearScene::FadeOutUpdate()
 {
-	m_frame++;
-	if (60 <= m_frame)
+	m_frame--;
+	if (m_frame == 0)
 	{
 		StopSoundMem(SoundManager::GetInstance().GetSoundData("GamePlaying.mp3"));
 		WorldTimer::Reset();
@@ -86,24 +87,36 @@ void ClearScene::ChangeScene(std::shared_ptr<Scene> nextScene)
 
 void ClearScene::FadeDraw()
 {
-	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff,m_numFontHandle,"%02d.%02d",WorldTimer::GetMinute(),WorldTimer::GetTimer());
+	Application& app = Application::GetInstance();
+	const auto& size = app.GetWindowSize();
 
-	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle , "Clear");
-	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 200, 0x00ffff, m_fontHandle, "タイトルに戻る");
-	int alpha = static_cast<int>(255 * (static_cast<float>(m_frame) / 60.0f));
-	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
-	DrawBox(0, 0, 2000, 2000, 0x000000, true);
+	int halfHeight = (size.h - 100) / 2;
+	int centerY = size.h / 2;
+
+	float rate = static_cast<float>(m_frame) / kAppeaInterval;	// 現在の時間の割合(0.0～1.0)
+	int currentHalfHeight = static_cast<int>(rate * halfHeight);
+
+	SetDrawBlendMode(DX_BLENDMODE_MUL, 255);
+	// ちょっと暗い矩形を描画
+	DrawBox(kMenuMargin, centerY - currentHalfHeight, size.w - kMenuMargin, centerY + currentHalfHeight,
+		0x888888, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	DrawBox(kMenuMargin, centerY - currentHalfHeight, size.w - kMenuMargin, centerY + currentHalfHeight,
+		0xffffff, false);
+	DrawFormatStringToHandle(Game::kScreenWidth / 2-50, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle , "Clear");
+
 }
 
 void ClearScene::NormalDraw()
 {
-	DrawFormatStringToHandle(200, Game::kScreenHeight / 2, 0xffffff, m_numFontHandle, "%02d.%02d", WorldTimer::GetMinute(), WorldTimer::GetTimer());
-
-	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle, "Clear");
-	DrawFormatStringToHandle(Game::kScreenWidth / 2, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle, "タイトルに戻る"); 
-	auto& app = Application::GetInstance();
-	auto size = app.GetWindowSize();
+	Application& app = Application::GetInstance();
+	const auto& size = app.GetWindowSize();
+	SetDrawBlendMode(DX_BLENDMODE_MUL, 255);
+	// ちょっと暗い矩形を描画
+	DrawBox(kMenuMargin, kMenuMargin, size.w - kMenuMargin, size.h - kMenuMargin,
+		0x888888, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	DrawFormatStringToHandle(Game::kScreenWidth / 2-50, Game::kScreenHeight / 2, 0x00ffff, m_fontHandle, "Clear");
 	int idx = m_btnFrame / 10 % 3;
 	constexpr int kButtonSize = 16;
 	constexpr float kBtnScale = 3.0f;
