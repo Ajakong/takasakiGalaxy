@@ -206,7 +206,9 @@ void GameManager::Init()
 		MyEngine::Physics::GetInstance().Entry(item);
 		item->SetTarget(player);
 	}
-	
+	warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300), m_warpEffectHandle));
+	warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
+	MyEngine::Physics::GetInstance().Entry(warpGate.back());
 }
 
 void GameManager::Update()
@@ -335,6 +337,7 @@ void GameManager::GamePlayingUpdate()
 	userData->dissolveY = player->GetRegenerationRange();
 
 	MyEngine::Physics::GetInstance().Update();
+	for (auto& item : warpGate)item->SetEffectPos();
 	if (player->GetBoostFlag())
 	{
 		camera->m_cameraUpdate = &Camera::NeutralUpdate;
@@ -349,6 +352,12 @@ void GameManager::GamePlayingUpdate()
 			takobo.erase(takobo.begin() + i);//‚³‚Á‚«‚Ì—á‚ğ‚»‚Ì‚Ü‚Üg‚¤‚Æ(1,2,5,3,4)‚Åit‚É‚Í5‚Ü‚Å“ü‚Á‚Ä‚é‚Ì‚Åæ‚èœ‚«‚½‚¢3,4‚Íit‚©‚çend()‚Ü‚Å‚Åw’è‚Å‚«‚é
 			i--;
 		}
+	}
+	for (auto& item : warpGate)
+	{
+		
+		item->Update();
+		
 	}
 
 	for (int i = 0; i < killerTheSeeker.size(); i++)

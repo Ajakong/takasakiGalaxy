@@ -146,6 +146,7 @@
     <ClCompile Include="BossPlanet.cpp" />
     <ClCompile Include="BoxPlanet.cpp" />
     <ClCompile Include="ColliderHelper.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EnemyAccessor.cpp" />
     <ClCompile Include="Enemy\Enemy.cpp" />
     <ClCompile Include="Enemy\EnemyAI.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="BossPlanet.h" />
     <ClInclude Include="BoxPlanet.h" />
     <ClInclude Include="ColliderHelper.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Enemy\Enemy.h" />
     <ClInclude Include="Enemy\EnemyAccessor.h" />
     <ClInclude Include="Enemy\EnemyAI.h" />

@@ -43,6 +43,7 @@ namespace MyEngine
 		Priority GetPriority() const { return m_priority; }
 		void SetObjectTag(ObjectTag tag) { m_tag = tag; }
 		bool IsAntiGravity() { return m_isAntiGravity; }
+		void SetUpVec(Vec3 vel) { m_upVec = vel; }
 		// 当たり判定を無視（スルー）するタグの追加/削除
 		void AddThroughTag(ObjectTag tag);
 		void RemoveThroughTag(ObjectTag tag);

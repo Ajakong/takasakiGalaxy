@@ -3,27 +3,43 @@
 #include"../Player.h"
 #include<EffekseerForDXLib.h>
 #include"../SoundManager.h"
+#include"../EffectManager.h"
+
+Effekseer::Matrix43 GetEffMatrix(DxLib::MATRIX mat)
+{
+	Effekseer::Matrix43 res;
+	for (int y = 0; y < 4; ++y)
+	{
+		for (int x = 0; x < 3; ++x)
+		{
+			res.Value[y][x] = mat.m[y][x];
+		}
+	}
+	return res;
+}
+
 namespace
 {
 	const char* name = "warpGate";
+	const char* effectname = "warpEffect.efk";
 }
 
 WarpGate::WarpGate(Vec3 pos,int handle):Collidable(Priority::Static, ObjectTag::WarpGate),
-m_emitterHandle(-1)
+m_emitterHandle(EffectManager::GetInstance().GetEffectData(effectname))
 {
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//‚±‚±‚Å“ü‚ê‚½‚Ì‚Íd—Í‚Ì‰e‹¿”ÍˆÍ
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = 60;
 	m_rigid->SetPos(pos);
 
-	m_emitterHandle =handle;
 	PlayEffekseer3DEffect(m_emitterHandle);
+	
 }
 
 WarpGate::~WarpGate()
 {
 	StopEffekseer3DEffect(m_emitterHandle);
-	DeleteEffekseerEffect(m_emitterHandle);
+	EffectManager::GetInstance().DeleteEffectData(effectname);
 }
 
 void WarpGate::Init()
@@ -32,6 +48,20 @@ void WarpGate::Init()
 
 void WarpGate::Update()
 {
+	
+	
+}
+
+void WarpGate::SetEffectPos()
+{
+	m_upVec = (m_warpPos - m_rigid->GetPos()).GetNormalized();
+	
+	float x = atan2(m_upVec.z, m_upVec.y);
+	float y = atan2(m_upVec.x, m_upVec.z);
+	float z = atan2(m_upVec.y, m_upVec.x);
+	
+	auto effect = GetEffekseer3DManager();
+	effect->SetBaseMatrix(m_emitterHandle,GetEffMatrix());
 	SetPosPlayingEffekseer3DEffect(m_emitterHandle, m_rigid->GetPos().x, m_rigid->GetPos().y, m_rigid->GetPos().z);
 }
 
@@ -44,6 +74,10 @@ void WarpGate::Draw()
 
 void WarpGate::OnCollideEnter(std::shared_ptr<Collidable> colider)
 {
+	if (colider->GetTag() == ObjectTag::Stage)
+	{
+		m_nowPlanetPos = colider->GetRigidbody()->GetPos();
+	}
 	if (colider->GetTag() == ObjectTag::Player)
 	{
 		PlaySoundMem(SoundManager::GetInstance().GetSoundData("boost.mp3"), DX_PLAYTYPE_BACK);
