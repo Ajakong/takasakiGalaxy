@@ -53,6 +53,10 @@ bool Application::Init()
 {
     ChangeWindowMode(true); // ウィンドウモードにします
     //SetGraphMode(m_windowSize.w, m_windowSize.h, 1);
+
+    SetUseDirect3DVersion(DX_DIRECT3D_11);
+
+
     SetWindowSizeChangeEnableFlag(TRUE, TRUE);
     SetChangeScreenModeGraphicsSystemResetFlag(false);
 
@@ -77,7 +81,6 @@ bool Application::Init()
     Effekseer_InitDistortion();
     Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
-
     SetWindowText("Astro Seeker");
     if (DxLib_Init() == -1)
     {
@@ -95,12 +98,9 @@ void Application::Run()
         SceneManager sceneManager;
         sceneManager.ChangeScene(std::make_shared<TitleScene>(sceneManager));
 
-
         m_screenHandle = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
 
         LONGLONG time;
-
-        
 
         while (ProcessMessage() != -1)
         {
@@ -119,8 +119,6 @@ void Application::Run()
             UpdateEffekseer3D();
             sceneManager.Draw();
             DrawEffekseer3D();
-
-
             
             ScreenFlip();
 
@@ -129,8 +127,6 @@ void Application::Run()
         }
     }
     Terminate();
-    std::vector<VECTOR> num;
-
 }
 
 

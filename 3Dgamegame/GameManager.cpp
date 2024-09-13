@@ -206,9 +206,6 @@ void GameManager::Init()
 		MyEngine::Physics::GetInstance().Entry(item);
 		item->SetTarget(player);
 	}
-	warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300), m_warpEffectHandle));
-	warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
-	MyEngine::Physics::GetInstance().Entry(warpGate.back());
 }
 
 void GameManager::Update()
@@ -461,7 +458,7 @@ void GameManager::GamePlayingUpdate()
 	if (poworStone.size() <= 5&& warpGate.size() == 0)
 	{
 		warpGate.push_back(std::make_shared<WarpGate>(Vec3(800, 0, 300), m_warpEffectHandle));
-		warpGate.back()->SetWarpPos(Vec3(3000, 0, 1000));
+		warpGate.back()->SetWarpPos(Vec3(6000, 0, 2000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(1600, 0, 600), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
 		ui->FadeNextMission();

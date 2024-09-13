@@ -160,6 +160,7 @@
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="GraphManager.cpp" />
+    <ClCompile Include="HandleManager.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
     <ClCompile Include="MyLib\Geometry.cpp" />
     <ClCompile Include="MyLib\Physics\Collidable.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="GraphManager.h" />
+    <ClInclude Include="HandleManager.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
     <ClInclude Include="MyLib\Geometry.h" />
     <ClInclude Include="MyLib\ObjectTag.h" />

@@ -56,13 +56,14 @@ void WarpGate::SetEffectPos()
 {
 	m_upVec = (m_warpPos - m_rigid->GetPos()).GetNormalized();
 	
-	float x = atan2(m_upVec.z, m_upVec.y);
-	float y = atan2(m_upVec.x, m_upVec.z);
-	float z = atan2(m_upVec.y, m_upVec.x);
-	
+	MATRIX mat ;
+
+	Vec3 axis=Cross(Vec3::Up(), m_upVec);
+	mat = MGetRotAxis(axis.VGet(), acos(Dot(Vec3::Up(), m_upVec)));
+
+	mat = MMult(mat,MGetTranslate(m_rigid->GetPos().VGet()));
 	auto effect = GetEffekseer3DManager();
-	effect->SetBaseMatrix(m_emitterHandle,GetEffMatrix());
-	SetPosPlayingEffekseer3DEffect(m_emitterHandle, m_rigid->GetPos().x, m_rigid->GetPos().y, m_rigid->GetPos().z);
+	effect->SetBaseMatrix(m_emitterHandle,GetEffMatrix(mat));
 }
 
 void WarpGate::Draw()

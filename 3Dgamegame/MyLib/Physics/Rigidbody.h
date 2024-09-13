@@ -1,6 +1,13 @@
 #pragma once
 #include "../Vec3.h"
 
+struct Transform//マリオギャラクシーではこれを使用する
+{
+	Vec3 Translate;
+	Vec3 Rotate;
+	Vec3 Scale;//当たり判定とは別のスケール
+};
+
 namespace MyEngine
 {
 	class Rigidbody final
