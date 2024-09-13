@@ -2,22 +2,22 @@
 #include<map>
 #include<string>
 #include"DxLib.h"
-struct ModelInfo {
+struct HandleInfo {
 	int handle;//ハンドル
 	bool used;//一度以上使用済みか？
 };
-class ModelManager
+class HandleManager
 {
 private:
-	std::map<std::string, ModelInfo> m_pathAndModelInfoes;
+	std::map<std::string, HandleInfo> m_pathAndModelInfoes;
 
 public:
-	ModelManager();
-	~ModelManager();
+	HandleManager();
+	~HandleManager();
 
-	static ModelManager& GetInstance();
+	static HandleManager& GetInstance();
 
-	int GetModelData(const char* filepath);
-	void DeleteModelData(const char* filepath);
+	int GetHandleData(const char* filepath);
+	void DeleteHandleData(const char* filepath);
 };
 
