@@ -103,6 +103,8 @@ m_damageFrameSpeed(1)
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 		item->radius = m_attackRadius;
 	}
+
+	MV1SetScale(m_modelHandle, VGet(0.2f, 0.2f, 0.2f));
 	ChangeAnim(3);
 	//m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
 }
@@ -176,6 +178,16 @@ void Player::Update()
 	else
 	{
 		m_damageFrame = 0;
+	}
+
+	//変更前のアニメーション100%
+	MV1SetAttachAnimBlendRate(m_modelHandle, m_prevAnimNo, 1.0f - m_animBlendRate);
+	//変更後のアニメーション0%
+	MV1SetAttachAnimBlendRate(m_modelHandle, m_currentAnimNo, m_animBlendRate);
+	m_animBlendRate += 0.05f;
+	if (m_animBlendRate > 1.0f)
+	{
+		m_animBlendRate = 1.0f;
 	}
 
 	//SetLightPositionHandle(m_pointLightHandle, m_rigid->GetPos().VGet());
