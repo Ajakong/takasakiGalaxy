@@ -6,6 +6,7 @@
 #include"Enemy/Gorori.h"
 #include"Enemy/EnemySphere.h"
 #include"Enemy/KillerTheSeeker.h"
+#include"ModelManager.h"
 
 /// <summary>
 /// やること:足の当たり判定を生成・踏みつけに使う
@@ -49,6 +50,12 @@ namespace
 
 	const char* kGetSearchSEName = "Search.mp3";
 	const char* name = "Player";
+	const char* kFileName = "SpaceHarrier.mv1";
+	constexpr int kAnimationNumTpose = 0;
+	constexpr int kAnimationNumHit = 1;
+	constexpr int kAnimationNumJump = 2;
+	constexpr int kAnimationNumRun = 3;
+	constexpr int kAnimationNumSpin = 4;
 }
 
 float GetAngle(Vec3 a, Vec3 b)
@@ -56,9 +63,8 @@ float GetAngle(Vec3 a, Vec3 b)
 	return acos(Dot(a.GetNormalized(), b.GetNormalized())) * 180 / DX_PI_F;
 }
 
-
 Player::Player(int modelhandle) : Collidable(Priority::High, ObjectTag::Player),
-m_modelHandle(MV1DuplicateModel(modelhandle)),
+m_modelHandle(MV1DuplicateModel(ModelManager::GetInstance().GetModelData(kFileName))),
 m_anim_move(),
 m_radius(kNetralRadius),
 m_Hp(50),
@@ -70,7 +76,7 @@ m_regeneRange(0),
 m_angle(0),
 m_spinAngle(0),
 m_animBlendRate(0),
-m_currentAnimNo(0),
+m_currentAnimNo(-1),
 m_prevAnimNo(0),
 m_isJumpFlag(false),
 m_isSpinFlag(false),
@@ -97,7 +103,7 @@ m_damageFrameSpeed(1)
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 		item->radius = m_attackRadius;
 	}
-
+	ChangeAnim(3);
 	//m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
 }
 
@@ -192,6 +198,7 @@ void Player::SetMatrix()
 	//mtx = MMult(mtx, moving);
 
 	//MV1SetMatrix(m_modelHandle, mtx);
+	MV1SetPosition(m_modelHandle, m_rigid->GetPos().VGet());
 }
 
 void Player::Draw()
@@ -200,6 +207,7 @@ void Player::Draw()
 	{
 		//MV1DrawModel(m_modelHandle);
 	}
+	MV1DrawModel(m_modelHandle);
 	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, m_color, 0xffffff, false);
 	if (m_isSpinFlag)
 	{
@@ -349,6 +357,7 @@ bool Player::UpdateAnim(int attachNo)
 	float now = MV1GetAttachAnimTime(m_modelHandle, attachNo);//現在の再生カウント
 	now += kAnimFrameSpeed / kFrameParSecond;//アニメーションカウントを進める
 
+
 	//現在再生中のアニメーションの総カウントを取得する
 	float total = MV1GetAttachAnimTotalTime(m_modelHandle, attachNo);
 	bool isLoop = false;
@@ -453,6 +462,7 @@ void Player::NeutralUpdate()
 		m_isSpinFlag = true;
 		m_playerUpdate = &Player::SpiningUpdate;
 	}
+	UpdateAnim(m_currentAnimNo);
 	
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/

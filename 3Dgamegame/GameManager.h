@@ -1,5 +1,7 @@
 #pragma once
+#include"MyLib/Vec3.h"
 
+class Vec3;
 class Ui;
 class Camera;
 class Player;
@@ -63,6 +65,8 @@ private:
 	std::vector<std::shared_ptr<Gorori>> gorori;
 	std::vector<std::shared_ptr<Item>> poworStone;
 
+	Vec3 m_cameraUpVec;
+
 	bool m_isGameOverFlag = false;
 	bool m_isClearFlag = false;
 	bool m_isBossWatch = false;
@@ -73,6 +77,7 @@ private:
 	int fontHandle;
 	int itemNum;
 	int m_warpEffectHandle;
+	int m_miniMapScreenHandle;
 	
 	// í èÌÇÃRT
 	int RT;

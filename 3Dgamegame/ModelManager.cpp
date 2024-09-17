@@ -24,7 +24,7 @@ int ModelManager::GetModelData(const char* modelname)
 	{
 		ModelInfo m = ModelInfo();
 		string fileName = "Model/";
-		m.handle = DxLib::LoadGraph((fileName + (string)modelname).c_str());
+		m.handle = DxLib::MV1LoadModel((fileName + (string)modelname).c_str());
 		m.used = false;
 		m_pathAndModelInfoes[modelname] = m;
 		return m.handle;

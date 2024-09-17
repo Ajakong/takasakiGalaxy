@@ -160,7 +160,6 @@
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="GraphManager.cpp" />
-    <ClCompile Include="HandleManager.cpp" />
     <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="MyLib\DebugDraw.cpp" />
     <ClCompile Include="MyLib\Geometry.cpp" />
@@ -191,6 +190,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SpherePlanet.cpp" />
     <ClCompile Include="System\AFile.cpp" />
@@ -218,7 +218,6 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="GraphManager.h" />
-    <ClInclude Include="HandleManager.h" />
     <ClInclude Include="ModelManager.h" />
     <ClInclude Include="MyLib\DebugDraw.h" />
     <ClInclude Include="MyLib\Geometry.h" />
@@ -250,6 +249,7 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpherePlanet.h" />
     <ClInclude Include="System\AFile.h" />

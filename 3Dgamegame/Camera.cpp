@@ -27,6 +27,7 @@ Camera::Camera():
 	m_isFirstPerson(0),
 	m_isBoost(false)
 {
+	
 	m_cameraUpdate = &Camera::NeutralUpdate;
 	//‰œs0.1`1000‚Ü‚Å‚ğƒJƒƒ‰‚Ì•`‰æ”ÍˆÍ‚Æ‚·‚é
 	SetCameraNearFar(kCameraNear, kCameraFar);

@@ -19,6 +19,7 @@
 #include"SoundManager.h"
 #include"GraphManager.h"
 #include"FontManager.h"
+#include"ScreenManager.h"
 #include"Game.h"
 
 
@@ -74,6 +75,8 @@ namespace
 	constexpr float kCameraDistanceFront = 500.f;
 	constexpr float kCameraDistanceAddFrontInJump = 200.f;
 	constexpr float kCameraDistanceUp = 200.f;
+
+	const char* kMiniMapScreenName = "MiniMap";
 }
 
 GameManager::GameManager() :
@@ -120,6 +123,8 @@ GameManager::GameManager() :
 
 	m_managerUpdate = &GameManager::IntroUpdate;
 	m_managerDraw = &GameManager::IntroDraw;
+
+	m_miniMapScreenHandle = ScreenManager::GetInstance().GetScreenData(kMiniMapScreenName,Game::kScreenWidth,Game::kScreenHeight);
 }
 
 GameManager::~GameManager()
@@ -251,6 +256,8 @@ void GameManager::IntroUpdate()
 	
 	if (ui->GetFadeCount() > 100)
 	{
+		m_cameraUpVec = GetCameraUpVector();
+
 		m_managerUpdate = &GameManager::GamePlayingUpdate;
 		m_managerDraw = &GameManager::GamePlayingDraw;
 	}
@@ -259,7 +266,7 @@ void GameManager::IntroUpdate()
 void GameManager::IntroDraw()
 {
 	MV1SetPosition(m_skyDomeH, VGet(0,0,0));
-
+	
 	MV1DrawModel(m_skyDomeH);
 	bossPlanet->Draw();
 	for(auto& item :planet)item->Draw();
@@ -517,8 +524,68 @@ void GameManager::GamePlayingUpdate()
 
 void GameManager::GamePlayingDraw()
 {
-	MV1DrawModel(m_skyDomeH);
-	DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
+	DxLib::SetDrawScreen(m_miniMapScreenHandle);//カメラのnear,farが勝手に変わってる・・・？
+	
+	SetCameraNearFar(1.f, 100000);
+	
+	ClearDrawScreen();
+	
+	
+
+	SetCameraPositionAndTargetAndUpVec((player->GetPos() + player->GetNormVec() * 300).VGet(), player->GetPos().VGet(), m_cameraUpVec.VGet());
+	m_cameraUpVec = GetCameraUpVector();
+
+	Vec3 pos = MV1GetPosition(m_skyDomeH);
+	DxLib::MV1DrawModel(m_skyDomeH);
+	
+	bossPlanet->SetIsSearch(player->IsSearch());
+	bossPlanet->Draw();
+	for (auto& item : planet)
+	{
+		item->SetIsSearch(player->IsSearch());
+		item->Draw();
+	}
+
+	player->Draw();
+	for (auto& item : warpGate)
+	{
+		item->Draw();
+	}
+	if (player->IsSearch())
+	{
+		DxLib::SetDrawBlendMode(DX_BLENDMODE_MUL, 255);
+		// ちょっと暗い矩形を描画
+		DxLib::DrawBox(0, 0, 1600, 900,
+			0x444488, true);
+		DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	}
+	for (auto& item : poworStone)
+	{
+		item->Draw();
+	}
+	for (auto& item : clearObject)
+	{
+		item->Draw();
+	}
+
+	for (auto& item : takobo)item->Draw();
+	for (auto& item : killerTheSeeker)item->Draw();
+	for (auto& item : gorori)item->Draw();
+
+	camera->DebagDraw();
+	DxLib::SetRenderTargetToShader(1, -1);		// RTの解除
+	DxLib::SetRenderTargetToShader(2, -1);		// RTの解除
+
+	DxLib::SetDrawScreen(DX_SCREEN_BACK);
+	SetCameraNearFar(1.f, 100000);
+
+	camera->Update(player->GetPos());
+	
+
+
+	DxLib::DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
+
 	bossPlanet->SetIsSearch(player->IsSearch());
 	bossPlanet->Draw();
 	for (auto& item : planet)
@@ -534,11 +601,11 @@ void GameManager::GamePlayingDraw()
 	}
 	if (player->IsSearch())
 	{
-		SetDrawBlendMode(DX_BLENDMODE_MUL, 255);
+		DxLib::SetDrawBlendMode(DX_BLENDMODE_MUL, 255);
 		// ちょっと暗い矩形を描画
-		DrawBox(0, 0, 1600, 900,
+		DxLib::DrawBox(0, 0, 1600, 900,
 			0x444488, true);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		
 	}
 	for (auto& item : poworStone)
@@ -562,8 +629,11 @@ void GameManager::GamePlayingDraw()
 
 	int alpha = static_cast<int>(255 * (static_cast<float>(player->GetDamageFrame()) / 60.0f));
 
-	SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
-	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0xff4444, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	DxLib::SetDrawBlendMode(DX_BLENDMODE_MULA, alpha);
+	DxLib::DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0xff4444, true);
+	DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	
+	DxLib::DrawExtendGraph(1200, 600,1600,900, m_miniMapScreenHandle, false);
+	
 	
 }

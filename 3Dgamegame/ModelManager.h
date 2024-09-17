@@ -3,12 +3,11 @@
 #include<string>
 #include"DxLib.h"
 
-#include"HandleManager.h"
 struct ModelInfo {
 	int handle;//ハンドル
 	bool used;//一度以上使用済みか？
 };
-class ModelManager : public HandleManager
+class ModelManager
 {
 private:
 	std::map<std::string, ModelInfo> m_pathAndModelInfoes;
