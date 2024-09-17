@@ -56,6 +56,7 @@ namespace
 	constexpr int kAnimationNumJump = 2;
 	constexpr int kAnimationNumRun = 3;
 	constexpr int kAnimationNumSpin = 4;
+	constexpr int kAnimationNumIdle = 5;
 }
 
 float GetAngle(Vec3 a, Vec3 b)
@@ -105,8 +106,7 @@ m_damageFrameSpeed(1)
 	}
 
 	MV1SetScale(m_modelHandle, VGet(0.2f, 0.2f, 0.2f));
-	ChangeAnim(3);
-	//m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 2000.0f , 0.0f,0.002f , 0.0f);
+	ChangeAnim(kAnimationNumIdle);	
 }
 
 Player::~Player()
@@ -428,9 +428,11 @@ void Player::NeutralUpdate()
 
 	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
 	analogY = -analogY;
-	if (analogX * analogY != 0)
+
+	if (std::abs(analogX+analogY) >= 300)
 	{
-		int a = 0;
+		ChangeAnim(kAnimationNumRun);
+		m_playerUpdate = &Player::WalkingUpdate;
 	}
 	//アナログスティックの入力10%~80%を使用する
 	//ベクトルの長さが最大1000になる
@@ -462,12 +464,14 @@ void Player::NeutralUpdate()
 	//プレイヤーの最大移動速度は0.01f/frame
 	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
 	{
+		ChangeAnim(kAnimationNumJump);
 		m_isJumpFlag = true;
 		move += m_upVec.GetNormalized() * 10;
 		m_playerUpdate = &Player::JumpingUpdate;
 	}
 	if (Pad::IsTrigger(PAD_INPUT_B))//XBoxの
 	{
+		ChangeAnim(kAnimationNumSpin);
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 		m_attackRadius = kNetralRadius + 10;
 		item->radius = m_attackRadius;
@@ -490,6 +494,47 @@ void Player::NeutralUpdate()
 
 void Player::WalkingUpdate()
 {
+	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+	m_attackRadius = 0;
+	item->radius = m_attackRadius;
+	//アナログスティックを使って移動
+
+	int analogX = 0, analogY = 0;
+
+	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
+	analogY = -analogY;
+	if (analogX * analogY == 0)
+	{
+		ChangeAnim(kAnimationNumIdle);
+		m_playerUpdate = &Player::NeutralUpdate;
+	}
+	//アナログスティックの入力10%~80%を使用する
+	//ベクトルの長さが最大1000になる
+	//ベクトルの長さを取得
+	Vec3 move;
+
+	float len = move.Length();
+	//ベクトルの長さを0.0~1.0の割合に変換する
+	float rate = len / kAnalogInputMax;
+	Vec3 front = GetCameraFrontVector();
+	Vec3 right = GetCameraRightVector();
+	move = m_frontVec * static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
+	move += m_sideVec * static_cast<float>(analogX);
+
+
+	//アナログスティック無効な範囲を除外する
+	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
+	rate = std::min(rate, 1.0f);
+	rate = std::max(rate, 0.0f);
+
+	//速度が決定できるので移動ベクトルに反映
+	move = move.GetNormalized();
+	float speed = kMaxSpeed;
+
+	//m_angle = fmodf(m_cameraAngle, 360);//mod:余り　
+	//MATRIX rotate = MGetRotY((m_angle)-DX_PI_F / 2);//本来はカメラを行列で制御し、その行列でY軸回転
+	m_moveDir = move;
+	move = move * speed;
 }
 
 void Player::JumpingUpdate()
@@ -502,6 +547,7 @@ void Player::JumpingUpdate()
 
 	if (Pad::IsTrigger(PAD_INPUT_B))//XBoxの
 	{
+		ChangeAnim(kAnimationNumSpin);
 		if (m_spinCount >= 1)return;
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 		m_attackRadius = kNetralRadius + 10;
@@ -556,6 +602,7 @@ void Player::SpiningUpdate()
 	m_angle += DX_PI_F / 15;
 	if (m_spinAngle >= DX_PI_F * 2)
 	{
+		ChangeAnim(kAnimationNumIdle);
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 		m_attackRadius = 0;
 		item->radius = m_attackRadius;
@@ -611,6 +658,7 @@ void Player::JumpingSpinUpdate()
 	m_angle += DX_PI_F / 15;
 	if (m_spinAngle >= DX_PI_F * 2)
 	{
+		ChangeAnim(kAnimationNumJump);
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 		m_attackRadius = 0;
 		item->radius = m_attackRadius;
@@ -629,6 +677,7 @@ void Player::BoostUpdate()
 	m_rigid->SetVelocity(m_rigid->GetPrevVelocity());
 	if (!m_isBoostFlag)
 	{
+		ChangeAnim(kAnimationNumIdle);
 		m_playerUpdate = &Player::NeutralUpdate;
 	}
 }
@@ -648,6 +697,7 @@ void Player::DamegeUpdate()
 		}
 		else
 		{
+			ChangeAnim(kAnimationNumHit);
 			m_playerUpdate = &Player::NeutralUpdate;
 			m_prevUpdate = m_playerUpdate;
 		}
