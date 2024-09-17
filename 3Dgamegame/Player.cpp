@@ -105,8 +105,8 @@ m_damageFrameSpeed(1)
 		item->radius = m_attackRadius;
 	}
 
-	MV1SetScale(m_modelHandle, VGet(0.2f, 0.2f, 0.2f));
-	ChangeAnim(kAnimationNumRun);	
+	MV1SetScale(m_modelHandle, VGet(0.05f, 0.05f, 0.05f));
+	ChangeAnim(kAnimationNumIdle);	
 }
 
 Player::~Player()
@@ -179,7 +179,7 @@ void Player::Update()
 	{
 		m_damageFrame = 0;
 	}
-
+	UpdateAnim(m_currentAnimNo);
 	//変更前のアニメーション100%
 	MV1SetAttachAnimBlendRate(m_modelHandle, m_prevAnimNo, 1.0f - m_animBlendRate);
 	//変更後のアニメーション0%
@@ -251,13 +251,16 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 		m_playerUpdate = &Player::NeutralUpdate;
 		m_isJumpFlag = false;
 		m_isBoostFlag = false;
+		ChangeAnim(kAnimationNumIdle);
 	}
 	if (colider->GetTag() == ObjectTag::Takobo)
 	{
 		if (m_isSpinFlag)
 		{
+
 			PlaySoundMem(m_parrySEHandle, DX_PLAYTYPE_BACK);
 			colider->GetRigidbody()->SetVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * -30);
+
 		}
 		else
 		{
@@ -269,6 +272,8 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 30);
 			m_isOnDamageFlag = true;
 			m_damageFrame = kDamageFrameMax;
+
+			ChangeAnim(kAnimationNumHit);
 		}
 	}
 	if (colider->GetTag() == ObjectTag::Gorori)
@@ -290,6 +295,8 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 40);
 			m_isOnDamageFlag = true;
 			m_damageFrame = kDamageFrameMax;
+
+			ChangeAnim(kAnimationNumHit);
 		}
 	}
 	if (colider->GetTag() == ObjectTag::KillerTheSeeker)
@@ -314,6 +321,7 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			m_rigid->AddVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * 40);
 			m_isOnDamageFlag = true;
 			m_damageFrame = kDamageFrameMax;
+			ChangeAnim(kAnimationNumHit);
 		}
 	}
 	if (colider->GetTag() == ObjectTag::Item)
@@ -479,7 +487,7 @@ void Player::NeutralUpdate()
 		m_isSpinFlag = true;
 		m_playerUpdate = &Player::SpiningUpdate;
 	}
-	UpdateAnim(m_currentAnimNo);
+	
 	
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
@@ -697,7 +705,7 @@ void Player::DamegeUpdate()
 		}
 		else
 		{
-			ChangeAnim(kAnimationNumHit);
+			ChangeAnim(kAnimationNumIdle);
 			m_playerUpdate = &Player::NeutralUpdate;
 			m_prevUpdate = m_playerUpdate;
 		}
@@ -712,6 +720,7 @@ void Player::AvoidUpdate()
 	{
 		actionFrame = 0;
 		m_radius = kNetralRadius;
+		ChangeAnim(kAnimationNumIdle);
 		m_playerUpdate = &Player::NeutralUpdate;
 	}
 }
