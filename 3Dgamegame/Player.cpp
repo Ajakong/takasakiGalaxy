@@ -106,7 +106,7 @@ m_damageFrameSpeed(1)
 	}
 
 	MV1SetScale(m_modelHandle, VGet(0.2f, 0.2f, 0.2f));
-	ChangeAnim(kAnimationNumIdle);	
+	ChangeAnim(kAnimationNumRun);	
 }
 
 Player::~Player()
@@ -342,6 +342,7 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 			m_Hp -= 10;
 			m_isOnDamageFlag = true;
 			m_damageFrame = kDamageFrameMax;
+			ChangeAnim(kAnimationNumHit);
 		}
 	}
 	if (colider->GetTag() == ObjectTag::ClearObject)
@@ -543,7 +544,6 @@ void Player::JumpingUpdate()
 	m_attackRadius = 0;
 	item->radius = m_attackRadius;
 	m_rigid->SetVelocity(m_rigid->GetPrevVelocity());
-
 
 	if (Pad::IsTrigger(PAD_INPUT_B))//XBox‚Ì
 	{
