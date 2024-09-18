@@ -23,7 +23,7 @@ namespace
 	//constexpr int kIdleAnimIndex = 2;//待機テスト
 	constexpr int kAttackAnimIndex = 30;
 
-	constexpr float kAnimFrameSpeed = 30.0f;//アニメーション進行速度
+	constexpr float kAnimFrameSpeed = 90.0f;//アニメーション進行速度
 
 	//アニメーションの切り替えにかかるフレーム数
 	constexpr float kAnimChangeFrame = 8.0f;
@@ -157,7 +157,7 @@ void Player::Update()
 	else
 	{
 		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
-		item->radius = m_radius;
+		item->radius = m_radius;	
 	}
 	if (m_isOnDamageFlag)
 	{
@@ -210,7 +210,11 @@ void Player::SetMatrix()
 	//mtx = MMult(mtx, moving);
 
 	//MV1SetMatrix(m_modelHandle, mtx);
+	MATRIX mat = MGetRotVec2(Vec3::Up().VGet(), m_upVec.VGet());
+	
+	MV1SetRotationMatrix(m_modelHandle,mat);
 	MV1SetPosition(m_modelHandle, m_rigid->GetPos().VGet());
+
 }
 
 void Player::Draw()
@@ -257,10 +261,8 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	{
 		if (m_isSpinFlag)
 		{
-
 			PlaySoundMem(m_parrySEHandle, DX_PLAYTYPE_BACK);
 			colider->GetRigidbody()->SetVelocity(Vec3(m_rigid->GetPos() - colider->GetRigidbody()->GetPos()).GetNormalized() * -30);
-
 		}
 		else
 		{
@@ -364,6 +366,11 @@ void Player::OnCollideEnter(std::shared_ptr<Collidable> colider)
 	}
 }
 
+void Player::OnCollideStay(std::shared_ptr<Collidable> colider)
+{
+	
+}
+
 Vec3 Player::GetCameraToPlayer() const
 {
 	return m_cameraToPlayer;
@@ -438,11 +445,7 @@ void Player::NeutralUpdate()
 	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
 	analogY = -analogY;
 
-	if (std::abs(analogX+analogY) >= 300)
-	{
-		ChangeAnim(kAnimationNumRun);
-		m_playerUpdate = &Player::WalkingUpdate;
-	}
+	
 	//アナログスティックの入力10%~80%を使用する
 	//ベクトルの長さが最大1000になる
 	//ベクトルの長さを取得
@@ -461,7 +464,11 @@ void Player::NeutralUpdate()
 	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
 	rate = std::min(rate, 1.0f);
 	rate = std::max(rate, 0.0f);
-
+	if (std::abs(move.Length()) >= 0.2f)
+	{
+		ChangeAnim(kAnimationNumRun);
+		m_playerUpdate = &Player::WalkingUpdate;
+	}
 	//速度が決定できるので移動ベクトルに反映
 	move = move.GetNormalized();
 	float speed = kMaxSpeed;
@@ -491,7 +498,6 @@ void Player::NeutralUpdate()
 	
 	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
 	move = Vec3(v);*/
-	m_rigid->SetVelocity(move);
 
 	//プレイヤーの最大移動速度は0.01f/frame
 	//if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
@@ -499,6 +505,8 @@ void Player::NeutralUpdate()
 	//	m_radius = 0;
 	//	m_playerUpdate = &Player::AvoidUpdate;
 	//}
+
+	m_rigid->SetVelocity(move);
 }
 
 void Player::WalkingUpdate()
@@ -512,11 +520,7 @@ void Player::WalkingUpdate()
 
 	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
 	analogY = -analogY;
-	if (analogX * analogY == 0)
-	{
-		ChangeAnim(kAnimationNumIdle);
-		m_playerUpdate = &Player::NeutralUpdate;
-	}
+	
 	//アナログスティックの入力10%~80%を使用する
 	//ベクトルの長さが最大1000になる
 	//ベクトルの長さを取得
@@ -535,7 +539,11 @@ void Player::WalkingUpdate()
 	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
 	rate = std::min(rate, 1.0f);
 	rate = std::max(rate, 0.0f);
-
+	if (std::abs(move.Length()) < 0.2f)
+	{
+		ChangeAnim(kAnimationNumIdle);
+		m_playerUpdate = &Player::NeutralUpdate;
+	}
 	//速度が決定できるので移動ベクトルに反映
 	move = move.GetNormalized();
 	float speed = kMaxSpeed;
@@ -544,6 +552,24 @@ void Player::WalkingUpdate()
 	//MATRIX rotate = MGetRotY((m_angle)-DX_PI_F / 2);//本来はカメラを行列で制御し、その行列でY軸回転
 	m_moveDir = move;
 	move = move * speed;
+	if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
+	{
+		ChangeAnim(kAnimationNumJump);
+		m_isJumpFlag = true;
+		move += m_upVec.GetNormalized() * 10;
+		m_playerUpdate = &Player::JumpingUpdate;
+	}
+	if (Pad::IsTrigger(PAD_INPUT_B))//XBoxの
+	{
+		ChangeAnim(kAnimationNumSpin);
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		m_attackRadius = kNetralRadius + 10;
+		item->radius = m_attackRadius;
+		m_isSpinFlag = true;
+		m_playerUpdate = &Player::SpiningUpdate;
+	}
+
+	m_rigid->SetVelocity(move);
 }
 
 void Player::JumpingUpdate()

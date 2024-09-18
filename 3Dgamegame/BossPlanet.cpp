@@ -12,7 +12,7 @@ namespace
 
 }
 
-BossPlanet::BossPlanet(Vec3 pos, int color):SpherePlanet(pos,color,3),
+BossPlanet::BossPlanet(Vec3 pos, int color):SpherePlanet(pos,color,3,-1),
 m_color(color)
 {
 	gravityPower = 3;

@@ -3,7 +3,7 @@
 class SpherePlanet : public Planet
 {
 public:
-	SpherePlanet(Vec3 pos,int color,float m_gravityPower);
+	SpherePlanet(Vec3 pos,int color,float m_gravityPower, int modelHandle);
 	virtual ~SpherePlanet();
 
 	virtual void Init();
@@ -18,5 +18,6 @@ public:
 protected:
 	int m_enemyCount;
 	int m_color;
+	int m_modelHandle;
 };
 

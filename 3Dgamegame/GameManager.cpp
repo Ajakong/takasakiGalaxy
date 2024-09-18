@@ -20,6 +20,7 @@
 #include"GraphManager.h"
 #include"FontManager.h"
 #include"ScreenManager.h"
+#include"ModelManager.h"
 #include"Game.h"
 
 
@@ -99,9 +100,9 @@ GameManager::GameManager() :
 	ui = std::make_shared<Ui>();
 	player = std::make_shared<Player>(modelH);
 	camera = std::make_shared<Camera>();
-	planet.push_back(std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33,3));
-	planet.push_back(std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff,3));
-	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400,1.f));
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(0, -500, 0), 0xaadd33,3,ModelManager::GetInstance().GetModelData("Sphere/planet_moon.mv1")));
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff,3,ModelManager::GetInstance().GetModelData("Sphere/planet_ice.mv1")));
+	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400,1.f, ModelManager::GetInstance().GetModelData("Sphere/planet_red.mv1")));
 	bossPlanet = std::make_shared<BossPlanet>(Vec3(0, -6000, 0), 0x0000ff);
 	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,500)) };
 	gorori = { std::make_shared<Gorori>(Vec3(7000,500,2300)),std::make_shared<Gorori>(Vec3(6500,500,1700)),std::make_shared<Gorori>(Vec3(5500,0,2000)) };
@@ -116,10 +117,10 @@ GameManager::GameManager() :
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, 100, 1400), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(6000, -500, 2000), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(-3300, 1000, -3300), true));
-	m_skyDomeH = MV1LoadModel("Model/SkyDome.mv1");
+	m_skyDomeH = ModelManager::GetInstance().GetModelData("Skybox.mv1");
 	fontHandle = FontManager::GetInstance().GetFontData("disital.TTF", "Pocket Calculator",60,7,DX_FONTTYPE_NORMAL);
 
-	MV1SetScale(m_skyDomeH, VGet(300, 300, 300));
+	MV1SetScale(m_skyDomeH, VGet(1, 1, 1));
 
 	m_managerUpdate = &GameManager::IntroUpdate;
 	m_managerDraw = &GameManager::IntroDraw;
@@ -129,7 +130,11 @@ GameManager::GameManager() :
 
 GameManager::~GameManager()
 {
-	DeleteEffekseerEffect(m_warpEffectHandle);
+	planet.clear();
+	takobo.clear();
+	gorori.clear();
+	poworStone.clear();
+	warpGate.clear();
 }
 
 void GameManager::Init()

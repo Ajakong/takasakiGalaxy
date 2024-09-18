@@ -32,13 +32,13 @@ m_emitterHandle(EffectManager::GetInstance().GetEffectData(effectname))
 	item->radius = 60;
 	m_rigid->SetPos(pos);
 
-	PlayEffekseer3DEffect(m_emitterHandle);
+	m_effectPlayHandle=PlayEffekseer3DEffect(m_emitterHandle);
 	
 }
 
 WarpGate::~WarpGate()
 {
-	StopEffekseer3DEffect(m_emitterHandle);
+	StopEffekseer3DEffect(m_effectPlayHandle);
 	EffectManager::GetInstance().DeleteEffectData(effectname);
 }
 

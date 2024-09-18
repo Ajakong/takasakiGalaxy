@@ -1,5 +1,6 @@
 #include"MyLib/Physics/ColliderSphere.h"
 #include "SpherePlanet.h"
+#include"ModelManager.h"
 
 namespace
 {
@@ -12,13 +13,17 @@ namespace
 
 }
 
-SpherePlanet::SpherePlanet(Vec3 pos,int color,float gravity) :Planet(),
-m_enemyCount(3)
+SpherePlanet::SpherePlanet(Vec3 pos,int color,float gravity,int modelHandle) :Planet(),
+m_enemyCount(3),
+m_modelHandle(modelHandle)
 {
 	m_color = color;
 	m_rigid->SetPos(pos);
 	gravityPower = gravity;
 	m_pointLightHandle = CreatePointLightHandle(m_rigid->GetPos().VGet(), 5000.0f, 0.0f, 0.002f, 0.0f);
+	MV1SetScale(m_modelHandle, VGet(5, 5, 5));
+	MV1SetPosition(m_modelHandle,m_rigid->GetPos().VGet());
+
 }
 
 SpherePlanet::~SpherePlanet()
@@ -43,8 +48,17 @@ void SpherePlanet::Update()
 
 void SpherePlanet::Draw()
 {
+
 	//DrawSphere3D(m_rigid->GetPos().VGet(), kGravityRange, 10, 0xddddff, 0x0000ff, false);
-	DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, m_color, 0x0000ff, !m_isSearch);
+	if (m_isSearch)
+	{
+		DrawSphere3D(m_rigid->GetPos().VGet(), kGroundRadius, 50, m_color, 0x0000ff, false);
+
+	}
+	else
+	{
+		MV1DrawModel(m_modelHandle);
+	}
 }
 
 Vec3 SpherePlanet::GravityEffect(std::shared_ptr<Collidable> obj)//成分ごとに計算し、補正後のベクトルを返す

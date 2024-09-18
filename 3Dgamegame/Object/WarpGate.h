@@ -18,6 +18,7 @@ public:
 private:
 	Vec3 m_warpPos;
 	int m_emitterHandle;
+	int m_effectPlayHandle;
 	Vec3 m_nowPlanetPos;
 };
 

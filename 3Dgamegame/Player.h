@@ -42,6 +42,7 @@ public:
 	bool GetJumpFlag() { return m_isJumpFlag; }
 
 	virtual void OnCollideEnter(std::shared_ptr<Collidable> colider);
+	virtual void OnCollideStay(std::shared_ptr<Collidable> colider);
 	//メンバ関数ポインタ
 	using playerState_t = void(Player::*)();
 	playerState_t m_playerUpdate;
