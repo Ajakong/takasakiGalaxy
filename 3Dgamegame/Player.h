@@ -51,10 +51,7 @@ public:
 	using cameraState_t = void(Player::*)();
 	cameraState_t m_cameraUpdate;
 
-
 	void BoostUpdate();
-
-
 private:
 	//アニメーションの進行
 	//ループしたかどうかを返す

@@ -23,7 +23,7 @@ namespace
 	//constexpr int kIdleAnimIndex = 2;//待機テスト
 	constexpr int kAttackAnimIndex = 30;
 
-	constexpr float kAnimFrameSpeed = 90.0f;//アニメーション進行速度
+	constexpr float kAnimFrameSpeed = 30.0f;//アニメーション進行速度
 
 	//アニメーションの切り替えにかかるフレーム数
 	constexpr float kAnimChangeFrame = 8.0f;
@@ -199,19 +199,8 @@ void Player::SetMatrix()
 
 	////カメラのいる角度から
 	////コントローラーによる移動方向を決定する
-	//MATRIX mtx;
-	//MATRIX scale = MGetScale(VGet(0.5f, 0.5f, 0.5f));
-	//
-	//MATRIX moveDir = MGetRotY((m_angle)+DX_PI_F);
-	//mtx = MMult(scale, moveDir);
 
-	//MATRIX moving = MGetTranslate(m_rigid->GetPos().VGet());
-
-	//mtx = MMult(mtx, moving);
-
-	//MV1SetMatrix(m_modelHandle, mtx);
 	MATRIX mat = MGetRotVec2(Vec3::Up().VGet(), m_upVec.VGet());
-	
 	MV1SetRotationMatrix(m_modelHandle,mat);
 	MV1SetPosition(m_modelHandle, m_rigid->GetPos().VGet());
 
@@ -495,17 +484,6 @@ void Player::NeutralUpdate()
 		m_playerUpdate = &Player::SpiningUpdate;
 	}
 	
-	
-	/*auto v = VTransform(VGet(move.x, 0, move.z), rotate);
-	move = Vec3(v);*/
-
-	//プレイヤーの最大移動速度は0.01f/frame
-	//if (Pad::IsTrigger(PAD_INPUT_1))//XBoxのAボタン
-	//{
-	//	m_radius = 0;
-	//	m_playerUpdate = &Player::AvoidUpdate;
-	//}
-
 	m_rigid->SetVelocity(move);
 }
 
@@ -600,10 +578,6 @@ void Player::SpiningUpdate()
 
 	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
 	analogY = -analogY;
-	if (analogX * analogY != 0)
-	{
-		int a = 0;
-	}
 	//アナログスティックの入力10%~80%を使用する
 	//ベクトルの長さが最大1000になる
 	//ベクトルの長さを取得
@@ -616,7 +590,6 @@ void Player::SpiningUpdate()
 	Vec3 right = GetCameraRightVector();
 	move = m_frontVec * static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
 	move += m_sideVec * static_cast<float>(analogX);
-
 
 	//アナログスティック無効な範囲を除外する
 	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
@@ -654,10 +627,6 @@ void Player::JumpingSpinUpdate()
 
 	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
 	analogY = -analogY;
-	if (analogX * analogY != 0)
-	{
-		int a = 0;
-	}
 	//アナログスティックの入力10%~80%を使用する
 	//ベクトルの長さが最大1000になる
 	//ベクトルの長さを取得
@@ -670,7 +639,6 @@ void Player::JumpingSpinUpdate()
 	Vec3 right = GetCameraRightVector();
 	move = m_frontVec * static_cast<float>(analogY);//入力が大きいほど利教が大きい,0の時は0
 	move += m_sideVec * static_cast<float>(analogX);
-
 
 	//アナログスティック無効な範囲を除外する
 	rate = (rate - kAnalogRangeMin / (kAnalogRangeMax - kAnalogRangeMin));
