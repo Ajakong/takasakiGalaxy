@@ -73,9 +73,9 @@ namespace
 	constexpr int kUiTimeCount_PosY = 90;
 
 	//ƒJƒƒ‰
-	constexpr float kCameraDistanceFront = 500.f;
-	constexpr float kCameraDistanceAddFrontInJump = 200.f;
-	constexpr float kCameraDistanceUp = 200.f;
+	constexpr float kCameraDistanceFront = 800.f;
+	constexpr float kCameraDistanceAddFrontInJump = 300.f;
+	constexpr float kCameraDistanceUp = 500.f;
 
 	const char* kMiniMapScreenName = "MiniMap";
 }
@@ -535,8 +535,6 @@ void GameManager::GamePlayingDraw()
 	
 	ClearDrawScreen();
 	
-	
-
 	SetCameraPositionAndTargetAndUpVec((player->GetPos() + player->GetNormVec() * 300).VGet(), player->GetPos().VGet(), m_cameraUpVec.VGet());
 	m_cameraUpVec = GetCameraUpVector();
 
@@ -579,15 +577,17 @@ void GameManager::GamePlayingDraw()
 	for (auto& item : gorori)item->Draw();
 
 	camera->DebagDraw();
+	Effekseer_Sync3DSetting();
+	DrawEffekseer3D();
+
 	DxLib::SetRenderTargetToShader(1, -1);		// RT‚Ì‰ğœ
 	DxLib::SetRenderTargetToShader(2, -1);		// RT‚Ì‰ğœ
 
 	DxLib::SetDrawScreen(DX_SCREEN_BACK);
-	SetCameraNearFar(1.f, 100000);
 
 	camera->Update(player->GetPos());
 	
-
+	SetCameraNearFar(1.f, 100000);
 
 	DxLib::DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
 
@@ -627,6 +627,9 @@ void GameManager::GamePlayingDraw()
 	for (auto& item : gorori)item->Draw();
 
 	camera->DebagDraw();
+	Effekseer_Sync3DSetting();
+	DrawEffekseer3D();
+	
 	DxLib::SetRenderTargetToShader(1, -1);		// RT‚Ì‰ğœ
 	DxLib::SetRenderTargetToShader(2, -1);		// RT‚Ì‰ğœ
 
@@ -639,6 +642,5 @@ void GameManager::GamePlayingDraw()
 	DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	
 	DxLib::DrawExtendGraph(1200, 600,1600,900, m_miniMapScreenHandle, false);
-	
-	
+		
 }

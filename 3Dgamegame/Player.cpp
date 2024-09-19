@@ -7,6 +7,7 @@
 #include"Enemy/EnemySphere.h"
 #include"Enemy/KillerTheSeeker.h"
 #include"ModelManager.h"
+#include"Quaternion.h"
 
 /// <summary>
 /// やること:足の当たり判定を生成・踏みつけに使う
@@ -90,7 +91,8 @@ m_getItemHandle(SoundManager::GetInstance().GetSoundData(kGetItemSEName)),
 m_searchSEHandle(SoundManager::GetInstance().GetSoundData(kGetSearchSEName)),
 m_attackRadius(0),
 m_parrySEHandle(SoundManager::GetInstance().GetSoundData(kOnParrySEName)),
-m_damageFrameSpeed(1)
+m_damageFrameSpeed(1),
+m_postUpVec(Vec3::Up())
 {
 	{
 		m_rigid->SetPos(Vec3(0, 0, 0));
@@ -197,13 +199,46 @@ void Player::SetMatrix()
 {
 	Set3DSoundListenerPosAndFrontPosAndUpVec(m_rigid->GetPos().VGet(), Vec3(m_rigid->GetPos() + GetCameraFrontVector()).VGet(), m_upVec.VGet());
 
-	////カメラのいる角度から
-	////コントローラーによる移動方向を決定する
+	MATRIX mat;
+	mat = MGetRotY(acos(Dot(Vec3::Front(), m_moveDir* -1 )));
+	//mat = MGetRotX(DX_PI_F/2/*atan2(Vec3::Up().y, m_rigid->GetPos().z)*/);
+	//mat = MMult(mat, MGetRotZ(0/*atan2(Vec3::Up().y, m_rigid->GetPos().x)*/));
+	Vec3 axis = Cross(Vec3::Up(), m_upVec);
 
-	MATRIX mat = MGetRotVec2(Vec3::Up().VGet(), m_upVec.VGet());
-	MV1SetRotationMatrix(m_modelHandle,mat);
+	mat=MMult(mat, MGetRotVec2(Vec3::Up().VGet(), m_upVec.VGet()));
+
+	/*mat =;*/
+
+	//mat = MMult(mat, MGetRotVec2(Vec3::Front().VGet(), (m_moveDir).VGet()));
+//	////カメラのいる角度から
+//	////コントローラーによる移動方向を決定する
+	//	Quaternion myQ;
+//	myQ=myQ.CreateRotationQuaternion(acos(Dot(Vec3::Up(), m_upVec)), axis);
+//	m_postUpVec = m_upVec;
+//	MATRIX mat;
+//	MATRIX matNorm = MGetRotVec2(Vec3::Up().VGet(), m_upVec.VGet());
+//	MATRIX rot=MGetRotElem(matNorm);
+//	MATRIX matFront = MGetRotVec2(Vec3::Front().VGet(), m_frontVec.VGet());
+//	MGetRotElem(matNorm);
+//	MATRIX matAns = MMult(matNorm,matFront);
+//
+//
+//	
+//
+//#if _DEBUG
+//
+//	
+//#endif
+//	/*MATRIX scale = MGetScale(VGet(0.05f,0.05f,0.05f));
+//	MATRIX rot= myQ.ToMat();
+//	MATRIX trans = MGetTranslate(m_rigid->GetPos().VGet());
+//	mat = scale;
+//	mat = MMult(scale, rot);
+//	mat = MMult(mat, trans);*/
+	MV1SetRotationMatrix(m_modelHandle, mat);
 	MV1SetPosition(m_modelHandle, m_rigid->GetPos().VGet());
 
+	//MV1SetMatrix(m_modelHandle, matNorm);
 }
 
 void Player::Draw()
@@ -694,6 +729,7 @@ void Player::DamegeUpdate()
 	{
 		if (m_prevUpdate != m_playerUpdate)
 		{
+			ChangeAnim(kAnimationNumRun);
 			//ダメージアニメーションのみ
 			m_playerUpdate = m_prevUpdate;
 		}

@@ -46,7 +46,33 @@ private:
 	Q Qu;
 
 public:
+	//回転クォータニオン
+	Quaternion CreateRotationQuaternion(double radian, Vec3 Axis)
+	{
+		Quaternion ans;
+		double norm;
+		double ccc, sss;
 
+		ans.Qu.w = ans.Qu.x = ans.Qu.y = ans.Qu.z = 0.0;
+
+		norm = Axis.x * Axis.x + Axis.y * Axis.y + Axis.z * Axis.z;
+		if (norm <= 0.0) return ans;
+
+		norm = 1.0 / sqrt(norm);
+		Axis.x *= norm;
+		Axis.y *= norm;
+		Axis.z *= norm;
+
+		ccc = cos(0.5 * radian);
+		sss = sin(0.5 * radian);
+
+		ans.Qu.w = ccc;
+		ans.Qu.x = sss * Axis.x;
+		ans.Qu.y = sss * Axis.y;
+		ans.Qu.z = sss * Axis.z;
+
+		return ans;
+	}
 	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; }
 
 	void SetMove(float _angle, Vec3 _axis)//回転軸と角速度の設定
@@ -102,5 +128,42 @@ public:
 	{
 		return Vec3(Qu.x, Qu.y, Qu.z);
 	}
+
+	MATRIX ToMat()
+	{
+		MATRIX matQ;
+
+		float x2 = Qu.x * Qu.x;
+		float y2 = Qu.y * Qu.y;
+		float z2 = Qu.z * Qu.z;
+		float w2 = Qu.w * Qu.w;
+
+		float r00 = x2 - y2 - z2 + w2;
+		float r01 = 2.0f * (Qu.x * Qu.y + Qu.z * Qu.w);
+		float r02 = 2.0f * (Qu.x * Qu.z - Qu.y * Qu.w);
+
+		float r10 = 2.0f * (Qu.x * Qu.y - Qu.z * Qu.w);
+		float r11 = -x2 + y2 - z2 + w2;
+		float r12 = 2.0f * (Qu.y * Qu.z + Qu.x * Qu.w);
+
+		float r20 = 2.0f * (Qu.x * Qu.z + Qu.y * Qu.w);
+		float r21 = 2.0f * (Qu.y * Qu.z - Qu.x * Qu.w);
+		float r22 = -x2 - y2 + z2 + w2;
+
+		matQ.m[0][0] = r00;
+		matQ.m[0][1] = r01;
+		matQ.m[0][2] = r02;
+		matQ.m[1][0] = r10;
+		matQ.m[1][1] = r11;
+		matQ.m[1][2] = r12;
+		matQ.m[2][0] = r20;
+		matQ.m[2][1] = r21;
+		matQ.m[2][2] = r22;
+
+		matQ.m[3][3] = 1.0f;
+
+		return matQ;
+	}
+	
 };
 

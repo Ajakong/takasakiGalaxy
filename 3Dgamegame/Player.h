@@ -117,6 +117,7 @@ private:
 	int m_getItemHandle;
 	int m_color;
 	int m_spinCount;
+	Vec3 m_postUpVec;
 
 	bool m_isOnDamageFlag;
 	bool m_isSpinFlag;
