@@ -417,13 +417,12 @@ void GameManager::GamePlayingUpdate()
 			i--;
 		}
 	}
-	
 	Vec3 planetToPlayer = player->GetPos() - player->GetNowPlanetPos();
 	Vec3 sideVec = GetCameraRightVector();
 	Vec3 front = Cross(planetToPlayer, sideVec).GetNormalized() * -1;
 	player->SetSideVec(sideVec);
 	player->SetFrontVec(front);
-	player->SetUpVec(planetToPlayer);
+	player->SetUpVec(planetToPlayer.GetNormalized());
 	/*Vec3 playerToCamera = camera->GetPos() -player->GetPos();
 	float a = acos(Dot(planetToPlayer.GetNormalized(), playerToCamera.GetNormalized())) * 180 / DX_PI_F;
 

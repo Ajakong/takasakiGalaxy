@@ -47,16 +47,15 @@ private:
 
 public:
 	//回転クォータニオン
-	Quaternion CreateRotationQuaternion(double radian, Vec3 Axis)
+	void RotationQuaternion(double radian, Vec3 Axis)
 	{
-		Quaternion ans;
 		double norm;
 		double ccc, sss;
 
-		ans.Qu.w = ans.Qu.x = ans.Qu.y = ans.Qu.z = 0.0;
+		Qu.w = Qu.x = Qu.y = Qu.z = 0.0;
 
 		norm = Axis.x * Axis.x + Axis.y * Axis.y + Axis.z * Axis.z;
-		if (norm <= 0.0) return ans;
+		if (norm <= 0.0) return;
 
 		norm = 1.0 / sqrt(norm);
 		Axis.x *= norm;
@@ -66,12 +65,10 @@ public:
 		ccc = cos(0.5 * radian);
 		sss = sin(0.5 * radian);
 
-		ans.Qu.w = ccc;
-		ans.Qu.x = sss * Axis.x;
-		ans.Qu.y = sss * Axis.y;
-		ans.Qu.z = sss * Axis.z;
-
-		return ans;
+		Qu.w = ccc;
+		Qu.x = sss * Axis.x;
+		Qu.y = sss * Axis.y;
+		Qu.z = sss * Axis.z;
 	}
 	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; }
 
@@ -161,6 +158,9 @@ public:
 		matQ.m[2][2] = r22;
 
 		matQ.m[3][3] = 1.0f;
+		matQ.m[3][0] = 0.0f;
+		matQ.m[3][1] = 0.0f;
+		matQ.m[3][2] = 0.0f;
 
 		return matQ;
 	}

@@ -199,46 +199,41 @@ void Player::SetMatrix()
 {
 	Set3DSoundListenerPosAndFrontPosAndUpVec(m_rigid->GetPos().VGet(), Vec3(m_rigid->GetPos() + GetCameraFrontVector()).VGet(), m_upVec.VGet());
 
-	MATRIX mat;
-	mat = MGetRotY(acos(Dot(Vec3::Front(), m_moveDir* -1 )));
-	//mat = MGetRotX(DX_PI_F/2/*atan2(Vec3::Up().y, m_rigid->GetPos().z)*/);
-	//mat = MMult(mat, MGetRotZ(0/*atan2(Vec3::Up().y, m_rigid->GetPos().x)*/));
-	Vec3 axis = Cross(Vec3::Up(), m_upVec);
+	Quaternion myQ;
+	myQ.RotationQuaternion(DX_PI_F, Vec3(0, 0, 1));
+	MATRIX mat = myQ.ToMat();
+	//myQ.RotationQuaternion(acos(Dot(m_upVec, Vec3::Up())), Cross(Vec3::Up(), m_upVec));
+	mat = MMult(mat, MGetScale(VGet(0.05f, 0.05f, 0.05f)));
+	mat = MMult(mat, MGetTranslate(m_rigid->GetPos().VGet()));
 
-	mat=MMult(mat, MGetRotVec2(Vec3::Up().VGet(), m_upVec.VGet()));
+	//if (acos(Dot(m_upVec * -1, Vec3::Up())) <= DX_PI_F / 2)
+	//{
 
-	/*mat =;*/
+	//}
 
-	//mat = MMult(mat, MGetRotVec2(Vec3::Front().VGet(), (m_moveDir).VGet()));
-//	////カメラのいる角度から
-//	////コントローラーによる移動方向を決定する
-	//	Quaternion myQ;
-//	myQ=myQ.CreateRotationQuaternion(acos(Dot(Vec3::Up(), m_upVec)), axis);
-//	m_postUpVec = m_upVec;
-//	MATRIX mat;
-//	MATRIX matNorm = MGetRotVec2(Vec3::Up().VGet(), m_upVec.VGet());
-//	MATRIX rot=MGetRotElem(matNorm);
-//	MATRIX matFront = MGetRotVec2(Vec3::Front().VGet(), m_frontVec.VGet());
-//	MGetRotElem(matNorm);
-//	MATRIX matAns = MMult(matNorm,matFront);
-//
-//
-//	
-//
-//#if _DEBUG
-//
-//	
-//#endif
-//	/*MATRIX scale = MGetScale(VGet(0.05f,0.05f,0.05f));
-//	MATRIX rot= myQ.ToMat();
-//	MATRIX trans = MGetTranslate(m_rigid->GetPos().VGet());
-//	mat = scale;
-//	mat = MMult(scale, rot);
-//	mat = MMult(mat, trans);*/
-	MV1SetRotationMatrix(m_modelHandle, mat);
-	MV1SetPosition(m_modelHandle, m_rigid->GetPos().VGet());
+	//if ((m_moveDir * -1).x < 0)
+	//{
+	//	mat = MGetRotY(acos(Dot(Vec3::Front(), m_moveDir ))+DX_PI_F);
+	//}
+	//else if ((m_moveDir * -1).y < 0)
+	//{
+	//	mat = MGetRotY(acos(Dot(Vec3::Front(), m_moveDir*-1)) + DX_PI_F);
+	//}
+	//else
+	//{
+	//	mat = MGetRotY(acos(Dot(Vec3::Front(), m_moveDir * -1)));
+	//}
+	////mat = MGetRotX(DX_PI_F/2/*atan2(Vec3::Up().y, m_rigid->GetPos().z)*/);
+	////mat = MMult(mat, MGetRotZ(0/*atan2(Vec3::Up().y, m_rigid->GetPos().x)*/));
+	//Vec3 axis = Cross(Vec3::Up(), m_upVec);
+	//
+	//mat = MMult(mat, MGetRotVec2(Vec3::Up().VGet(), m_upVec.VGet()));
+	//
+	//
+	//MV1SetRotationMatrix(m_modelHandle, mat);
+	//MV1SetPosition(m_modelHandle, m_rigid->GetPos().VGet());
 
-	//MV1SetMatrix(m_modelHandle, matNorm);
+	MV1SetMatrix(m_modelHandle,mat);
 }
 
 void Player::Draw()

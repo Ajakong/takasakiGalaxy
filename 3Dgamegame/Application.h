@@ -48,4 +48,3 @@ public:
 	const Size& GetWindowSize() const;
 
 };
-

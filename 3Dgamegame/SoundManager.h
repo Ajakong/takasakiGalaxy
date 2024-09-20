@@ -23,4 +23,3 @@ public:
 	int GetSoundData(const char* filepath);
 
 };
-
