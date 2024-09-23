@@ -155,14 +155,13 @@ void Takobo::SetTarget(std::shared_ptr<Collidable> target)
 
 void Takobo::IdleUpdate()
 {
-	m_vec.x = 1;
-	if (abs(m_rigid->GetPos().x - m_moveShaftPos.x) > 5)
+	Vec3 norm = (m_rigid->GetPos() - m_nowPlanetPos).GetNormalized();
+	Vec3 toTarget = ToVec(norm, m_target->GetRigidbody()->GetPos());
+	if (toTarget.Length() < 200)
 	{
-		m_vec.x *= -1;
+		m_rigid->SetVelocity(m_attackDir);
 	}
-
-	m_rigid->SetVelocity(VGet(m_vec.x, 0, 0));
-
+	
 	m_attackCoolDownCount++;
 
 	if (m_attackCoolDownCount > kAttackCoolDownTime)
@@ -172,8 +171,7 @@ void Takobo::IdleUpdate()
 		{
 		case 0:
 		{
-			Vec3 norm = (m_rigid->GetPos() - m_nowPlanetPos).GetNormalized();
-			Vec3 toTarget = ToVec(norm, m_target->GetRigidbody()->GetPos());
+			
 			if (toTarget.Length() > 500)break;
 			float a = acos(Dot(norm, toTarget.GetNormalized())) * 180 / DX_PI_F;
 

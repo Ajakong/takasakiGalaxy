@@ -256,10 +256,13 @@ void MyEngine::Physics::CheckCollide()
 
 				if (isCheck) break;
 			}
-
+			if (isCheck && checkCount > 50)
+			{
+				//objA->GetRigidbody()->SetNextPos(objA->GetRigidbody()->GetNextPos()+objA->m_upVec * 20);
+			}
 			if (isCheck) break;
 		}
-
+		
 		if (isCheck && checkCount > CHECK_COUNT_MAX)
 		{
 			//printfDx("‹K’è”(%d)‚ð’´‚¦‚Ü‚µ‚½", CHECK_COUNT_MAX);

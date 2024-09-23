@@ -20,7 +20,6 @@ m_color(color)
 	m_colliders.back()->isTrigger = true;
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = kGravityRange;
-	AddThroughTag(ObjectTag::Stage);
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);//ƒ}ƒbƒv‚Ì“–‚½‚è”»’è
 	auto item2 = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item2->radius = kGroundRadius;

@@ -27,6 +27,7 @@ public:
 	void SetNormVec(Vec3 norm) { m_normVec = norm; }
 	void SetVelocity(Vec3 vel) { m_velocity = vel; }
 	Vec3 GetVelocity() const { return m_velocity; }
+	bool GetSecondFase() { return m_secondFase; }
 	std::list<std::shared_ptr<Killer>> GetAttackObj() { return m_sphere; }
 
 	//メンバ関数ポインタ
@@ -68,6 +69,7 @@ private:
 	int m_bombNum = 0;
 	int m_shotSEHandle;
 	int m_counterHitSEHandle;
+	bool m_secondFase;
 
 	Vec3 m_vec;
 	Vec3 m_attackDir;

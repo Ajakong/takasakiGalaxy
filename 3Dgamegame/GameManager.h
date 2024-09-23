@@ -38,6 +38,9 @@ private:
 	void GamePlayingUpdate();
 	void GamePlayingDraw();
 
+	void TutoFadeUpdate();
+	void TutoFadeDraw();
+
 private:
 
 	struct UserData

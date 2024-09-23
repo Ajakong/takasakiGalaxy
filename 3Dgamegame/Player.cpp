@@ -51,7 +51,7 @@ namespace
 
 	const char* kGetSearchSEName = "Search.mp3";
 	const char* name = "Player";
-	const char* kFileName = "SpaceHarrier.mv1";
+	const char* kFileName = "";
 	constexpr int kAnimationNumTpose = 0;
 	constexpr int kAnimationNumHit = 1;
 	constexpr int kAnimationNumJump = 2;

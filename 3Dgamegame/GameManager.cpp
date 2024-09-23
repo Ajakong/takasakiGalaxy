@@ -23,7 +23,6 @@
 #include"ModelManager.h"
 #include"Game.h"
 
-
 namespace
 {
 	//UI
@@ -104,8 +103,10 @@ GameManager::GameManager() :
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(6000, 0, 2000),0x4444ff,3,ModelManager::GetInstance().GetModelData("Sphere/planet_ice.mv1")));
 	planet.push_back(std::make_shared<SpherePlanet>(Vec3(-3000, 1000, -3000), 0xff4400,1.f, ModelManager::GetInstance().GetModelData("Sphere/planet_red.mv1")));
 	bossPlanet = std::make_shared<BossPlanet>(Vec3(0, -6000, 0), 0x0000ff);
-	takobo = { std::make_shared<Takobo>(Vec3(1000,0,500)),std::make_shared<Takobo>(Vec3(-300,0,500)),std::make_shared<Takobo>(Vec3(0,900,500)) };
-	gorori = { std::make_shared<Gorori>(Vec3(7000,500,2300)),std::make_shared<Gorori>(Vec3(6500,500,1700)),std::make_shared<Gorori>(Vec3(5500,0,2000)) };
+	takobo.push_back(std::make_shared<Takobo>(Vec3(7000, 0, 2700)));
+	takobo.push_back(std::make_shared<Takobo>(Vec3(5500, 0, 2500)));
+	takobo.push_back(std::make_shared<Takobo>(Vec3(6000, 300, 2500)));
+	gorori = { std::make_shared<Gorori>(Vec3(-2000,1500,-2700)),std::make_shared<Gorori>(Vec3(-2500,1500,-2700)),std::make_shared<Gorori>(Vec3(-2500,1000,-3000)) };
 	poworStone.push_back(std::make_shared<Item>(Vec3(0, -800, 0),true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(-300, 0, 0), true));
 	poworStone.push_back(std::make_shared<Item>(Vec3(300, 0, 0), true));
@@ -642,4 +643,12 @@ void GameManager::GamePlayingDraw()
 	
 	DxLib::DrawExtendGraph(1200, 600,1600,900, m_miniMapScreenHandle, false);
 		
+}
+
+void GameManager::TutoFadeUpdate()
+{
+}
+
+void GameManager::TutoFadeDraw()
+{
 }

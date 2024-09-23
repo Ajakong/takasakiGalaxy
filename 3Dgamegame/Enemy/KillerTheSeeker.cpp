@@ -52,7 +52,9 @@ namespace
 KillerTheSeeker::KillerTheSeeker(Vec3 pos):Enemy(-1, Priority::Static, ObjectTag::KillerTheSeeker),
 m_Hp(kHp),
 m_attackCoolDownCount(0),
-m_centerToEnemyAngle(0)
+m_centerToEnemyAngle(0),
+m_attackCount(0),
+m_secondFase(false)
 {
 	m_counterHitSEHandle= SoundManager::GetInstance().GetSoundData(kCounterHitSEhandlePath);
 	SetCreate3DSoundFlag(true);
@@ -64,6 +66,7 @@ m_centerToEnemyAngle(0)
 	AddCollider(MyEngine::ColliderBase::Kind::Sphere);
 	auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
 	item->radius = kCollisionRadius;
+	m_radius = kCollisionRadius;
 	m_moveShaftPos = m_rigid->GetPos();
 	AddThroughTag(ObjectTag::Takobo);
 	AddThroughTag(ObjectTag::Gorori);
@@ -89,7 +92,6 @@ void KillerTheSeeker::Update()
 		if (m_sphere.size() == 0)return;
 		sphere->Update();
 	}
-
 }
 
 void KillerTheSeeker::DeleteManage()
@@ -109,7 +111,7 @@ void KillerTheSeeker::DeleteManage()
 
 void KillerTheSeeker::Draw()
 {
-	DrawSphere3D(m_rigid->GetPos().VGet(), kCollisionRadius, 10,m_color, m_color, true);
+	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10,m_color, m_color, true);
 	
 	for (auto& sphere : m_sphere)
 	{
@@ -129,14 +131,24 @@ void KillerTheSeeker::OnCollideEnter(std::shared_ptr<Collidable> colider)
 		auto attack = dynamic_pointer_cast<EnemySphere>(colider);
 		if (attack->GetCounterFlag())
 		{
-			PlaySoundMem(m_counterHitSEHandle,DX_PLAYTYPE_BACK);
+			DxLib::PlaySoundMem(m_counterHitSEHandle,DX_PLAYTYPE_BACK);
 			attack->DeleteFlag();
 			m_Hp -= 60;
-			if (m_Hp < 0)
-			{
-				m_Hp = 1;
-			}
+			
 		}
+	}
+
+	if (!m_secondFase && m_Hp < 0)
+	{
+		m_Hp = 150;
+		m_secondFase = true;
+		m_attackCoolDownCount = 0;
+		m_attackDir = GetAttackDir().GetNormalized();//オブジェクトに向かうベクトルを正規化したもの
+		m_enemyUpdate = &KillerTheSeeker::AttackRollingUpdate;
+		auto item = dynamic_pointer_cast<MyEngine::ColliderSphere>(m_colliders.back());
+		item->radius = 80;
+		m_radius = 80;
+		m_color = 0xff0000;
 	}
 }
 
@@ -165,11 +177,25 @@ void KillerTheSeeker::IdleUpdate()
 
 	if (m_attackCoolDownCount > kAttackCoolDownTime)
 	{
-		int attackState = GetRand(2);
+		int attackState = GetRand(1);
 		Vec3 norm = (m_rigid->GetPos() - m_nowPlanetPos).GetNormalized();
 		Vec3 toTarget = ToVec(m_rigid->GetPos(), m_target->GetRigidbody()->GetPos());
-		
-		if (m_Hp < 300 && m_Hp >= 100)
+		if (m_Hp <= 100)
+		{
+			m_attackCoolDownCount = 0;
+			m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
+			m_rigid->SetVelocity(VGet(0, 0, 0));
+
+			m_sphereNum++;
+
+			m_createFrameCount = 0;
+			Set3DPositionSoundMem(m_rigid->GetPos().VGet(), m_shotSEHandle);
+			PlaySoundMem(m_shotSEHandle, DX_PLAYTYPE_BACK);
+			m_sphere.push_back(std::make_shared<Killer>(Priority::Low, ObjectTag::EnemyAttack, shared_from_this(), m_target, GetMyPos()+m_upVec*100, m_attackDir, 1, 0xff0000));
+			MyEngine::Physics::GetInstance().Entry(m_sphere.back());
+			m_enemyUpdate = &KillerTheSeeker::AttackSphereUpdate;
+		}
+		else if (m_Hp < 300 && m_Hp >= 100)
 		{
 			m_attackCoolDownCount = 0;
 			m_attackDir = GetAttackDir();//オブジェクトに向かうベクトルを正規化したもの
@@ -187,22 +213,11 @@ void KillerTheSeeker::IdleUpdate()
 				m_enemyUpdate = &KillerTheSeeker::AttackSphereUpdate;
 				break;
 			}
-			case 1:
-			{
-				if (toTarget.Length() > 4000)break;
-				m_attackCoolDownCount = 0;
-				m_attackDir = GetAttackDir().GetNormalized();//オブジェクトに向かうベクトルを正規化したもの
-				m_enemyUpdate = &KillerTheSeeker::AttackRollingUpdate;
-
-				m_color = 0xff0000;
-				break;
-			}
 			default:
 				m_attackCoolDownCount = 250;
 				break;
 			}
 		}
-		
 	}
 }
 
@@ -228,14 +243,7 @@ void KillerTheSeeker::AttackRollingUpdate()
 	if (m_attackCount > 500)
 	{
 		m_attackCount = 0;
-		m_color = 0x444444;
-		m_enemyUpdate = &KillerTheSeeker::IdleUpdate;
-	}
-	if (m_Hp < 300 && m_Hp >= 100)
-	{
-		m_attackCount = 0;
-		m_color = 0x444444;
-		m_enemyUpdate = &KillerTheSeeker::IdleUpdate;
+		m_velocity = m_attackDir.GetNormalized();
 	}
 }
 
