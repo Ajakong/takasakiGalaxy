@@ -200,9 +200,23 @@ void Player::SetMatrix()
 	Set3DSoundListenerPosAndFrontPosAndUpVec(m_rigid->GetPos().VGet(), Vec3(m_rigid->GetPos() + GetCameraFrontVector()).VGet(), m_upVec.VGet());
 
 	Quaternion myQ;
-	myQ.RotationQuaternion(DX_PI_F, Vec3(0, 0, 1));
+	//myQ.RotationQuaternion(acos(Dot(GetCameraFrontVector(), m_moveDir * -1)), Vec3::Up());
+
+	float angle = acos(Dot(m_upVec, Vec3::Up()));
+	
+	myQ.RotationQuaternion(angle, Cross(Vec3::Up(), m_upVec));
 	MATRIX mat = myQ.ToMat();
-	//myQ.RotationQuaternion(acos(Dot(m_upVec, Vec3::Up())), Cross(Vec3::Up(), m_upVec));
+	float angleY = acos(Dot(GetCameraFrontVector(), m_moveDir * -1));
+	if (m_moveDir.x >GetCameraFrontVector().x)
+	{
+		angleY += acos(Dot(Vec3::Front(), m_moveDir)) + DX_PI_F;
+	}
+	if (m_moveDir.y > 0)
+	{
+		angleY = acos(Dot(Vec3::Front(), m_moveDir * -1)) + DX_PI_F;
+	}
+	myQ.RotationQuaternion(angleY, m_upVec);
+	mat = MMult(mat, myQ.ToMat());
 	mat = MMult(mat, MGetScale(VGet(0.05f, 0.05f, 0.05f)));
 	mat = MMult(mat, MGetTranslate(m_rigid->GetPos().VGet()));
 

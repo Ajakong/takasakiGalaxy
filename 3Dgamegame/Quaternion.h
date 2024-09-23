@@ -70,6 +70,36 @@ public:
 		Qu.y = sss * Axis.y;
 		Qu.z = sss * Axis.z;
 	}
+	//回転クォータニオン
+	void RotationQuaternion(double radian, Vec3 Axis,Quaternion p)
+	{
+		double norm;
+		double ccc, sss;
+
+		Qu.w = Qu.x = Qu.y = Qu.z = 0.0;
+
+		norm = Axis.x * Axis.x + Axis.y * Axis.y + Axis.z * Axis.z;
+		if (norm <= 0.0) return;
+
+		norm = 1.0 / sqrt(norm);
+		Axis.x *= norm;
+		Axis.y *= norm;
+		Axis.z *= norm;
+
+		ccc = cos(0.5 * radian);
+		sss = sin(0.5 * radian);
+
+		Qu.w = ccc;
+		Qu.x = sss * Axis.x;
+		Qu.y = sss * Axis.y;
+		Qu.z = sss * Axis.z;
+
+		Qu = Q{ Qu.w * p.Qu.x - Qu.z * p.Qu.y + Qu.y * p.Qu.z + Qu.x * p.Qu.w
+			,Qu.z*p.Qu.x+Qu.w*p.Qu.y-Qu.x*p.Qu.z+Qu.y*p.Qu.w
+			,-Qu.y*p.Qu.x+Qu.x*p.Qu.y+Qu.w*p.Qu.z+Qu.z*p.Qu.w
+			,-Qu.x*p.Qu.x-Qu.y*p.Qu.y-Qu.z*p.Qu.z+Qu.w*p.Qu.w
+		};
+	}
 	void SetQuaternion(Vec3 pos) { Qu.w = 1.0; Qu.x = pos.x; Qu.y = pos.y; Qu.z = pos.z; }
 
 	void SetMove(float _angle, Vec3 _axis)//回転軸と角速度の設定
@@ -130,6 +160,7 @@ public:
 	{
 		MATRIX matQ;
 
+
 		float x2 = Qu.x * Qu.x;
 		float y2 = Qu.y * Qu.y;
 		float z2 = Qu.z * Qu.z;
@@ -150,12 +181,17 @@ public:
 		matQ.m[0][0] = r00;
 		matQ.m[0][1] = r01;
 		matQ.m[0][2] = r02;
+		matQ.m[0][3] = 0;
+
 		matQ.m[1][0] = r10;
 		matQ.m[1][1] = r11;
 		matQ.m[1][2] = r12;
+		matQ.m[1][3] = 0;
+
 		matQ.m[2][0] = r20;
 		matQ.m[2][1] = r21;
 		matQ.m[2][2] = r22;
+		matQ.m[2][3] = 0;
 
 		matQ.m[3][3] = 1.0f;
 		matQ.m[3][0] = 0.0f;
