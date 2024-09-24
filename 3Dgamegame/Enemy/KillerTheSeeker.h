@@ -69,6 +69,10 @@ private:
 	int m_shotSEHandle;
 	int m_counterHitSEHandle;
 
+	bool m_isSecondFase;
+	bool m_isHitFrame;
+	int m_hitFrame;
+
 	Vec3 m_vec;
 	Vec3 m_attackDir;
 	Vec3 m_velocity;

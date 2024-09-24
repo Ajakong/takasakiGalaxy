@@ -641,6 +641,6 @@ void GameManager::GamePlayingDraw()
 	DxLib::DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0xff4444, true);
 	DxLib::SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	
-	DxLib::DrawExtendGraph(1200, 600,1600,900, m_miniMapScreenHandle, false);
-		
+	DxLib::DrawExtendGraph(600, 0,1000,250, m_miniMapScreenHandle, false);
+	DxLib::DrawBox(600, 0, 1000,250,0x00dddd,false);
 }

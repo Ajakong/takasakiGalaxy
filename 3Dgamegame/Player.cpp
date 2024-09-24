@@ -51,7 +51,7 @@ namespace
 
 	const char* kGetSearchSEName = "Search.mp3";
 	const char* name = "Player";
-	const char* kFileName = "SpaceHarrier.mv1";
+	const char* kFileName = "";
 	constexpr int kAnimationNumTpose = 0;
 	constexpr int kAnimationNumHit = 1;
 	constexpr int kAnimationNumJump = 2;
@@ -248,7 +248,7 @@ void Player::Draw()
 		//MV1DrawModel(m_modelHandle);
 	}
 	MV1DrawModel(m_modelHandle);
-	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, m_color, 0xffffff, false);
+	DrawSphere3D(m_rigid->GetPos().VGet(), m_radius, 10, m_color, 0xffffff, true);
 	if (m_isSpinFlag)
 	{
 		DrawSphere3D(m_rigid->GetPos().VGet(), m_attackRadius, 10, 0x00ff00, 0xffffff, false);

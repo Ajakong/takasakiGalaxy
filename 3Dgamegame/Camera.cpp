@@ -30,8 +30,7 @@ Camera::Camera():
 	
 	m_cameraUpdate = &Camera::NeutralUpdate;
 	//‰œs0.1`1000‚Ü‚Å‚ğƒJƒƒ‰‚Ì•`‰æ”ÍˆÍ‚Æ‚·‚é
-	SetCameraNearFar(kCameraNear, kCameraFar);
-
+	
 	// FOV(‹–ìŠp)‚ğ60“x‚É
 	SetupCamera_Perspective(kCameraFOV * (static_cast<float>(DX_PI_F) / 180.0f));
 
@@ -68,6 +67,7 @@ void Camera::Update(Vec3 LookPoint)
 		SetupCamera_Perspective(kCameraFOV * (static_cast<float>(DX_PI_F) / 180.0f));
 
 	}
+	SetCameraNearFar(kCameraNear, kCameraFar);
 	(this->*m_cameraUpdate)(LookPoint);
 }
 
