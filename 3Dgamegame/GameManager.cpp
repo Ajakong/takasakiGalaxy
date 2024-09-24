@@ -376,7 +376,6 @@ void GameManager::GamePlayingUpdate()
 		{
 			bossPlanet->SetColor(0xff44ff);
 			bossPlanet->SetGravityPower(20.f);
-			
 		}
 		if (killerTheSeeker[i]->WatchHp() < 100)
 		{
@@ -396,7 +395,6 @@ void GameManager::GamePlayingUpdate()
 			i--;
 		}
 	}
-
 	for (int i = 0; i < gorori.size(); i++)
 	{
 		if (gorori[i]->WatchHp() < 0)
