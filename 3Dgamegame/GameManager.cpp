@@ -374,7 +374,7 @@ void GameManager::GamePlayingUpdate()
 		killerTheSeeker[i]->DeleteManage();
 		if (killerTheSeeker[i]->WatchHp() < 300)
 		{
-			bossPlanet->SetColor(0x000000);
+			bossPlanet->SetColor(0xff44ff);
 			bossPlanet->SetGravityPower(20.f);
 			
 		}
@@ -433,8 +433,15 @@ void GameManager::GamePlayingUpdate()
 	//本当はカメラとプレイヤーの角度が90度以内になったときプレイヤーの頭上を見たりできるようにしたい。
 	//camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * 100 - Vec3(GetCameraFrontVector())* 300));
 	camera->SetUpVec(player->GetNormVec());
-	
-	camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
+	if (player->GetBoostFlag())
+	{
+		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * (kCameraDistanceUp-400) - front * ((kCameraDistanceFront-700) + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
+	}
+	else
+	{
+		camera->SetCameraPoint(player->GetPos() + (Vec3(GetCameraUpVector()).GetNormalized() * kCameraDistanceUp - front * (kCameraDistanceFront + kCameraDistanceAddFrontInJump * player->GetJumpFlag())));
+
+	}
 	
 	camera->Update(player->GetPos());
 	//camera->SetCameraPos(player->GetPos());
@@ -481,24 +488,6 @@ void GameManager::GamePlayingUpdate()
 		warpGate.back()->SetWarpPos(Vec3(-3000, 1000, -3000));
 		MyEngine::Physics::GetInstance().Entry(warpGate.back());
 		camera->WatchThis(warpGate.back()->GetRigidbody()->GetPos(), Vec3(4000, 700, 1000), planet[0]->GetNormVec(warpGate.back()->GetRigidbody()->GetPos()));
-
-		/*Vec3 zero = Vec3(0, 0, 0);
-		Vec3 offSetVec =Vec3(0,650,0);
-		Quaternion myQ;
-		m_angle += 0.05f;
-
-		Vec3 front = (Vec3(5500, 500, 1700) - Vec3(-3000, 1000, -3000)).GetNormalized();
-		for (int i = 0; i < 16; i++)
-		{
-			myQ.SetQuaternion(offSetVec);
-			myQ.SetMove(DX_PI_F * 1 / 8 * i + m_angle, front);
-			Vec3 offSet = myQ.Move(offSetVec, zero);
-			takobo.push_back(std::make_shared<Takobo>(Vec3(-3000, 1000, -3000) + offSet));
-
-			MyEngine::Physics::GetInstance().Entry(takobo.back());
-			takobo.back()->SetTarget(player);
-
-		}*/
 	}
 	if (poworStone.size() == 0&&warpGate.size()==2)
 	{
@@ -530,9 +519,8 @@ void GameManager::GamePlayingUpdate()
 void GameManager::GamePlayingDraw()
 {
 	DxLib::SetDrawScreen(m_miniMapScreenHandle);//カメラのnear,farが勝手に変わってる・・・？
-	
-	SetCameraNearFar(1.f, 100000);
-	
+		
+	auto i=GetCameraFar();
 	ClearDrawScreen();
 	
 	SetCameraPositionAndTargetAndUpVec((player->GetPos() + player->GetNormVec() * 300).VGet(), player->GetPos().VGet(), m_cameraUpVec.VGet());
@@ -587,8 +575,6 @@ void GameManager::GamePlayingDraw()
 
 	camera->Update(player->GetPos());
 	
-	SetCameraNearFar(1.f, 100000);
-
 	DxLib::DrawRectRotaGraph(kUiText_SrkX, kUiText_SrkY, kUiText_SrkX, kUiText_SrkY, kUiText_Width, kUiText_Height, kUiText_Exrate, 0, textureUIHandle, true);
 
 	bossPlanet->SetIsSearch(player->IsSearch());

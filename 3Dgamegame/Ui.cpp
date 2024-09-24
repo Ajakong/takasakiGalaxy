@@ -144,12 +144,9 @@ void Ui::Draw(int fontHandle, float playerHP, int SearchRemainTime)
 		{
 			m_manualFlag = false;
 		}
-		//UI: LeftBotton
-		DrawExtendGraph(200, 600, 400, 800, m_leftBottonHandle, true);
 		//UI: RightBotton
 		DrawExtendGraph(1200, 600, 1400, 800, m_RightBottonHandle, true);
 
-		DrawExtendFormatString(240, 580, 1.2f, 1.2f, 0xffffff, "éãì_êÿÇËë÷Ç¶");
 		DrawExtendFormatStringToHandle(1260, 570, 0.5f, 0.5f, 0xffffff, fontHandle, "Search");
 		DrawExtendFormatStringToHandle(1390, 700, 0.5f, 0.5f, 0xffffff, fontHandle, "Parry");
 		if (!m_isFadeEnd)
